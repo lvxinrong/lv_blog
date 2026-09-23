@@ -1,0 +1,83 @@
+{{- define "main" }}
+
+{{/* 自定义首页：三个系列分开呈现，而不是混成一条时间线。
+     结构 = Hero → 系列入口卡（固定 3 张）→ 最新文章（带系列徽章）。
+     分区页 /llm/ /ai/ /craft/ 仍由主题的 list.html 渲染，不受影响。 */}}
+
+{{- $sectionKeys := site.Params.mainSections }}
+
+{{- /* ---------- Hero ---------- */}}
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info">
+  <header class="entry-header">
+    <h1>{{ .Title | markdownify }}</h1>
+  </header>
+  <div class="entry-content md-content">
+    {{ $opts := dict "display" "block" }}
+    {{ .Content | $.Page.RenderString $opts }}
+  </div>
+  <footer class="entry-footer">
+    {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+  </footer>
+</article>
+{{- end }}
+
+{{- /* ---------- 系列入口卡 ---------- */}}
+<section class="series-section" aria-label="文章系列">
+  <div class="series-grid">
+    {{- range $sectionKeys }}
+    {{- $key := . }}
+    {{- with site.GetPage (printf "/%s" $key) }}
+    {{- $pages := sort .RegularPages "Date" "desc" }}
+    <a class="series-card" data-series="{{ $key }}" href="{{ .RelPermalink }}">
+      <div class="series-head">
+        <span class="series-dot" aria-hidden="true"></span>
+        <span class="series-name">{{ .Title }}</span>
+        <span class="series-count">{{ len $pages }} 篇</span>
+      </div>
+      {{- with .Description }}
+      <p class="series-desc">{{ . }}</p>
+      {{- end }}
+      {{- with index $pages 0 }}
+      <p class="series-latest"><span>最新</span>{{ .Title }}</p>
+      {{- else }}
+      <p class="series-latest series-empty">还没有文章</p>
+      {{- end }}
+    </a>
+    {{- end }}
+    {{- end }}
+  </div>
+</section>
+
+{{- /* ---------- 最新文章 ---------- */}}
+{{- $latest := first 6 (where site.RegularPages "Type" "in" $sectionKeys) }}
+{{- with $latest }}
+<section class="latest-section" aria-label="最新文章">
+  <div class="latest-head">
+    <h2 class="latest-title">最新</h2>
+    <a class="latest-more" href="{{ "archives/" | absLangURL }}">全部文章 →</a>
+  </div>
+
+  {{- range . }}
+  <article class="post-entry" data-series="{{ .Type }}">
+    <div class="entry-series">{{ (site.GetPage (printf "/%s" .Type)).Title }}</div>
+    <header class="entry-header">
+      <h2 class="entry-hint-parent">{{ .Title }}</h2>
+    </header>
+    {{- if (ne (.Param "hideSummary") true) }}
+    <div class="entry-content">
+      <p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p>
+    </div>
+    {{- end }}
+    {{- if not (.Param "hideMeta") }}
+    <footer class="entry-footer">
+      {{- partial "post_meta.html" . -}}
+    </footer>
+    {{- end }}
+    <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+  </article>
+  {{- end }}
+</section>
+{{- end }}
+
+{{- end }}{{/* end main */}}

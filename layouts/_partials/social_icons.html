@@ -1,0 +1,18 @@
+{{- /* 覆盖主题的 social_icons：主题只渲染一个裸图标，读者不容易认出那是 GitHub，
+       也容易整个忽略掉。这里加上文字标签，做成一眼能看清的胶囊按钮。
+       - variant: "hero"（默认，首页 Hero）/ "footer"（页脚，尺寸更小）
+       另外给每个链接附一个 social-link-<name> 类，方便单独强调某一个。 */ -}}
+{{- $variant := .variant | default "hero" }}
+{{- with site.Params.socialIcons }}
+<div class="social-icons social-icons-{{ $variant }}" {{ with $.align }}align="{{ . }}"{{ end }}>
+    {{- range . }}
+    {{- $label := .title | default .name }}
+    <a class="social-link social-link-{{ .name | lower }}"
+        href="{{ trim .url " " | safeURL }}" target="_blank" rel="noopener noreferrer me"
+        title="{{ $label | title }}">
+        {{ partial "svg.html" . }}
+        <span class="social-label">{{ $label }}</span>
+    </a>
+    {{- end }}
+</div>
+{{- end }}

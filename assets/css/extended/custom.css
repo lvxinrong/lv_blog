@@ -26,6 +26,10 @@
     --content-gap: 22px;
     --radius: 10px;
     --radius-lg: 14px;
+    /* 主题默认 60px，但页脚现在多了一行社交按钮，实测高 153px。
+       不同步这个值，.main 的 min-height 就会少算 93px，
+       短页面（比如「关于」）会平白多出一截滚动。 */
+    --footer-height: 153px;
 
     /* 纸面与墨色：正文不用纯黑，减少长时间阅读的疲劳 */
     --theme: #ffffff;
@@ -65,6 +69,15 @@
     /* 中心留白的「擦除色」：接近页面底色，把阅读栏压回中性 */
     --wash: rgba(255, 255, 255, 0.90);
 
+    /* 三个文章系列的专属色。同属冷色、但色相拉开，便于快速分辨。
+       用在首页系列卡、系列徽章、分区页标题上。 */
+    --series-llm: #1f6fe0;
+    --series-ai: #7c4ddb;
+    --series-craft: #0e8f9c;
+    --series-llm-soft: rgba(31, 111, 224, 0.12);
+    --series-ai-soft: rgba(124, 77, 219, 0.12);
+    --series-craft-soft: rgba(14, 143, 156, 0.12);
+
     color-scheme: light;
 }
 
@@ -96,6 +109,14 @@
     --glow-1: rgba(72, 104, 255, 0.62);
     --glow-2: rgba(140, 88, 255, 0.38);
     --wash: rgba(18, 20, 25, 0.90);
+
+    /* 深色下系列色要提亮，否则在深底上发闷 */
+    --series-llm: #5ea4ff;
+    --series-ai: #a78bfa;
+    --series-craft: #3fc9d6;
+    --series-llm-soft: rgba(94, 164, 255, 0.16);
+    --series-ai-soft: rgba(167, 139, 250, 0.16);
+    --series-craft-soft: rgba(63, 201, 214, 0.16);
 
     color-scheme: dark;
 }
@@ -260,6 +281,9 @@ a {
 
 .menu a > span {
     display: inline-block;
+    /* 必须显式给 line-height：.header-nav 上是 line-height: 60px，
+       span 会继承它，再加上下面的 padding，导航栏会被撑到 75px 而不是 60px。 */
+    line-height: 1.4;
     padding: 7px 12px;
     border-radius: 8px;
     transition: color 0.16s ease, background-color 0.16s ease;
@@ -329,22 +353,65 @@ a {
     margin-top: 18px;
 }
 
-/* 社交图标：克制的圆形按钮 */
+/* 社交链接：带文字的胶囊按钮。
+   主题原本只渲染一个裸图标 —— 太小、也认不出是 GitHub，读者会直接忽略。 */
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .social-icons a {
-    padding: 8px;
-    border-radius: 10px;
-    color: var(--secondary);
-    transition: color 0.16s ease, background-color 0.16s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 550;
+    line-height: 1;
+    color: var(--primary);
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: var(--shadow-sm);
+    transition: color 0.16s ease, border-color 0.16s ease,
+        background-color 0.16s ease, transform 0.16s ease;
+}
+
+/* 主题给第一个图标去掉了左内边距，会把胶囊压扁，这里还原 */
+.home-info .social-icons a:first-of-type {
+    padding-inline-start: 18px;
 }
 
 .social-icons a:hover {
     color: var(--accent);
-    background: var(--accent-soft);
+    background: var(--entry);
+    border-color: var(--accent-border);
+    transform: translateY(-2px);
 }
 
 .social-icons a svg {
+    flex: 0 0 auto;
     height: 20px;
     width: 20px;
+}
+
+/* 页脚里的那行：同一套胶囊按钮，但尺寸收小，免得抢了正文的注意力 */
+.social-icons-footer {
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.social-icons-footer a {
+    padding: 8px 15px;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.social-icons-footer a svg {
+    height: 18px;
+    width: 18px;
 }
 
 /* --------------------------------------------------------------------------
@@ -1015,13 +1082,16 @@ details.toc a:hover {
     color: var(--secondary);
 }
 
-.footer a {
+/* 注意 :not(.social-link)：页脚里还有一行社交胶囊按钮，它们也是 <a>，
+   会被这条通用规则连颜色和下划线一起带偏。而且这条规则在 .social-icons a
+   之后、优先级又相同，会直接盖掉按钮的文字颜色。 */
+.footer a:not(.social-link) {
     color: var(--secondary);
     text-decoration: none;
     border-bottom: 1px solid var(--border);
 }
 
-.footer a:hover {
+.footer a:not(.social-link):hover {
     color: var(--accent);
     border-bottom-color: var(--accent-border);
 }
@@ -1309,5 +1379,243 @@ details.toc a:hover {
 
     details.toc::-webkit-scrollbar-track {
         background: transparent;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   16. 首页：系列入口卡 + 系列徽章
+   --------------------------------------------------------------------------
+   三个系列混在一条时间线上时，读者分不出谁是谁 —— 首页卡片原本没有任何系列标识。
+   这里给每个系列一个专属色，把「系列」变成能被一眼感知的东西，而不只是文字标签。
+   结构见 layouts/home.html（分区页 /llm/ /ai/ /craft/ 仍由主题的 list.html 渲染）。
+   -------------------------------------------------------------------------- */
+
+/* 把 data-series 映射到对应的颜色变量，后面所有组件都只管用 var(--series) */
+[data-series="llm"]   { --series: var(--series-llm);   --series-soft: var(--series-llm-soft); }
+[data-series="ai"]    { --series: var(--series-ai);    --series-soft: var(--series-ai-soft); }
+[data-series="craft"] { --series: var(--series-craft); --series-soft: var(--series-craft-soft); }
+
+/* ---------- 系列入口卡 ---------- */
+
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 44px;
+}
+
+.series-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 顶部一层系列色雾，给卡片一点身份感 */
+.series-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 72px;
+    background: linear-gradient(180deg, var(--series-soft), transparent);
+    pointer-events: none;
+}
+
+.series-card:hover,
+.series-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--series);
+    box-shadow: var(--shadow-md);
+}
+
+.series-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.series-dot {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--series);
+}
+
+.series-name {
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+    transition: color 0.16s ease;
+}
+
+.series-card:hover .series-name {
+    color: var(--series);
+}
+
+.series-count {
+    margin-inline-start: auto;
+    padding: 4px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--series);
+    background: var(--series-soft);
+    border-radius: 999px;
+}
+
+.series-desc {
+    position: relative;
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--secondary);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+/* margin-top:auto 让三张卡的这一行底部对齐 */
+.series-latest {
+    position: relative;
+    margin: auto 0 0;
+    padding-top: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--secondary);
+    border-top: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.series-latest > span {
+    display: inline-block;
+    margin-inline-end: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--series);
+}
+
+.series-empty {
+    opacity: 0.65;
+}
+
+/* ---------- 最新列表 ---------- */
+
+.latest-section {
+    margin-top: 4px;
+}
+
+.latest-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.latest-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--secondary);
+}
+
+.latest-more {
+    font-size: 13px;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.16s ease;
+}
+
+.latest-more:hover {
+    color: var(--accent);
+}
+
+/* 卡片上的系列徽章 */
+.entry-series {
+    display: inline-block;
+    margin-bottom: 9px;
+    padding: 3px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--series);
+    background: var(--series-soft);
+    border-radius: 999px;
+}
+
+/* 带系列标记的卡片：悬停时的强调色改用该系列的颜色 */
+.post-entry[data-series]::before {
+    background: var(--series);
+}
+
+.post-entry[data-series]:hover,
+.post-entry[data-series]:focus-within {
+    border-color: var(--series);
+}
+
+.post-entry[data-series]:hover .entry-header h2,
+.post-entry[data-series]:focus-within .entry-header h2 {
+    color: var(--series);
+}
+
+/* ---------- 分区页：用系列色做标题落点 ---------- */
+
+:root[data-series] .page-header h1::after {
+    content: "";
+    display: block;
+    width: 46px;
+    height: 3px;
+    margin-top: 14px;
+    border-radius: 999px;
+    background: var(--series);
+}
+
+/* 分区页的卡片也带上该系列的颜色 */
+:root[data-series] .post-entry::before {
+    background: var(--series);
+}
+
+:root[data-series] .post-entry:hover,
+:root[data-series] .post-entry:focus-within {
+    border-color: var(--series);
+}
+
+:root[data-series] .post-entry:hover .entry-header h2,
+:root[data-series] .post-entry:focus-within .entry-header h2 {
+    color: var(--series);
+}
+
+/* ---------- 移动端 ---------- */
+
+@media (max-width: 768px) {
+    .series-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 32px;
+    }
+
+    .series-card {
+        padding: 16px;
+    }
+
+    .series-desc {
+        -webkit-line-clamp: 3;
     }
 }

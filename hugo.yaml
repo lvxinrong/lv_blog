@@ -25,17 +25,20 @@ languages:
     weight: 1
     title: 吕炘嵘的博客
     params:
-      description: 一个十四年开发者的技术、反思与记录
+      description: 好奇，毅力，自我思考
       homeInfoParams:
         Title: 写代码，也写自己
-        Content: 一个十四年开发者的技术、反思与记录
+        Content: 好奇，毅力，自我思考
 
 params:
   env: production
-  # 默认浅色。想跟随系统改回 auto，想固定深色改成 dark。
+  # 固定浅色，并移除导航栏上的明暗切换按钮。
+  # 这两项要一起设：只设 defaultTheme，按钮还在；
+  # 只设 disableThemeToggle，主题会退回「跟随系统」。
   defaultTheme: light
+  disableThemeToggle: true
   author: 吕炘嵘
-  description: 一个十四年开发者的技术、反思与记录
+  description: 好奇，毅力，自我思考
 
   # 日期格式（Go 的时间布局写法）
   DateFormat: "2006年1月2日"
@@ -64,8 +67,14 @@ params:
     theme_color: "#ffffff"
     msapplication_TileColor: "#3b5bdb"
 
+  # 首页 Hero 下方的社交图标。图标名要对应主题 svg.html 里支持的名字
+  # （github / x / zhihu / juejin / bilibili / email / rss …）。
   socialIcons:
+    - name: github
+      title: GitHub
+      url: https://github.com/lvxinrong
     - name: rss
+      title: RSS
       url: /index.xml
 
 markup:

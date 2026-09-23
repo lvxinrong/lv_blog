@@ -24,4 +24,15 @@
         if (mq.addEventListener) mq.addEventListener('change', onChange);
         else if (mq.addListener) mq.addListener(onChange);
     })();
+
+    /* 按 URL 第一段给 <html> 打上系列标记，让分区页 /llm/ /ai/ /craft/
+       也能用上各自的系列色。页面本身没有 section 类名可用，
+       所以这里读路径；系列列表由 Hugo 注入，自动跟 mainSections 同步。 */
+    (function () {
+        var series = {{ site.Params.mainSections | jsonify | safeJS }};
+        var seg = location.pathname.split('/').filter(Boolean)[0];
+        if (series.indexOf(seg) >= 0) {
+            document.documentElement.dataset.series = seg;
+        }
+    })();
 </script>
