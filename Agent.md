@@ -101,6 +101,32 @@ themes/PaperMod/           ⚠️ 不要改
 - **不建 `_index.md` 会出事**：Hugo 会拿目录名自动衍生成英文复数标题（`llm` → "Llms"）。这个坑踩过一次。
 - 文章用 `#` 或 `##` 作章节标题（`markup.tableOfContents.startLevel: 1` 才能抓到）。
 
+### ⚠️ 文章 `date` 写在未来 → 会静默消失
+
+Hugo 默认 **不构建 `date` 在未来的页面**（`buildFuture: false`）。症状很迷惑：**文章不报错、不提示，就是哪儿都不出现** —— 列表页、归档、RSS 全都没有。
+
+新写文章时如果把 `date` 设成了「几分钟后」（比如手写一个整点时间），在那一刻到来之前它就是不存在的。
+
+```bash
+# 想立刻看到，本地可以加这个 flag
+hugo server --renderToMemory --buildFuture
+```
+
+排查：对比文件里的 `date` 和当前时间。
+
+```bash
+date "+%Y-%m-%dT%H:%M:%S%z"
+grep -m1 '^date' content/xxx.md
+```
+
+### ⚠️ `panic: Shift: unknown type *hugolib.pageMetaSource`
+
+见过一次：dev server 直接崩溃退出。**这不是模板或样式的问题。**
+
+它是 Hugo 自身的一个 bug（0.166 实测），触发条件是**文件正在被写入时被 dev server 读到** —— 日志里会先出现一条内容解析错误（例如 `unmarshal failed: toml: expected newline`），紧接着就是 panic。
+
+处理方式：确认文件内容已保存完整，然后**重启 dev server** 即可。不需要改任何模板。
+
 ### ⚠️ 中文写作陷阱：`**加粗**` 在中文标点后会失效
 
 CommonMark 有一条 **flanking（侧翼）规则**：闭合的 `**` 必须满足 right-flanking —— 不能「前一个字符是标点、后一个字符既不是空白也不是标点」。
