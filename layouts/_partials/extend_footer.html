@@ -1,0 +1,27 @@
+{{- /* 站点自定义的页脚扩展（PaperMod 提供的挂载点）。 */ -}}
+<script>
+    /* 吸顶导航：滚动后才出现分隔线，静止时保持干净。 */
+    (function () {
+        var header = document.querySelector('.header');
+        if (!header) return;
+        var onScroll = function () {
+            header.classList.toggle('is-stuck', window.scrollY > 4);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
+    /* 目录：≥1280px 时它被 CSS 挪到右侧栏，这时默认展开才有意义；
+       窄屏回落到内联折叠块，保持原来的行为。
+       只在断点切换时同步，所以用户手动折叠的状态不会被反复覆盖。 */
+    (function () {
+        var toc = document.querySelector('details.toc');
+        if (!toc || !window.matchMedia) return;
+        var mq = window.matchMedia('(min-width: 1280px)');
+        var sync = function (matches) { toc.open = matches; };
+        sync(mq.matches);
+        var onChange = function (e) { sync(e.matches); };
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else if (mq.addListener) mq.addListener(onChange);
+    })();
+</script>

@@ -1,0 +1,1313 @@
+/* ==========================================================================
+   站点自定义样式
+   --------------------------------------------------------------------------
+   PaperMod 会把 assets/css/extended/*.css 追加在主题样式之后，
+   所以这里可以放心覆盖，且主题升级不会冲掉改动。
+   注意：主题的深色变量写在 :root[data-theme="dark"]，
+   优先级高于 :root，所以深色覆盖必须同样带 [data-theme="dark"]。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 设计变量
+   -------------------------------------------------------------------------- */
+
+:root {
+    /* 字体：拉丁字形走系统 UI 字体，中文回落到苹方 / 微软雅黑 */
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code",
+        Menlo, Consolas, "Liberation Mono", monospace;
+
+    /* 版心与节奏 */
+    --main-width: 740px;
+    --nav-width: 1040px;
+    --gap: 24px;
+    --content-gap: 22px;
+    --radius: 10px;
+    --radius-lg: 14px;
+
+    /* 纸面与墨色：正文不用纯黑，减少长时间阅读的疲劳 */
+    --theme: #ffffff;
+    --page-bg: #f6f7f9;
+    --entry: #ffffff;
+    --primary: #14161a;
+    --secondary: #6b7280;
+    --tertiary: #d6d9de;
+    --content: #2a2e35;
+    --border: #e6e8ec;
+    --code-bg: #f4f5f7;
+    --code-block-bg: #1b1e23;
+
+    /* 强调色 */
+    --accent: #3b5bdb;
+    --accent-hover: #2f4bc4;
+    --accent-soft: rgba(59, 91, 219, 0.09);
+    --accent-border: rgba(59, 91, 219, 0.28);
+    --accent-fade: rgba(59, 91, 219, 0.35);
+    --shadow-sm: 0 1px 2px rgba(16, 20, 30, 0.04);
+    --shadow-md: 0 6px 20px -6px rgba(16, 20, 30, 0.13);
+
+    /* 玻璃材质（标准 Apple）：
+       半透明底色 + 背景模糊 + 饱和度提升。
+       --glass-hi / --glass-line 是「顶部镜面高光 + 底部发丝线」，
+       这两条比模糊半径更决定「像不像玻璃」，别省。 */
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-filter: blur(20px) saturate(180%);
+    --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.70);
+    --glass-line: rgba(0, 0, 0, 0.07);
+
+    /* 背景色雾：收敛到一个色族（靛蓝 → 紫）。
+       之前用了蓝/品红/青/橙四个不相关色相，实测在正文栏内跨了 8 个色相档位，
+       读起来是「随机」而不是「设计」。现在只留同族两色，靠范围与明度做层次。 */
+    --glow-1: rgba(59, 91, 219, 0.38);
+    --glow-2: rgba(124, 92, 230, 0.34);
+    /* 中心留白的「擦除色」：接近页面底色，把阅读栏压回中性 */
+    --wash: rgba(255, 255, 255, 0.90);
+
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --theme: #15171b;
+    --page-bg: #101216;
+    --entry: #1a1d22;
+    --primary: #e9ebef;
+    --secondary: #9aa1ac;
+    --tertiary: #2d323a;
+    --content: #c2c8d1;
+    --border: #272c34;
+    --code-bg: #21252b;
+    --code-block-bg: #16181d;
+
+    --accent: #8ba4ff;
+    --accent-hover: #a6b8ff;
+    --accent-soft: rgba(139, 164, 255, 0.12);
+    --accent-border: rgba(139, 164, 255, 0.32);
+    --accent-fade: rgba(139, 164, 255, 0.3);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 6px 20px -6px rgba(0, 0, 0, 0.55);
+
+    --glass-bg: rgba(24, 26, 30, 0.72);
+    --glass-filter: blur(20px) saturate(180%);
+    --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    --glass-line: rgba(255, 255, 255, 0.09);
+
+    --glow-1: rgba(72, 104, 255, 0.62);
+    --glow-2: rgba(140, 88, 255, 0.38);
+    --wash: rgba(18, 20, 25, 0.90);
+
+    color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   2. 全局基础
+   -------------------------------------------------------------------------- */
+
+body {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.75;
+    background: var(--theme);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* 列表页用略带灰度的底色，让卡片浮起来 */
+body.list {
+    background: var(--page-bg);
+}
+
+[data-theme="dark"] body.list {
+    background: var(--page-bg);
+}
+
+/* 背景色雾 —— 固定的「大气层」，不随页面滚动。
+   ----------------------------------------------------------------------
+   层叠顺序从上到下（CSS 里先写的在最上面）：
+     ① 中心留白 —— 以阅读栏为中心的大软椭圆，把正文区压回中性。
+        这是「阅读优先」的硬保证：宽屏下文字几乎接触不到色。
+     ② 顶部聚色 —— 正好落在导航栏后面，玻璃效果靠它。
+     ③ 左右留色 —— 宽度收在 30%，避开阅读栏。
+   所以颜色的强弱顺序是：顶部 > 两侧 > 正文区（≈中性）。 */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(46% 50% at 50% 56%,
+            var(--wash) 0%, var(--wash) 62%, transparent 100%),
+        radial-gradient(80% 26% at 50% -2%,
+            var(--glow-1), transparent 78%),
+        radial-gradient(30% 46% at -2% 40%,
+            var(--glow-2), transparent 82%),
+        radial-gradient(30% 46% at 102% 48%,
+            var(--glow-2), transparent 82%);
+}
+
+/* 手机上阅读栏占满整宽，左右边缘根本不存在 ——
+   硬留侧边色会直接铺到文字上，所以只保留顶部一条色带。 */
+@media (max-width: 768px) {
+    body::before {
+        background:
+            radial-gradient(120% 26% at 50% -6%, var(--glow-1), transparent 76%),
+            radial-gradient(95% 20% at 50% 4%, var(--glow-2), transparent 76%);
+    }
+}
+
+/* 层叠顺序：::before 是 body 的第一个子元素（z-index: 0），
+   而 .footer 这类非定位元素会画在它「下面」，所以内容必须抬到 z-index: 1。 */
+.main,
+.footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* 中文正文不要用斜体（合成斜体很难看） */
+em,
+i {
+    font-style: normal;
+    font-weight: 600;
+}
+
+/* 强调色与选区 */
+::selection {
+    background: var(--accent-soft);
+}
+
+a {
+    transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+/* 键盘可达性：只对键盘焦点画轮廓，鼠标点击不画 */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* 正文里的锚点标题不要被吸顶导航盖住 */
+.md-content :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: calc(var(--header-height) + 16px);
+}
+
+/* --------------------------------------------------------------------------
+   3. 顶栏
+   -------------------------------------------------------------------------- */
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    box-shadow: var(--glass-hi);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* 发丝线在滚动后才浮现（Apple 的分隔线也是内容压过来时才出现） */
+.header.is-stuck {
+    border-bottom-color: var(--glass-line);
+}
+
+.header-nav {
+    line-height: var(--header-height);
+}
+
+.logo a {
+    font-size: 20px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    color: var(--primary);
+}
+
+.logo a:hover {
+    color: var(--accent);
+}
+
+.theme-toggle {
+    color: var(--secondary);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.menu {
+    column-gap: 4px;
+}
+
+/* 药丸画在 <a> 内层的 <span> 上 —— 主题的 .active 也是加在 span 上的，
+   这样 hover 和「当前页」用同一个盒子，不会错位。 */
+.menu a {
+    font-size: 15px;
+    color: var(--secondary);
+    padding: 0;
+    border-radius: 8px;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.menu a > span {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 8px;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.menu a:hover > span {
+    color: var(--primary);
+    background: var(--accent-soft);
+}
+
+/* 当前页：去掉主题的下划线，换成柔和的强调色药丸 */
+.menu .active {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--accent-soft);
+}
+
+/* --------------------------------------------------------------------------
+   4. 首页 Hero
+   -------------------------------------------------------------------------- */
+
+.home-info {
+    min-height: 0;
+    justify-content: flex-start;
+    margin: calc(var(--gap) * 1.5) 0 calc(var(--gap) * 2.5);
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.home-info .entry-header {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
+.home-info .entry-header h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 750;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--primary);
+}
+
+/* 标题下的一道强调色短线，给首页一个视觉落点 */
+.home-info .entry-header h1::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 4px;
+    margin-top: 20px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-fade));
+}
+
+.home-info .entry-content {
+    display: block;
+    margin-top: 18px;
+    max-width: 38rem;
+    font-size: 16.5px;
+    line-height: 1.8;
+    color: var(--secondary);
+}
+
+.home-info .entry-footer {
+    margin-top: 18px;
+}
+
+/* 社交图标：克制的圆形按钮 */
+.social-icons a {
+    padding: 8px;
+    border-radius: 10px;
+    color: var(--secondary);
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.social-icons a svg {
+    height: 20px;
+    width: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   5. 文章卡片（列表页）
+   -------------------------------------------------------------------------- */
+
+.post-entry {
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--entry);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-entry:hover,
+.post-entry:focus-within {
+    transform: translateY(-3px);
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-md);
+}
+
+/* 悬停时左侧出现一条强调色，暗示可点击 */
+.post-entry::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 18px;
+    bottom: 18px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.post-entry:hover::before,
+.post-entry:focus-within::before {
+    opacity: 1;
+}
+
+.entry-header h2 {
+    font-size: 20px;
+    font-weight: 650;
+    line-height: 1.4;
+    letter-spacing: -0.012em;
+    color: var(--primary);
+}
+
+.post-entry:hover .entry-header h2 {
+    color: var(--accent);
+}
+
+.entry-content {
+    margin: 10px 0 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--secondary);
+    -webkit-line-clamp: 2;
+}
+
+.entry-footer {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* 注：日期/时长之间的分隔符由主题的 post_meta.html 插入（&nbsp;·&nbsp;），
+   这里不要再补一个，否则会出现两个点。 */
+
+/* --------------------------------------------------------------------------
+   6. 文章页
+   -------------------------------------------------------------------------- */
+
+.post-header {
+    margin: calc(var(--gap) * 1.6) auto var(--content-gap);
+    text-align: left;
+}
+
+.post-title {
+    font-size: clamp(28px, 4.6vw, 40px);
+    font-weight: 750;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--primary);
+}
+
+.post-description {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--secondary);
+}
+
+.post-meta {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.breadcrumbs {
+    font-size: 13.5px;
+    margin-bottom: 6px;
+}
+
+.breadcrumbs a {
+    font-size: 13.5px;
+    color: var(--secondary);
+}
+
+.breadcrumbs a:hover {
+    color: var(--accent);
+}
+
+/* 正文排版 */
+.post-content {
+    margin: 26px 0 40px;
+    color: var(--content);
+    font-size: 17px;
+    line-height: 1.85;
+    letter-spacing: 0.004em;
+}
+
+.md-content :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+/* 正文里用 `#` 当作章节标题，所以一级标题按「章节」而不是「文章标题」来排版 */
+.md-content h1 {
+    margin: 44px 0 18px;
+    font-size: 25px;
+    line-height: 1.4;
+}
+
+.md-content h2 {
+    margin: 40px 0 16px;
+    font-size: 22px;
+    line-height: 1.45;
+}
+
+.md-content h3 {
+    margin: 32px 0 14px;
+    font-size: 19px;
+}
+
+.md-content h4 {
+    margin: 26px 0 12px;
+    font-size: 17px;
+}
+
+.md-content h5,
+.md-content h6 {
+    margin: 22px 0 10px;
+    font-size: 16px;
+    color: var(--secondary);
+}
+
+/* 章节标题左侧的强调色竖条 */
+.md-content :is(h1, h2) {
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+}
+
+.md-content p {
+    margin: 0 0 var(--content-gap);
+}
+
+.md-content a:not(.anchor) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-border);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+}
+
+.md-content a:not(.anchor):hover {
+    color: var(--accent-hover);
+    text-decoration-color: currentColor;
+}
+
+.md-content strong {
+    font-weight: 650;
+    color: var(--primary);
+}
+
+.md-content ul,
+.md-content ol {
+    padding-inline-start: 1.4rem;
+}
+
+.md-content li {
+    margin-top: 0.4rem;
+}
+
+.md-content li::marker {
+    color: var(--secondary);
+}
+
+/* 引用块：去掉斜体，用强调色竖条 + 极浅底色 */
+.md-content blockquote {
+    margin: 24px 0;
+    padding: 14px 20px;
+    border-inline-start: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--accent-soft);
+    color: var(--content);
+}
+
+.md-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.md-content hr {
+    margin: 40px 0;
+    height: 1px;
+    background: var(--border);
+}
+
+/* 行内代码 */
+.post-content code {
+    padding: 0.15em 0.42em;
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--primary);
+}
+
+/* 代码块 */
+.md-content .highlight:not(table),
+.md-content pre:not(.highlight pre) {
+    margin-bottom: var(--content-gap);
+    border-radius: var(--radius);
+    background: var(--code-block-bg) !important;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.md-content pre code {
+    display: block;
+    padding: 16px 18px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    background: transparent !important;
+    border: 0;
+    border-radius: 0;
+    color: rgb(214, 216, 222);
+    word-break: normal;
+    overflow-x: auto;
+}
+
+.md-content .highlight pre {
+    margin: 0;
+}
+
+/* 带行号的代码块（Hugo 会渲染成 table.highlighttable） */
+.md-content .highlighttable {
+    margin-bottom: var(--content-gap);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--code-block-bg);
+}
+
+.md-content .highlighttable td {
+    border: 0;
+    padding: 0;
+}
+
+/* 行号列弱化，避免和代码抢注意力 */
+.md-content .highlighttable td:first-child,
+.md-content .lntd:first-child {
+    background: rgba(255, 255, 255, 0.03);
+    border-right: 1px solid var(--border);
+}
+
+.md-content .highlighttable td .linenodiv pre,
+.md-content .lntd:first-child pre {
+    padding: 16px 10px;
+    color: var(--secondary);
+    opacity: 0.7;
+    user-select: none;
+}
+
+/* 复制按钮（浮在代码块上的小浮层，所以也用玻璃） */
+.copy-code {
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--primary);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    border: 1px solid var(--glass-line);
+    border-radius: 7px;
+    box-shadow: var(--glass-hi), var(--shadow-sm);
+    opacity: 0;
+    transition: opacity 0.16s ease, color 0.16s ease;
+}
+
+div.highlight:hover .copy-code,
+pre:hover .copy-code {
+    opacity: 1;
+}
+
+.copy-code:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+}
+
+/* 表格 */
+.md-content table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 15.5px;
+}
+
+.md-content table th,
+.md-content table:not(.highlighttable, .highlight, .gist .highlight) td {
+    padding: 9px 14px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.md-content table tr:last-child td {
+    border-bottom: 0;
+}
+
+.md-content table th {
+    background: var(--code-bg);
+    font-weight: 650;
+    color: var(--primary);
+}
+
+.md-content img {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   7. 目录（TOC）
+   -------------------------------------------------------------------------- */
+
+details.toc {
+    margin: 20px 0 28px;
+    padding: 4px 0;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    border: 1px solid var(--glass-line);
+    border-radius: var(--radius);
+    box-shadow: var(--glass-hi);
+}
+
+details.toc summary {
+    padding: 9px 16px;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+details.toc summary:hover {
+    color: var(--accent);
+}
+
+details.toc .inner {
+    margin: 0 16px;
+    padding: 4px 0 12px;
+    border-top: 1px solid var(--border);
+}
+
+/* 去掉列表标记。注意 Hugo 的 .TableOfContents 会多包一层
+   <ul><li><ul>，所以不能只 reset 第一层，否则会漏出圆点和多余的引导线。 */
+details.toc ul {
+    list-style: none;
+    margin: 0;
+    padding-inline-start: 0;
+}
+
+/* 抹掉 Hugo 那层包裹带来的缩进，让一级条目贴左 */
+details.toc nav > ul > li > ul {
+    margin-top: 10px;
+}
+
+/* 真正的层级缩进只从第二级开始，并带一条引导线 */
+details.toc nav > ul > li > ul > li > ul {
+    padding-inline-start: 14px;
+    margin: 3px 0;
+    border-inline-start: 1px solid var(--border);
+}
+
+details.toc li {
+    margin: 2px 0;
+}
+
+details.toc a {
+    display: block;
+    padding: 4px 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+details.toc a:hover {
+    color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   8. 文章尾部：标签 / 上下篇
+   -------------------------------------------------------------------------- */
+
+.post-footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.post-tags {
+    gap: 8px;
+}
+
+.post-tags a {
+    padding: 0 13px;
+    line-height: 30px;
+    font-size: 13.5px;
+    color: var(--secondary);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.post-tags a:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+}
+
+.paginav {
+    gap: 12px;
+    border: 0;
+    background: none;
+}
+
+.paginav a {
+    padding: 14px 16px;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.paginav a:hover {
+    background: var(--entry);
+    border-color: var(--accent-border);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.paginav .title {
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--secondary);
+}
+
+.paginav a:hover .title {
+    color: var(--accent);
+}
+
+.paginav span:not(.title) {
+    font-size: 15px;
+    font-weight: 550;
+    color: var(--primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. 归档页
+   -------------------------------------------------------------------------- */
+
+.page-header {
+    margin: calc(var(--gap) * 1.6) auto var(--content-gap);
+}
+
+.page-header h1 {
+    font-size: clamp(26px, 4.4vw, 36px);
+    font-weight: 750;
+    letter-spacing: -0.025em;
+    color: var(--primary);
+}
+
+.page-header h1 a {
+    color: var(--secondary);
+}
+
+.page-header h1 a:hover {
+    color: var(--accent);
+}
+
+.archive-year {
+    margin-top: 44px;
+}
+
+.archive-year:not(:last-of-type) {
+    border-bottom: 0;
+}
+
+.archive-year-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--secondary);
+    text-transform: uppercase;
+}
+
+.archive-header-link {
+    color: inherit;
+}
+
+.archive-header-link:hover {
+    color: var(--accent);
+}
+
+.archive-count {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 3px 7px;
+    border-radius: 999px;
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.archive-month {
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 0;
+}
+
+.archive-month:not(:last-of-type) {
+    border-bottom: 1px solid var(--border);
+}
+
+.archive-month-header {
+    width: 120px;
+    flex: 0 0 120px;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.archive-entry {
+    position: relative;
+    margin: 8px 0;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    transition: background-color 0.16s ease;
+}
+
+.archive-entry:hover {
+    background: var(--entry);
+}
+
+.archive-entry::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.16s ease;
+}
+
+.archive-entry:hover::before {
+    opacity: 1;
+}
+
+.archive-entry-title {
+    margin: 0 0 4px;
+    font-size: 16.5px;
+    font-weight: 550;
+    line-height: 1.5;
+}
+
+.archive-entry:hover .archive-entry-title {
+    color: var(--accent);
+}
+
+.archive-meta {
+    font-size: 13px;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   10. 标签页 / 分页 / 页脚
+   -------------------------------------------------------------------------- */
+
+.terms-tags {
+    gap: 10px;
+}
+
+.terms-tags a {
+    padding: 8px 16px;
+    font-size: 15px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--entry);
+    color: var(--primary);
+    transition: color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.terms-tags a:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+    transform: translateY(-2px);
+    background: var(--entry);
+}
+
+.terms-tags .count,
+.terms-tags sup {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.pagination a {
+    color: var(--primary);
+    background: var(--entry);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 36px;
+    font-weight: 550;
+    transition: color 0.16s ease, border-color 0.16s ease;
+}
+
+.pagination a:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+    background: var(--entry);
+}
+
+.footer {
+    padding-top: 32px;
+    padding-bottom: 40px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--secondary);
+}
+
+.footer a {
+    color: var(--secondary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+}
+
+.footer a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent-border);
+}
+
+.top-link {
+    color: var(--secondary);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-filter);
+    backdrop-filter: var(--glass-filter);
+    border: 1px solid var(--glass-line);
+    box-shadow: var(--glass-hi), var(--shadow-md);
+}
+
+.top-link:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+}
+
+/* --------------------------------------------------------------------------
+   11. 404
+   -------------------------------------------------------------------------- */
+
+.not-found {
+    position: static;
+    height: auto;
+    min-height: 46vh;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+.not-found-code {
+    font-size: clamp(96px, 20vw, 150px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--primary);
+}
+
+.not-found-text {
+    margin: 0;
+    font-size: 16px;
+    color: var(--secondary);
+}
+
+.not-found-link {
+    margin-top: 6px;
+    padding: 9px 20px;
+    font-size: 15px;
+    font-weight: 550;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.not-found-link:hover {
+    color: #ffffff;
+    background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   12. 代码块滚动条
+   -------------------------------------------------------------------------- */
+
+.md-content pre code::-webkit-scrollbar {
+    height: 8px;
+}
+
+.md-content pre code::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.md-content pre code::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+}
+
+.md-content pre code::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+/* --------------------------------------------------------------------------
+   13. 移动端微调
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 768px) {
+    .home-info {
+        margin: calc(var(--gap) * 1.2) 0 calc(var(--gap) * 2);
+    }
+
+    .post-entry {
+        padding: 18px;
+    }
+
+    .md-content :is(h1, h2) {
+        padding-left: 11px;
+        border-left-width: 3px;
+    }
+
+    .archive-month-header {
+        width: auto;
+        flex: 0 0 auto;
+        margin: 14px 0 4px;
+        font-size: 17px;
+    }
+
+    .archive-entry {
+        padding: 8px 10px;
+    }
+
+    .paginav {
+        flex-direction: column;
+    }
+
+    .paginav a {
+        width: 100%;
+        text-align: left;
+    }
+
+    .paginav .next {
+        text-align: left;
+        margin-inline-start: 0;
+    }
+}
+
+/* 尊重「减少动态效果」的系统设置 */
+@media (prefers-reduced-motion: reduce) {
+    .post-entry:hover,
+    .post-entry:focus-within,
+    .paginav a:hover,
+    .terms-tags a:hover {
+        transform: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   14. 玻璃的降级路径
+   -------------------------------------------------------------------------- */
+
+/* 浏览器不支持 backdrop-filter 时回落到实心。
+   否则半透明底 + 不模糊 = 正文从导航栏里透出来，比丑更难读。 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .header {
+        background: var(--theme);
+    }
+
+    body.list .header {
+        background: var(--page-bg);
+    }
+
+    .top-link,
+    details.toc,
+    .copy-code {
+        background: var(--entry);
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+/* 系统开了「降低透明度」时退回实心，并收敛色雾。
+   Apple 自己也是这么做的，属于无障碍而不是审美问题。 */
+@media (prefers-reduced-transparency: reduce) {
+    .header {
+        background: var(--theme);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: none;
+    }
+
+    body.list .header {
+        background: var(--page-bg);
+    }
+
+    .top-link,
+    details.toc,
+    .copy-code {
+        background: var(--entry);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    body::before {
+        opacity: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   15. 目录移到右侧栏（宽屏）
+   --------------------------------------------------------------------------
+   内联目录夹在标题和正文之间，读长文时它横插一刀：想往下读得先滚过它，
+   而且它跟着正文一起滚走，读到一半想跳章节还得滚回顶部。
+   侧栏解决的是「随时可见 + 不占正文」。
+
+   实现上用 position: fixed 放进正文右侧的空白栏，而不是给 .main 加宽 ——
+   .main 一加宽正文就会跟着偏移，而 fixed 能让正文位置和列表页保持完全一致。
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 1280px) {
+    details.toc {
+        position: fixed;
+        top: calc(var(--header-height) + 28px);
+        /* 正文宽 740 → 半宽 370，再留 30px 间距 */
+        left: calc(50% + 400px);
+        width: 210px;
+        max-height: calc(100vh - var(--header-height) - 56px);
+        margin: 0;
+        padding: 2px 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: var(--tertiary) transparent;
+        z-index: 10;
+    }
+
+    details.toc summary {
+        padding: 8px 14px;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        color: var(--secondary);
+    }
+
+    details.toc .inner {
+        margin: 0 14px;
+        padding: 6px 0 12px;
+    }
+
+    details.toc nav > ul > li > ul {
+        margin-top: 8px;
+    }
+
+    details.toc nav > ul > li > ul > li > ul {
+        padding-inline-start: 11px;
+        margin: 2px 0;
+    }
+
+    details.toc li {
+        margin: 1px 0;
+    }
+
+    details.toc a {
+        padding: 3px 0;
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    /* 悬停时左侧浮出一道强调色，帮助定位正在看的条目 */
+    details.toc li > a {
+        position: relative;
+        padding-inline-start: 9px;
+    }
+
+    details.toc li > a::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2px;
+        height: 0;
+        border-radius: 2px;
+        background: var(--accent);
+        transition: height 0.15s ease;
+    }
+
+    details.toc li > a:hover::before {
+        height: 62%;
+    }
+}
+
+/* 侧栏目录的滚动条（WebKit） */
+@media (min-width: 1280px) {
+    details.toc::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    details.toc::-webkit-scrollbar-thumb {
+        background: var(--tertiary);
+        border-radius: 999px;
+    }
+
+    details.toc::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}

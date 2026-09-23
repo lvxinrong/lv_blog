@@ -1,0 +1,16 @@
+# Hugo 构建产物
+/public/
+/resources/
+.hugo_build.lock
+
+# 截图/调试用的临时 Chrome profile
+.cprof-*/
+.chrome-prof/
+
+# 设计对比页（临时，定稿后可删）
+/_preview/
+
+# macOS
+.DS_Store
+public/
+.DS_Store

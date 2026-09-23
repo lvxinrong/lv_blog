@@ -1,0 +1,102 @@
+baseURL: https://lvxinrong.com/
+title: 吕炘嵘的博客
+theme: PaperMod
+
+# 站点语言。原来写的 `locale: zh-CN` 不是 Hugo 的配置键，等于没生效，
+# 所以中文站点渲染出了 "September 23, 2026" / "1 min" 这类英文。
+defaultContentLanguage: zh-CN
+
+# 让 Hugo 按「字」而不是按空格统计中文。
+# 不开这个，整篇长文会被算成 1 个「词」，阅读时长永远是 1 分钟。
+hasCJKLanguage: true
+
+enableRobotsTXT: true
+enableEmoji: true
+summaryLength: 80
+
+pagination:
+  pagerSize: 10
+
+languages:
+  zh-CN:
+    # Hugo 0.158 起 languageName/languageCode 改名为 label/locale
+    label: 中文
+    locale: zh-CN
+    weight: 1
+    title: 吕炘嵘的博客
+    params:
+      description: 一个十四年开发者的技术、反思与记录
+      homeInfoParams:
+        Title: 写代码，也写自己
+        Content: 一个十四年开发者的技术、反思与记录
+
+params:
+  env: production
+  # 默认浅色。想跟随系统改回 auto，想固定深色改成 dark。
+  defaultTheme: light
+  author: 吕炘嵘
+  description: 一个十四年开发者的技术、反思与记录
+
+  # 日期格式（Go 的时间布局写法）
+  DateFormat: "2006年1月2日"
+
+  mainSections:
+    - llm
+    - ai
+    - craft
+
+  # 阅读体验相关
+  ShowReadingTime: true
+  ShowWordCount: true
+  ShowCodeCopyButtons: true
+  ShowToc: true
+  TocOpen: false
+  UseHugoToc: true
+  ShowBreadCrumbs: true
+  ShowPostNavLinks: true
+  ShowRssButtonInSectionTermList: true
+  ShowShareButtons: false
+
+  assets:
+    # 现代浏览器优先用 SVG，老浏览器回落到下面默认的 png/ico
+    favicon: favicon.svg
+    # 浏览器地址栏配色，跟随默认的浅色底
+    theme_color: "#ffffff"
+    msapplication_TileColor: "#3b5bdb"
+
+  socialIcons:
+    - name: rss
+      url: /index.xml
+
+markup:
+  # 主题要求 noClasses 必须为 false，否则代码高亮样式不生效
+  highlight:
+    noClasses: false
+    # 行号默认关闭，块太短时行号是噪音；
+    # 需要时在代码围栏上写 ```go {linenos=true} 单独开启。
+    lineNos: false
+    lineNoStart: 1
+    tabWidth: 4
+  # 正文里用 `#` 当章节标题，目录要从一级开始抓，否则目录是空的
+  tableOfContents:
+    startLevel: 1
+    endLevel: 3
+    ordered: false
+
+menu:
+  main:
+    - name: 手搓LLM
+      url: /llm/
+      weight: 1
+    - name: AI随想
+      url: /ai/
+      weight: 2
+    - name: 工程手记
+      url: /craft/
+      weight: 3
+    - name: 归档
+      url: /archives/
+      weight: 4
+    - name: 关于
+      url: /about/
+      weight: 5

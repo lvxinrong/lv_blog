@@ -1,0 +1,11 @@
+{{- define "main" }}
+
+{{/* 覆盖主题的 404：主题只渲染一个孤零零的「404」，没有说明和出口。 */}}
+
+<div class="not-found">
+  <div class="not-found-code">404</div>
+  <p class="not-found-text">这个页面不存在，或者已经被移走了。</p>
+  <a class="not-found-link" href="{{ "" | absLangURL }}">回到首页</a>
+</div>
+
+{{- end }}{{/* end main */ -}}
