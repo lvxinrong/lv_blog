@@ -1,4 +1,5 @@
-{{- /* 覆盖主题的 opengraph.html：唯一改动是 site.Language.LanguageCode → site.Language.Locale（Hugo 0.158 起旧名已弃用，会刷 WARN）。其余与主题一致。 */ -}}
+{{- /* 覆盖主题的 opengraph.html：唯一改动是 og:locale 的取值来源。
+       理由同 rss.xml —— 改用 params.languageTag，避免依赖 Hugo 版本。 */ -}}
 <meta property="og:url" content="{{ .Permalink }}">
 
 {{- with or site.Title site.Params.title | plainify }}
@@ -13,7 +14,7 @@
   <meta property="og:description" content="{{ trim . "\n\r\t " }}">
 {{- end }}
 
-{{- with or .Params.locale site.Language.Locale }}
+{{- with or .Params.locale site.Params.languageTag site.Language.Lang }}
   <meta property="og:locale" content="{{ replace . `-` `_` }}">
 {{- end }}
 

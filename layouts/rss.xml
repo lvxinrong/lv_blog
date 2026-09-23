@@ -1,4 +1,7 @@
-{{- /* 覆盖主题的 rss.xml：唯一改动是 site.Language.LanguageCode → site.Language.Locale（Hugo 0.158 起旧名已弃用，会刷 WARN）。其余与主题一致。 */ -}}
+{{- /* 覆盖主题的 rss.xml：唯一改动是 <language> 的取值。
+       主题用 site.Language.LanguageCode，0.158 起弃用；改用 site.Language.Locale
+       又会在 0.147 上取不到。故改用配置项 params.languageTag —— 任何版本都可用。
+       其余与主题一致。 */ -}}
 {{- $authorEmail := "" }}
 {{- with site.Params.author }}
   {{- if reflect.IsMap . }}
@@ -46,7 +49,7 @@
     </image>
     {{- end }}
     <generator>Hugo</generator>
-    <language>{{ site.Language.Locale }}</language>{{ with $authorEmail }}
+    <language>{{ site.Params.languageTag | default site.Language.Lang }}</language>{{ with $authorEmail }}
     <managingEditor>{{.}}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>{{ end }}{{ with $authorEmail }}
     <webMaster>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</webMaster>{{ end }}{{ with site.Copyright }}
     <copyright>{{ . | markdownify | plainify | strings.TrimPrefix "© " }}</copyright>{{ end }}{{ if not .Date.IsZero }}

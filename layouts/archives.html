@@ -48,7 +48,7 @@
     <sup class="archive-count">{{ len .Pages }}</sup>
   </h2>
   {{- range .Pages.GroupByDate "2006-01" }}
-  {{- $month := strings.TrimLeft "0" (index (split .Key "-") 1) }}
+  {{- $month := replaceRE "^0" "" (index (split .Key "-") 1) }}
   <div class="archive-month">
     <h3 class="archive-month-header" id="{{ $year }}-{{ $month }}">
       <a class="archive-header-link" href="#{{ $year }}-{{ $month }}">

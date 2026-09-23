@@ -1,5 +1,8 @@
-{{- /* 覆盖主题的 baseof.html：唯一改动是把 .Language.LanguageDirection
-       换成 .Language.Direction（Hugo 0.158 起旧名已弃用，会刷 WARN）。
+{{- /* 覆盖主题的 baseof.html：唯一改动是 dir 属性。
+       主题用 .Language.LanguageDirection（0.158 起弃用），
+       换成 .Language.Direction 又会在 0.147 上直接报错（字段不存在）。
+       本站是单语言中文、永远是 LTR，所以直接写死 "auto" —— 与主题原本
+       `| default "auto"` 的最终输出完全一致，且不依赖任何版本特有 API。
        其余与主题完全一致，方便主题升级时 diff。 */ -}}
 {{- if lt hugo.Version "0.146.0" }}
 {{- errorf "=> hugo v0.146.0 or greater is required for hugo-PaperMod to build " }}
@@ -8,11 +11,11 @@
 <!DOCTYPE html>
 {{- $theme := site.Params.defaultTheme | default "auto" }}
 {{- if eq $theme "dark" }}
-<html lang="{{ site.Language }}" dir="{{ .Language.Direction | default "auto" }}" data-theme="dark">
+<html lang="{{ site.Language }}" dir="auto" data-theme="dark">
 {{- else if eq $theme "light" }}
-<html lang="{{ site.Language }}" dir="{{ .Language.Direction | default "auto" }}" data-theme="light">
+<html lang="{{ site.Language }}" dir="auto" data-theme="light">
 {{- else }}
-<html lang="{{ site.Language }}" dir="{{ .Language.Direction | default "auto" }}" data-theme="auto">
+<html lang="{{ site.Language }}" dir="auto" data-theme="auto">
 {{- end }}
 
 <head>

@@ -43,6 +43,13 @@ params:
   # 日期格式（Go 的时间布局写法）
   DateFormat: "2006年1月2日"
 
+  # RSS 的 <language> 与 og:locale 用的语言标签。
+  # 为什么不直接用模板里的 .Language.LanguageCode / .Language.Locale：
+  # 这两个名字在 Hugo 0.158 前后互换了（旧名弃用、新名引入），
+  # 用任一个都会让构建结果依赖 Hugo 版本 —— Cloudflare 上是 0.147.7，
+  # 本地是 0.166.0，两边必须行为一致，所以取值放到配置里。
+  languageTag: "zh-CN"
+
   mainSections:
     - llm
     - ai

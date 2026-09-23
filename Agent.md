@@ -150,13 +150,45 @@ Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为
 
 | 文件 | 改了什么 | 为什么 |
 |---|---|---|
-| `baseof.html` | `.Language.LanguageDirection` → `.Language.Direction` | Hugo 0.158 起旧名弃用，会刷 WARN |
-| `rss.xml` | `site.Language.LanguageCode` → `site.Language.Locale` | 同上 |
-| `_partials/templates/opengraph.html` | 同上 | 同上 |
+| `baseof.html` | `dir` 由 `.Language.*Direction` 改成字面量 `"auto"` | 见下方「版本地雷」 |
+| `rss.xml` | `<language>` 改用 `params.languageTag` | 同上 |
+| `_partials/templates/opengraph.html` | `og:locale` 改用 `params.languageTag` | 同上 |
 
-这三个是为了**消掉构建警告**。当时考虑过直接改主题，但主题是 submodule —— 改脏了会被 `git submodule update` 静默还原，warning 又会回来。
+这三个存在的唯一原因是**修掉 Hugo 的弃用警告**，同时**不能引入版本特有的 API**。当时也考虑过直接改主题，但主题是 submodule —— 改脏了会被 `git submodule update` 静默还原。
 
 `opengraph.html`（86 行）风险最高：逻辑多、主题更新时改动概率也大。**升级主题后如果 OG 标签行为异常，优先查这个文件。**
+
+### 💣 版本地雷：本地 Hugo 与 Cloudflare 不同版本
+
+**这个坑真炸过一次，导致线上构建失败。**
+
+- 本地：`v0.166.0`
+- Cloudflare：`v0.147.7`
+
+`.Language.LanguageDirection`（旧名）在 0.158 起弃用，改用它建议的 `.Language.Direction`（新名）在 0.166 正常，**但在 0.147.7 上直接致命报错**：
+
+```
+layouts/baseof.html:13:50: at <.Language.Direction>: can't evaluate field Direction in type *langs.Language
+```
+
+而且因为报错发生在 `baseof.html` 的 `<html>` 行（早于 `<head>`），`rss.xml` / `opengraph.html` 里同类写法**根本没机会执行**，看日志会以为只有一处有问题 —— 实际上三个文件都得改。
+
+**规则：这几个模板里禁止出现任何跨版本改过名的 API**（`LanguageCode` / `Locale` / `Direction` / `LanguageDirection`）。需要语言标签就用 `params.languageTag`，需要方向就写字面量。
+
+### 改模板后必须用 0.147.7 复测
+
+```bash
+cd /tmp && mkdir -p hugo147 && cd hugo147
+curl -sSL -o h.tgz "https://github.com/gohugoio/hugo/releases/download/v0.147.7/hugo_extended_0.147.7_darwin-universal.tar.gz"
+tar xzf h.tgz
+
+cd /path/to/site
+/tmp/hugo147/hugo --destination /tmp/out147 2>&1 | grep -iE "error|can't evaluate"
+```
+
+**零 ERROR 才算过。** 光在本地 0.166 上通过是不够的 —— 这正是上次翻车的原因。
+
+> 更彻底的解法是在 Cloudflare 设 `HUGO_VERSION` 固定线上版本。但无论是否固定，上面的复测都值得做：Cloudflare 的默认版本会随其镜像更新而漂移。
 
 ### 5.2 定制型 —— 升级基本不影响
 
