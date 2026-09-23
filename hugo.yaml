@@ -40,6 +40,11 @@ params:
   author: 吕炘嵘
   description: 好奇，毅力，自我思考
 
+  # 只覆盖顶栏那行字，不影响 <title> / RSS / 页脚版权
+  # （那些仍用 site.Title = 吕炘嵘的博客）。
+  label:
+    text: 写代码，也写自己
+
   # 日期格式（Go 的时间布局写法）
   DateFormat: "2006年1月2日"
 
