@@ -100,6 +100,7 @@ themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优
 - **新增系列**：建 `content/<名字>/`，里面放 `_index.md`（带 `title`、`description`），再把名字加进 `hugo.yaml` 的 `params.mainSections`。首页卡片、系列配色、归档页都跟着这个列表走。
 - **不建 `_index.md` 会出事**：Hugo 会拿目录名自动衍生成英文复数标题（`llm` → "Llms"）。这个坑踩过一次。
 - 文章用 `#` 或 `##` 作章节标题（`markup.tableOfContents.startLevel: 1` 才能抓到）。
+- **正文散文里的引号一律直接写 `“ ”` 和 `‘ ’`，不要写 `"` 和 `'`。** 原因见下方「中文写作陷阱：直引号会被 typographer 猜错方向」。写完跑一次 `python3 scripts/check-content.py`。
 
 ### RSS 输出全文（已配置）
 
@@ -369,6 +370,30 @@ for f in sorted(glob.glob('content/**/*.md', recursive=True)):
                 print(f"{f}:{ln}  {m.group(0)[:50]}")
 EOF
 ```
+
+---
+
+### ⚠️ 中文写作陷阱：直引号会被 typographer 猜错方向
+
+上一条是 CommonMark 的规则，这一条是 **Goldmark typographer** 的规则。同一个 `"` 转不转、转成哪个方向，全看它左右碰巧是什么字符：
+
+```text
+❌ 答案停留在"知道名词"的水平
+             ↑ 两侧都是汉字 → 既非左翼也非右翼 → 原样输出 &quot;
+
+❌ 我会先争取："算法可以稍后聊吗？"如果被拒绝……
+                           ↑ 前是全角「？」→ 被判成左翼 → 收尾引号变开引号
+✅ 答案停留在“知道名词”的水平
+✅ 我会先争取：“算法可以稍后聊吗？”如果被拒绝……
+```
+
+**规则：正文散文里的引号一律直接写 `“ ”` 和 `‘ ’`，不要写 `"` 和 `'`。** 方向写死在源文件里，渲染结果就与 typographer 的猜测无关。
+
+**这不是模板或配置的问题**，是 Goldmark 用拉丁文 flanking 规则处理无空格中文的必然结果。在 `hugo.yaml` 里关掉 typographer 能绕开，但会一并失去其它自动排版，**已决定不采用**。
+
+**手写不会疼**：中文输入法在中文状态下打引号本来就出 `“ ”`，且成对自动配对。真正会带进直引号的是**粘贴的文字和 AI 生成的文字** —— 而这个站点主要由 Agent 维护，所以这条规矩主要是写给 Agent 的。
+
+自查：`scripts/check-content.py` 的 `check_quotes` 会列出所有「直引号贴近中文」的位置，修完返回 0。front matter（TOML 语法引号）、代码围栏、行内代码不检查，`O'Reilly` 这类拉丁词内撇号也不会误报。
 
 ---
 
