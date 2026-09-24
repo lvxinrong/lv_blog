@@ -15,6 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CLOSERS = "。，、；：？！）」』》〉…—·"
+# 汉字 + 中文标点：直引号只要碰到这些字符，typographer 的方向判断就不可信
+CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\u3000-\u303f\uff00-\uffef]")
 
 
 def _is_punct(ch):
@@ -38,6 +40,45 @@ def check_bold(lines):
             if _is_punct(inner[-1]) and nxt and not nxt.isspace() and not _is_punct(nxt):
                 out.append((ln, f"加粗失效：{m.group(0)[:44]}",
                             "把结尾的标点挪到 ** 外面：**……文字**。后面"))
+    return out
+
+
+def check_quotes(lines):
+    """直引号贴近中文时，typographer 会猜错方向。
+
+    Goldmark 按拉丁文 flanking 规则判断引号开合，中文没有空格，于是同一份源文件
+    里同一个 `"` 转不转、转成哪个方向全看它左右碰巧是什么字符：
+      `停留在"知道名词"的水平` —— 两侧都是汉字，既非左翼也非右翼 → 原样输出 &quot;
+      `经验？"如果遭到拒绝`   —— 引号前是全角标点 → 被判成左翼，收尾引号变开引号
+    散文里一律把方向写死成 “ ” ‘ ’。front matter（TOML 语法引号）、代码围栏、
+    行内代码不检查；`O'Reilly` 这类拉丁词内撇号两侧是字母，不会误报。
+    """
+    out = []
+    start = 0
+    if lines and lines[0].strip() == "+++":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "+++":
+                start = i + 1
+                break
+    in_fence = False
+    for ln, line in enumerate(lines, 1):
+        if ln <= start:
+            continue
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        text = re.sub(r"`[^`\n]*`", "", line)
+        for m in re.finditer(r"[\"']", text):
+            i = m.start()
+            before = text[i - 1] if i else ""
+            after = text[i + 1] if i + 1 < len(text) else ""
+            if CJK_RE.match(before) or CJK_RE.match(after):
+                snippet = text[max(0, i - 10):i + 11].strip()
+                out.append((ln, f"直引号贴近中文：…{snippet}…",
+                            '改成 “ ” 或 ‘ ’：方向写死，别让 typographer 猜'))
+                break          # 一行报一次，避免刷屏
     return out
 
 
@@ -77,7 +118,7 @@ def main():
     total = 0
     for f in files:
         lines = f.read_text(encoding="utf-8").split("\n")
-        issues = (check_bold(lines) + check_code_fence(lines)
+        issues = (check_bold(lines) + check_quotes(lines) + check_code_fence(lines)
                   + check_front_matter(f, lines))
         if issues:
             total += len(issues)
