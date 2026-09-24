@@ -1184,6 +1184,30 @@ details.toc a:hover {
    -------------------------------------------------------------------------- */
 
 @media screen and (max-width: 768px) {
+    /* 顶栏：默认 60px/行，logo 和菜单各占一行 → 一共 135px，占掉手机 16% 屏幕。
+       压到 48px/行后约 100px。（--header-height 同时被 .main 的 min-height 使用，
+       改这里会一起同步，不会算错。） */
+    :root {
+        --header-height: 48px;
+    }
+
+    /* 菜单原本要横向滚动：滚动条自己占掉 15px 高度，而且最后一项「关于」
+       在 375px 下会超出屏幕（实测右边缘 383px）。这里两件事一起解决。 */
+    .menu {
+        scrollbar-width: none;
+        column-gap: 0;
+    }
+
+    .menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 收紧横向内边距（纵向不动，保住 48px 的触控高度），
+       让 5 个菜单项在 360–430px 的主流机型上都放得下、且不再出屏 */
+    .menu a > span {
+        padding: 9px 9px;
+    }
+
     .home-info {
         margin: calc(var(--gap) * 1.2) 0 calc(var(--gap) * 2);
     }
@@ -1220,6 +1244,17 @@ details.toc a:hover {
     .paginav .next {
         text-align: left;
         margin-inline-start: 0;
+    }
+}
+
+/* 更窄的机器（iPhone SE 等 ≤380px）：菜单再收一档，避免又变成横向滚动 */
+@media screen and (max-width: 380px) {
+    .menu a {
+        font-size: 13.5px;
+    }
+
+    .menu a > span {
+        padding: 9px 8px;
     }
 }
 

@@ -101,6 +101,41 @@ themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优
 - **不建 `_index.md` 会出事**：Hugo 会拿目录名自动衍生成英文复数标题（`llm` → "Llms"）。这个坑踩过一次。
 - 文章用 `#` 或 `##` 作章节标题（`markup.tableOfContents.startLevel: 1` 才能抓到）。
 
+### 每篇都要写英文 `slug`（否则链接长到没法分享）
+
+中文标题直接做 URL 会变成百分号编码。实测本站 8 篇文章：**平均 127 字符，最长 169**，分享到手机上会折行、被截断。
+
+```text
+https://blog.lvxinrong.com/craft/%E6%8A%8A%E7%9C%8B%E6%87%82%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F...  (169 字符)
+```
+
+**规则：新文章一律加英文 `slug`（2–4 个单词，小写连字符，能看出内容）。**
+
+```toml
+title = "来自终端另一侧的回信"
+slug = "reply-from-terminal"
+```
+
+→ `https://blog.lvxinrong.com/ai/reply-from-terminal/`（50 字符）
+
+`slug` 只替换 URL 的**最后一段**，分区前缀 `/ai/` `/llm/` `/craft/` 不变。
+
+#### 改已有文章的 URL 时，必须同时加 `aliases`
+
+否则**已经分享出去的链接会 404**。
+
+```toml
+slug = "reply-from-terminal"
+# 改动前的旧路径，原样写进来
+aliases = ["/ai/来自终端另一侧的回信/"]
+```
+
+Hugo 会在旧路径生成一个带 `<meta http-equiv="refresh">` 和 `canonical` 的跳转页，实测有效。
+
+**取旧路径不要靠推算** —— 直接看 `public/<section>/` 下的真实目录名（Hugo 会去掉「」『』之类的标点，自己推容易错）。
+
+2026-09 已完成：8 篇全部加了 slug + aliases，平均 **127 → 49 字符（缩短 62%）**。
+
 ### ⚠️ 文章 `date` 写在未来 → 会静默消失
 
 Hugo 默认 **不构建 `date` 在未来的页面**（`buildFuture: false`）。症状很迷惑：**文章不报错、不提示，就是哪儿都不出现** —— 列表页、归档、RSS 全都没有。

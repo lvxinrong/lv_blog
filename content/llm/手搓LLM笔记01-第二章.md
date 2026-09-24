@@ -1,5 +1,8 @@
 +++
 title = "手搓 LLM 笔记 01：第二章，把文本变成数字"
+# 短链接用的 slug；aliases 指向改动前的中文路径，保证已分享的链接不失效
+slug = "llm-01-ch02"
+aliases = ["/llm/手搓llm笔记01-第二章/"]
 date = 2026-09-22T23:30:00+08:00
 draft = false
 categories = ["手搓LLM"]

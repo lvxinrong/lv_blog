@@ -1,5 +1,8 @@
 +++
 title = "AI时代下，程序员应该何去何从？"
+# 短链接用的 slug；aliases 指向改动前的中文路径，保证已分享的链接不失效
+slug = "programmers-in-ai-era"
+aliases = ["/ai/ai时代下程序员何去何从/"]
 date = 2026-06-25T13:34:00+08:00
 draft = false
 categories = ["AI随想"]
