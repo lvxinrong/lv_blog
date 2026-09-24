@@ -208,8 +208,13 @@ python3 scripts/mkcover.py --only <slug>       # 只处理一篇
 
 #### 三个必须知道的设计决定
 
-**1. 图放 `assets/covers/`，不是 `static/`。**
-主题的 `cover.html` 用 `resources.ByType "image"` 去 **`assets/`** 找图，找到才会生成响应式尺寸。实测一张 73KB 的原图会生成 360/480/720/1080 四档，**手机只下 5–8KB，省 90%**。放 `static/` 就只能原图直出。
+**1. 图必须放 `static/covers/` —— 放 `assets/` 会 404（这个 bug 真炸过）。**
+
+看起来 `assets/` 更"正确"（Hugo 能处理图片），但**封面现在是 OG 专用、页面内不显示**，而主题的 `cover.html` 在 `hiddenInList`/`hiddenInSingle` 都为 true 时**根本不执行** —— 资源管线也就从没处理过这些图，结果 `public/covers/` 一个文件都没有，而 `og:image` 指向的 URL 直接 404。
+
+`static/` 下的文件永远原样发布，所以这里才是对的位置（响应式处理此时本来也没意义）。
+
+> 历史教训：一开始封面是显示在列表页的，那时放 `assets/` 是对的（能生成 360/480/720/1080 四档、手机只下 5–8KB）。**改成 OG 专用之后没有同步这个决定，线上 og:image 坏了一段时间才发现。** 以后改「封面是否显示」时，记得一起检查 `assets/` ↔ `static/` 该放哪边。
 
 **2. 为什么是本地脚本而不是 Hugo 模板。**
 要在图里渲染中文，Hugo 的 `images.Text` 需要 CJK 字体文件；Cloudflare 的 Linux 构建环境没有中文字体，把字体提交进仓库又是 10MB+。所以改成「本地生成、提交产物」——每张 30–70KB，跑一次几秒。**代价是：新文章必须在本地跑一次脚本，构建时不会自动生成。**

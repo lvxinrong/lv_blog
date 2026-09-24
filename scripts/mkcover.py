@@ -12,8 +12,11 @@
     python3 scripts/mkcover.py --write-frontmatter  # 同时写 front matter 的 [cover]
     python3 scripts/mkcover.py --only llm-01-ch02   # 只处理某一篇
 
-放在 assets/covers/ 而不是 static/ —— 主题的 cover.html 会用
-resources.ByType "image" 去 assets/ 找图，找到后自动生成响应式尺寸。
+放在 static/covers/ 而不是 assets/ —— 封面现在只作 og:image、页面内不显示，
+所以不需要 Hugo 的响应式处理，放 static/ 才能保证「一定被发布」。
+（放 assets/ 会踩这个坑：主题的 cover 组件在 hiddenInList/hiddenInSingle 都为 true 时
+根本不执行，资源管线也就从没处理过这些图，结果是 public/covers/ 一个文件都没有，
+而 og:image 指向的 URL 直接 404。这个 bug 真炸过一次。）
 """
 import argparse
 import os
@@ -24,7 +27,7 @@ import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-COVER_DIR = ROOT / "assets" / "covers"
+COVER_DIR = ROOT / "static" / "covers"
 
 # 系列 -> (显示名, 主色, 辅色)。色值与 assets/css/extended/custom.css 的 --series-* 一致。
 SERIES = {
