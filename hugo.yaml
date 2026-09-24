@@ -26,8 +26,11 @@ languages:
     title: 吕炘嵘的博客
     params:
       description: 好奇，毅力，自我思考
+      # 首页 Hero。
+      # 分工：顶栏（params.label.text）= 态度，每页常驻；Hero = 姓名，仅首页。
+      # 两处不要放同一句话 —— 首页会把它们上下紧挨着显示两遍。
       homeInfoParams:
-        Title: 写代码，也写自己
+        Title: 吕炘嵘
         Content: 好奇，毅力，自我思考
 
 params:

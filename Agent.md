@@ -11,7 +11,7 @@
 | 项 | 值 |
 |---|---|
 | 类型 | Hugo 静态博客 |
-| 主题 | PaperMod（git submodule，commit `d376885`） |
+| 主题 | PaperMod **已内置在仓库里**（不再是 submodule），上游 commit `d376885` |
 | Hugo | `v0.166.0+extended+withdeploy`（Homebrew / macOS arm64） |
 | 站点目录 | 仓库根目录（`hugo.yaml` 在根） |
 | 线上域名 | `blog.lvxinrong.com`（`hugo.yaml` 的 `baseURL`）—— 尚未部署，参见第 11 节 |
@@ -92,7 +92,7 @@ assets/css/extended/
 layouts/                   9 个主题覆盖文件（见下）
 static/                    favicon 全套
 public/                    构建产物，gitignore
-themes/PaperMod/           ⚠️ 不要改
+themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优先写在站点 layouts/）
 ```
 
 ### 内容约定
@@ -180,7 +180,7 @@ Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为
 | `rss.xml` | `<language>` 改用 `params.languageTag` | 同上 |
 | `_partials/templates/opengraph.html` | `og:locale` 改用 `params.languageTag` | 同上 |
 
-这三个存在的唯一原因是**修掉 Hugo 的弃用警告**，同时**不能引入版本特有的 API**。当时也考虑过直接改主题，但主题是 submodule —— 改脏了会被 `git submodule update` 静默还原。
+这三个存在的唯一原因是**修掉 Hugo 的弃用警告**，同时**不能引入版本特有的 API**。当时也考虑过直接改主题，但那时主题还是 submodule —— 改脏了会被 `git submodule update` 静默还原。
 
 `opengraph.html`（86 行）风险最高：逻辑多、主题更新时改动概率也大。**升级主题后如果 OG 标签行为异常，优先查这个文件。**
 
@@ -227,6 +227,40 @@ cd /path/to/site
 | `_partials/social_icons.html` | 主题只渲染裸图标，认不出是 GitHub。加了文字标签，支持 `variant: hero/footer` 两种尺寸 |
 | `_partials/extend_footer.html` | 三件事：吸顶导航滚动分隔线、≥1280px 自动展开目录、按 URL 给分区页打系列标记 |
 
+### 5.3 主题已内置（2026-09 起不再是 submodule）
+
+**背景**：Cloudflare Pages 构建时反复拉取 submodule 失败：
+
+```
+Cloning into '/opt/buildhome/clone/themes/PaperMod'...
+fatal: could not read Username for 'https://github.com': No such device or address
+fatal: expected flush after ref listing
+```
+
+PaperMod 是**公开仓库**，不该需要认证。这是 GitHub 对**未认证请求限流/抖动**的表现 —— Cloudflare 构建机是共享出口 IP，容易撞上。本机同一时刻匿名克隆是成功的，说明不是权限配置问题。
+
+**处理**：把主题 125 个文件直接内置进仓库，删除 `.gitmodules` 和 submodule 记录。构建因此完全不依赖外网拉子模块。
+
+**升级主题的正确做法**：
+
+```bash
+# 1. 取一份上游新版本到临时目录
+cd /tmp && rm -rf pm-new
+git clone --depth 1 https://github.com/adityatelange/hugo-PaperMod.git pm-new
+
+# 2. 先看差异，重点确认布局有没有变
+diff -rq /tmp/pm-new themes/PaperMod | grep -v '^Only in /tmp/pm-new: .git'
+
+# 3. 确认后整体替换（保留 LICENSE）
+rm -rf themes/PaperMod && cp -R /tmp/pm-new themes/PaperMod
+rm -rf themes/PaperMod/.git
+
+# 4. 检查站点覆盖的 9 个 layouts/ 文件是否仍与新版主题兼容
+hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
+```
+
+⚠️ **升级后必须跑第 4 步的两个版本构建**（见「版本地雷」一节）。
+
 ---
 
 ## 6. 配置决策（`hugo.yaml`）
@@ -241,7 +275,18 @@ cd /path/to/site
 | `mainSections` | `llm / ai / craft` | 同时驱动首页系列卡、归档页、系列配色 |
 | `markup.tableOfContents.startLevel` | `1` | 文章用 `#` 当章节标题，从 2 开始抓会得到空目录 |
 | `params.DateFormat` | `2006年1月2日` | Go 时间布局写法 |
+| `params.label.text` | `写代码，也写自己` | **只覆盖顶栏那行字**，不影响 `<title>` / RSS / 页脚（那些用 `site.Title`） |
+| `homeInfoParams.Title` | `吕炘嵘` | 首页 Hero 大标题 |
 | `pagination.pagerSize` | `10` | **首页已不分页**（自定义 `home.html` 只出最新 6 篇），这个值只影响分区列表 |
+
+### 顶栏与 Hero 的分工（别放同一句话）
+
+- **顶栏**（`params.label.text`）出现在**每一页**，是常驻标识 —— 承载「态度 / 标语」
+- **Hero**（`homeInfoParams.Title`）只出现在**首页**，是开场 —— 承载「我是谁」
+
+两者取值来自不同配置项，但**如果写成同一句话，首页会把它们上下紧挨着显示两遍**，看起来像渲染 bug（这个坑真出现过一次，见 `homeInfoParams` 附近的注释）。
+
+`layouts/home.html` 里 Hero 的 `h1` 是**条件渲染**的：`Title` 为空时不输出 `<header>`，否则会留一个空标题，而 CSS 给 `.home-info h1` 加的强调色短线会变成一道孤零零的横杠。
 
 ### 已知配置问题
 
@@ -364,11 +409,11 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 
 ## 10. 约定
 
-- **不要修改 `themes/PaperMod/`**（submodule）。要改行为就在站点 `layouts/` 里覆盖，并写清「覆盖理由 + 改了什么」。
+- **优先用站点 `layouts/` 覆盖主题，而不是直接改 `themes/PaperMod/`。** 主题现在虽然内置在仓库里、可以改，但保持与上游的 diff 干净，升级时才好比对。改动要写清「理由 + 改了什么」。
 - 覆盖主题的文件尽量保持**最小 diff**，方便主题升级时比对。
 - 注释和提交信息用**中文**，说明「为什么」而不是「做了什么」。
 - 改完样式**必须截图验证**，不要只靠读 CSS 判断。
-- 用 `git submodule status` 确认主题没被改脏。
+- 主题已内置，`git submodule status` 现在应当**无输出**；如果又出现了 submodule，说明结构被改回去了。
 
 ---
 

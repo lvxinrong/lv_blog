@@ -9,9 +9,13 @@
 {{- /* ---------- Hero ---------- */}}
 {{- with site.Params.homeInfoParams }}
 <article class="first-entry home-info">
+  {{- /* Title 为空时不渲染 h1 —— 否则会留下空标题，
+         而且 CSS 给 .home-info h1 加的强调色短线会变成一道孤零零的横杠。 */}}
+  {{- with .Title }}
   <header class="entry-header">
-    <h1>{{ .Title | markdownify }}</h1>
+    <h1>{{ . | markdownify }}</h1>
   </header>
+  {{- end }}
   <div class="entry-content md-content">
     {{ $opts := dict "display" "block" }}
     {{ .Content | $.Page.RenderString $opts }}
