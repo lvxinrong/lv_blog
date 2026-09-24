@@ -101,6 +101,44 @@ themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优
 - **不建 `_index.md` 会出事**：Hugo 会拿目录名自动衍生成英文复数标题（`llm` → "Llms"）。这个坑踩过一次。
 - 文章用 `#` 或 `##` 作章节标题（`markup.tableOfContents.startLevel: 1` 才能抓到）。
 
+### RSS 输出全文（已配置）
+
+`params.ShowFullTextinRSS: true` → 订阅者在阅读器里直接读全文，不用点回站内。
+
+**配套的两件事，别漏：**
+
+1. **`layouts/rss.xml` 里会把正文的相对 URL 补成绝对地址。** 原因：RSS 阅读器解析相对路径时是以**阅读器自己的域名**为基准的，正文里的图片和站内链接在订阅者那边全会变成坏图/死链。正则要求 `/` 后不是 `/`，是为了避开 `//example.com` 这类协议相对写法。
+   **改这个文件时不要把这段删掉**，否则以后文章一加图片，订阅者那边就全挂了。
+2. **静态页要排除。** `content/about.md` 的 front matter 里有 `hiddenInRss = true`（主题原生支持这个键）。否则「关于」会作为一个条目混进订阅列表。新建其它非文章页面时记得同样处理。
+
+改完可用这两条自查：
+
+```bash
+grep -c 'content:encoded' public/index.xml     # 应等于文章数
+python3 -c "import xml.dom.minidom as m; m.parse('public/index.xml'); print('XML 合法')"
+```
+
+### 搜索（PaperMod 自带 Fuse，已开启）
+
+三处配套，缺一不可：
+
+1. `hugo.yaml` 的 `outputs.home` 要含 **JSON** → 生成 `/index.json` 作索引
+2. `content/search.md` 带 `layout = "search"`
+3. 入口：**顶栏 logo 旁的放大镜图标**（`layouts/_partials/header.html` 里插入的 `.search-link`）
+
+**为什么搜索不放菜单里**：菜单已有 5 项，手机上刚好放得下；加第 6 项会把最后一项挤出屏幕（实测 390px 下「关于」右缘 385 > 375）。做成顶栏图标则不占菜单宽度。要改这个决定，先跑一次移动端菜单宽度实测。
+
+**Fuse 对中文可用**（实测）：PaperMod 默认 `threshold: 0.4` + `ignoreLocation: true` 恰好合适，中文没有空格也能子串命中。实测「蒸馏 / LLM / 生产排查 / token / 系统扫描」均返回正确首条，不存在的词返回 0 条。
+
+### OG 分享卡片（已配置兜底图）
+
+`static/og-default.jpg`（1200×630，61KB）+ `params.images: [og-default.jpg]`。
+
+主题的查找顺序是：**文章 front matter 的 `images`** → 同名资源里的 `*feature*`/`*cover*`/`*thumbnail*` → **`params.images` 兜底**。
+所以给单篇换图，只要在那篇 front matter 写 `images = ["xxx.jpg"]`。
+
+注意这张图是**站点级**的，每篇分享出来长得一样。要做「每篇一张带标题的卡片」需要 CJK 字体文件（Hugo 的 `images.Text` 依赖字体，而 Cloudflare 的 Linux 构建环境没有中文字体，得把字体提交进仓库，10MB+）。目前没做。
+
 ### 每篇都要写英文 `slug`（否则链接长到没法分享）
 
 中文标题直接做 URL 会变成百分号编码。实测本站 8 篇文章：**平均 127 字符，最长 169**，分享到手机上会折行、被截断。

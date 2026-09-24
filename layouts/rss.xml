@@ -67,7 +67,12 @@
       <guid>{{ .Permalink }}</guid>
       <description>{{ with .Description | html }}{{ . }}{{ else }}{{ .Summary | html }}{{ end -}}</description>
       {{- if and site.Params.ShowFullTextinRSS .Content }}
-      <content:encoded>{{ (printf "<![CDATA[%s]]>" .Content) | safeHTML }}</content:encoded>
+      {{- /* RSS 阅读器会把相对 URL 解析到「阅读器自己的域名」下，
+             所以正文里的图片和站内链接必须补成绝对地址，否则订阅者那边全是坏图/死链。
+             正则里要求 / 后面不是 /，是为了避开 //example.com 这种协议相对写法。 */}}
+      {{- $content := .Content }}
+      {{- $content = replaceRE `(src|href)="/([^/][^"]*)"` (printf `$1="%s$2"` site.BaseURL) $content }}
+      <content:encoded>{{ (printf "<![CDATA[%s]]>" $content) | safeHTML }}</content:encoded>
       {{- end }}
     </item>
     {{- end }}

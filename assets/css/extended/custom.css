@@ -23,7 +23,7 @@
     --main-width: 740px;
     --nav-width: 1040px;
     --gap: 24px;
-    --content-gap: 22px;
+    --content-gap: 26px;
     --radius: 10px;
     --radius-lg: 14px;
     /* 主题默认 60px，但页脚现在多了一行社交按钮，实测高 153px。
@@ -299,6 +299,24 @@ a {
     color: var(--accent);
     font-weight: 600;
     text-decoration: none;
+    background: var(--accent-soft);
+}
+
+/* 顶栏搜索入口（在 logo 右侧，由 layouts/_partials/header.html 插入）。
+   做成图标而不是菜单项：菜单 5 项在手机上刚好放得下，第 6 项会挤出屏幕。 */
+.search-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    color: var(--secondary);
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.search-link:hover {
+    color: var(--accent);
     background: var(--accent-soft);
 }
 

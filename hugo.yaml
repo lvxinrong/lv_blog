@@ -17,6 +17,13 @@ summaryLength: 80
 pagination:
   pagerSize: 10
 
+# 首页额外输出一份 JSON，作为搜索索引（PaperMod 的搜索靠它）
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
 languages:
   zh-CN:
     # Hugo 0.158 起 languageName/languageCode 改名为 label/locale
@@ -42,6 +49,12 @@ params:
   disableThemeToggle: true
   author: 吕炘嵘
   description: 好奇，毅力，自我思考
+
+  # OG 分享卡片的兜底图（链接转发到微信/推特时显示的预览图）。
+  # 查找顺序：文章 front matter 的 images → 同名资源里的 *feature*/*cover* → 这里。
+  # 所以要给单篇换图，只需在那篇的 front matter 里写 images = ["xxx.jpg"]。
+  images:
+    - og-default.jpg
 
   # 只覆盖顶栏那行字，不影响 <title> / RSS / 页脚版权
   # （那些仍用 site.Title = 吕炘嵘的博客）。
@@ -74,6 +87,11 @@ params:
   ShowPostNavLinks: true
   ShowRssButtonInSectionTermList: true
   ShowShareButtons: false
+
+  # RSS 输出全文（否则订阅者在阅读器里只看得到摘要，得点回站内才能读）。
+  # 配套改动见 layouts/rss.xml —— 那里把正文里的相对 URL 补成了绝对地址，
+  # 否则阅读器里图片会全挂。
+  ShowFullTextinRSS: true
 
   assets:
     # 现代浏览器优先用 SVG，老浏览器回落到下面默认的 png/ico

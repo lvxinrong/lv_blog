@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>body{margin:0;background:#111;color:#0f0;font:12px monospace}iframe{position:absolute;left:-9999px;border:0}</style>
+</head><body><pre id="out">…</pre><iframe id="f" src="/search/" style="width:900px;height:800px"></iframe>
+<script>
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+window.addEventListener('load',async()=>{
+  const w=document.getElementById('f').contentWindow,d=w.document,L=[];
+  // 等 fastsearch 把 input 启用（它加载完 JSON 才会去掉 disabled）
+  for(let i=0;i<40 && d.getElementById('searchInput').disabled;i++) await sleep(250);
+  L.push('输入框已就绪: '+(!d.getElementById('searchInput').disabled));
+  const q=async(s)=>{
+    const inp=d.getElementById('searchInput');
+    inp.value=''; inp.dispatchEvent(new Event('input',{bubbles:true})); await sleep(120);
+    inp.value=s; inp.dispatchEvent(new Event('input',{bubbles:true})); await sleep(400);
+    const res=d.getElementById('searchResults');
+    const n=res?res.querySelectorAll('li').length:0;
+    const first=res&&res.querySelector('li')?res.querySelector('li').textContent.trim().slice(0,34):'—';
+    return `  ${s.padEnd(10)} → ${n} 条   首条: ${first}`;
+  };
+  for(const s of ['蒸馏','LLM','生产排查','token','系统扫描','xyz不存在的东西'])
+    L.push(await q(s));
+  document.getElementById('out').textContent=L.join('\n');
+});
+</script></body></html>
