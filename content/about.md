@@ -35,5 +35,7 @@ comments = false
 ## 找到我
 
 - GitHub：[github.com/lvxinrong](https://github.com/lvxinrong)
+- 邮箱：[825883336@qq.com](mailto:825883336@qq.com)
+- 微信：`lvxinrong888888`
 
 欢迎交流。如果你能指出我哪篇笔记里理解错了，我会特别高兴——那是这个博客存在的意义之一。

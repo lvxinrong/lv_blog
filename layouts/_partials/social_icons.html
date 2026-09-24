@@ -7,8 +7,12 @@
 <div class="social-icons social-icons-{{ $variant }}" {{ with $.align }}align="{{ . }}"{{ end }}>
     {{- range . }}
     {{- $label := .title | default .name }}
+    {{- $href := trim .url " " }}
+    {{- /* mailto: 之类不该 target="_blank"（会先弹一个空白标签页再唤起邮件客户端） */}}
+    {{- $external := or (hasPrefix $href "http://") (hasPrefix $href "https://") }}
     <a class="social-link social-link-{{ .name | lower }}"
-        href="{{ trim .url " " | safeURL }}" target="_blank" rel="noopener noreferrer me"
+        href="{{ $href | safeURL }}"
+        {{- if $external }} target="_blank" rel="noopener noreferrer me"{{ else }} rel="me"{{ end }}
         title="{{ $label | title }}">
         {{ partial "svg.html" . }}
         <span class="social-label">{{ $label }}</span>
