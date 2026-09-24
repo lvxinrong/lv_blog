@@ -8,6 +8,11 @@ draft = false
 categories = ["手搓LLM"]
 tags = ["LLM", "Embedding", "BPE", "学习笔记"]
 summary = "Tokenizer、BPE、Embedding、位置编码。十几页看了一个半小时，python 不熟、线代还给老师了，但搞懂的瞬间都值了。"
+[cover]
+    image = "covers/llm-01-ch02.jpg"
+    alt = "手搓 LLM 笔记 01：第二章，把文本变成数字"
+    hiddenInSingle = true
+    hiddenInList = true
 +++
 
 > 这个系列记录我读《从零构建大模型》的过程。不是读书笔记的摘抄，是我和每个概念搏斗的痕迹。规则只有一条：写下来的必须是我自己搞懂的，没懂的如实写"没懂"。

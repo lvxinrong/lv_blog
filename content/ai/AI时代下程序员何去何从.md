@@ -8,6 +8,11 @@ draft = false
 categories = ["AI随想"]
 tags = ["AI", "职业", "程序员", "长文"]
 summary = "一个 11 年开发者的焦虑、重构与共生实践。AI 不是敌人，是放大器。"
+[cover]
+    image = "covers/programmers-in-ai-era.jpg"
+    alt = "AI时代下，程序员应该何去何从？"
+    hiddenInSingle = true
+    hiddenInList = true
 +++
 
 > 本文首发于语雀（2026-06-25），此处为存档版。原文：https://www.yuque.com/u53445836/bde3vm/fl63k6gl6lgc5r6m

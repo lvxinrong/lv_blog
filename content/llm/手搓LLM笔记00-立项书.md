@@ -8,6 +8,11 @@ draft = false
 categories = ["手搓LLM"]
 tags = ["LLM", "立项", "学习笔记"]
 summary = "为什么我要从零造一个大模型。这不是教程的开篇，是一份写给自己的立项文档。"
+[cover]
+    image = "covers/llm-00-proposal.jpg"
+    alt = "手搓 LLM 笔记 00：立项书"
+    hiddenInSingle = true
+    hiddenInList = true
 +++
 
 > 这不是教程，是立项书。项目名：从零手搓一个 LLM。周期：12 周。发起人、执行人、验收人：我自己。

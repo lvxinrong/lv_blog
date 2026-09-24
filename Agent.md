@@ -130,6 +130,9 @@ python3 -c "import xml.dom.minidom as m; m.parse('public/index.xml'); print('XML
 
 **Fuse 对中文可用**（实测）：PaperMod 默认 `threshold: 0.4` + `ignoreLocation: true` 恰好合适，中文没有空格也能子串命中。实测「蒸馏 / LLM / 生产排查 / token / 系统扫描」均返回正确首条，不存在的词返回 0 条。
 
+> **「关于」页的索引是故意保留的。** 它在 RSS 里被排除了（`hiddenInRss`），但在搜索索引里**没有**排除 —— 这是有意为之，让读者搜「关于」能直接找到联系方式和自我介绍。
+> **不要因为「RSS 排了、搜索没排」就当成不一致去"修正"它。** 要改的话先问。
+
 ### OG 分享卡片（已配置兜底图）
 
 `static/og-default.jpg`（1200×630，61KB）+ `params.images: [og-default.jpg]`。
@@ -138,6 +141,109 @@ python3 -c "import xml.dom.minidom as m; m.parse('public/index.xml'); print('XML
 所以给单篇换图，只要在那篇 front matter 写 `images = ["xxx.jpg"]`。
 
 注意这张图是**站点级**的，每篇分享出来长得一样。要做「每篇一张带标题的卡片」需要 CJK 字体文件（Hugo 的 `images.Text` 依赖字体，而 Cloudflare 的 Linux 构建环境没有中文字体，得把字体提交进仓库，10MB+）。目前没做。
+
+### 评论：giscus（基于 GitHub Discussions）
+
+读者用 GitHub 账号留言，内容直接进仓库的 Discussions，零成本、无第三方服务。
+
+#### 当前状态：代码与配置已就绪，**但线上是否真的能留言尚未验证**
+
+模板：`layouts/_partials/comments.html`（覆盖主题的空壳）。配置在 `hugo.yaml` 的 `params.giscus`。
+
+**四个必需参数全部已填**（`repo` / `repoId` / `category` / `categoryId`）。
+
+**`categoryId` 不需要去 giscus.app 取** —— GitHub 的 Discussions REST API 直接给出了 node_id：
+
+```bash
+curl -s -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/lvxinrong/lv_blog/discussions \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['category'])"
+# → {'id': 51975436, 'node_id': 'DIC_kwDOUm86Xs4DGRUM', 'name': 'Announcements', ...}
+```
+
+`node_id` 就是 `data-category-id`。
+
+#### 前置条件（均已完成）
+
+| 项 | 状态 |
+|---|---|
+| 仓库公开 | ✓ |
+| Discussions 已开启 | ✓ `has_discussions: true` |
+| giscus App 已安装 | ✓ 用户已确认 |
+| 分类 `Announcements` | ✓ `:mega:`，node_id `DIC_kwDOUm86Xs4DGRUM` |
+| 四个参数填好 | ✓ `repo` / `repoId` / `category` / `categoryId` |
+
+#### ✅ 已验证可用（2026-09-24，真实浏览器）
+
+留言框、GitHub 登录态、发表评论、回复、点赞、排序（最早/最新）全部正常。首条测试评论已产生。
+
+**排查记录（供以后参考）**：无头浏览器验证不了这一项 —— widget 在跨域 iframe 里读不到 DOM，`--virtual-time-budget` 会干扰 postMessage 握手，直接顶层打开 widget 是空白，用 `#comments` 锚点定位时 Chrome 会崩（`Trace/BPT trap`）。**遇到评论相关改动，直接让用户在真实浏览器里点一眼，别在无头环境里耗**。
+
+**踩坑提醒**：开 Discussions 和装 giscus App 是两件事，都要做。另外仓库刚开 Discussions 时只有 `Announcements` 一个分类（GitHub 自动创建，正好是 giscus 推荐的类型）。
+
+#### 为什么 mapping 用 `og:title` 而不是默认的 `pathname`
+
+giscus 的 `data-mapping` 决定「哪条 discussion 对应哪篇文章」。默认 `pathname` 用 URL 路径，**本站改过一次 URL（中文 → 短 slug），而且还计划改栏目名** —— 路径一变，已有评论就和新页面脱钩了。
+
+`og:title` 用的是文章标题（不含站名后缀，实测为 `<meta property="og:title" content="来自终端另一侧的回信">`），对 URL 改动免疫。代价是**改标题会断评论** —— 标题比 URL 稳定得多，所以这个取舍划算。
+
+**如果你更习惯用 pathname，改 `params.giscus.mapping` 即可**，但要接受「改 slug 或栏目名 = 已有评论断掉」。
+
+#### 其它
+
+- `content/about.md` 里设了 `comments = false` —— 静态页放评论区显得没打磨过。
+- 新建**静态页**（非文章）时记得同样加 `comments = false`。
+- 样式在 `custom.css` 第 15.5 节（主题对这块没有任何样式）。
+
+### 文章封面图（本地生成，脚本见 `scripts/mkcover.py`）
+
+```bash
+python3 scripts/mkcover.py                     # 生成缺失的封面
+python3 scripts/mkcover.py --write-frontmatter # 同时写入 front matter 的 [cover]
+python3 scripts/mkcover.py --force             # 全部重生成
+python3 scripts/mkcover.py --only <slug>       # 只处理一篇
+```
+
+**新文章的流程：写完 → 加 `slug` → 跑一次 `--write-frontmatter` → 提交。** 幂等，重复跑不会重复写。
+
+#### 三个必须知道的设计决定
+
+**1. 图放 `assets/covers/`，不是 `static/`。**
+主题的 `cover.html` 用 `resources.ByType "image"` 去 **`assets/`** 找图，找到才会生成响应式尺寸。实测一张 73KB 的原图会生成 360/480/720/1080 四档，**手机只下 5–8KB，省 90%**。放 `static/` 就只能原图直出。
+
+**2. 为什么是本地脚本而不是 Hugo 模板。**
+要在图里渲染中文，Hugo 的 `images.Text` 需要 CJK 字体文件；Cloudflare 的 Linux 构建环境没有中文字体，把字体提交进仓库又是 10MB+。所以改成「本地生成、提交产物」——每张 30–70KB，跑一次几秒。**代价是：新文章必须在本地跑一次脚本，构建时不会自动生成。**
+
+**3. `hiddenInList` + `hiddenInSingle` 都为 true —— 封面只作 OG 分享卡，不在页面里显示。**
+
+一开始只在文章页隐藏（列表页保留），但实测数据证明列表页也不该显示：
+
+| 指标 | 有封面 | 无封面 |
+|---|---|---|
+| 卡片高度 | 554px | ~150px |
+| 封面占卡片 | **65%** | — |
+| 一屏（900px）可见 | **1.6 张** | ~6 张 |
+
+再加上封面里的标题与卡片标题重复一遍 —— 对一个**文字优先**的博客，这是净负收益：列表页的价值是快速扫读。
+
+`og:image` 不受这两个开关影响，仍会用封面 ✓（`opengraph.html` 直接读 `cover.image`）。**社交分享才是封面的主场**，那里它 100% 发挥作用；没有封面的页面回落到 `static/og-default.jpg`。
+
+想改回列表显示：把 `hiddenInList` 删掉即可。若真要保留列表视觉，正确做法是**横向卡片（图在左 ~220px）+ 无字封面**，因为带标题的封面在 220px 宽下会糊成一团。
+
+#### 折行这块踩过两次坑
+
+`wrap()` 是两步：**先用 limit 拿到最少行数，再尝试按行数均分，只有均分不增加行数时才采用。**
+
+- 单纯贪心 → 「生产排查，不该是『老师傅』的手」+「艺」  ← 孤字行
+- 单纯均分 → 「手搓 LLM 笔记…」从 2 行被撑到 3 行     ← 更糟
+
+改这段逻辑时务必拿这两条标题回归验证。
+
+#### 展示策略（一句话）
+
+**封面只用于 `og:image`，页面上任何位置都不显示。** 首页、分区页、归档页、标签页、文章页均已验证为 0 个 `entry-cover`。
+
+顺带：`layouts/home.html` 是自定义的，本来就没调用 `cover.html`；所以「列表不显示封面」这件事同时由「front matter 两个 hidden」和「home.html 不含 cover 组件」两条保证。
 
 ### 每篇都要写英文 `slug`（否则链接长到没法分享）
 

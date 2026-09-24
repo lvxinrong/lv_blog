@@ -2,6 +2,8 @@
 title = "关于"
 # 「关于」不是文章，不放进 RSS（否则订阅列表里会混进一个静态页）
 hiddenInRss = true
+# 静态页不显示评论
+comments = false
 +++
 
 ## 我是谁

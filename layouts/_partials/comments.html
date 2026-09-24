@@ -1,0 +1,35 @@
+{{- /* giscus 评论：基于 GitHub Discussions，读者用 GitHub 账号留言，内容直接进仓库的 Discussions。
+       覆盖主题的空壳 comments.html。触发条件是 .Param "comments"（在 hugo.yaml 里开启）。
+
+       四个必需参数里 repo / repoId 已经填好，**只有 categoryId 需要人工取一次**：
+           https://giscus.app/zh-CN  →  填入仓库  →  选分类  →  复制生成的 data-category-id
+       没填之前整块不渲染 —— 否则页面上会出现一个报错的空 iframe。 */ -}}
+{{- $g := site.Params.giscus -}}
+{{- if and $g $g.repo $g.repoId $g.categoryId -}}
+<section class="comments" id="comments">
+    <h2 class="comments-title">{{ $g.title | default "评论" }}</h2>
+    <script src="https://giscus.app/client.js"
+        data-repo="{{ $g.repo }}"
+        data-repo-id="{{ $g.repoId }}"
+        data-category="{{ $g.category }}"
+        data-category-id="{{ $g.categoryId }}"
+        data-mapping="{{ $g.mapping | default "pathname" }}"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="{{ $g.theme | default "light" }}"
+        data-lang="{{ $g.lang | default "zh-CN" }}"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+    </script>
+    <noscript>
+        <p class="comments-noscript">
+            评论需要启用 JavaScript。也可以直接去
+            <a href="https://github.com/{{ $g.repo }}/discussions" rel="noopener" target="_blank">GitHub Discussions</a>
+            参与讨论。
+        </p>
+    </noscript>
+</section>
+{{- end -}}

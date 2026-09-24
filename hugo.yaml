@@ -56,6 +56,28 @@ params:
   images:
     - og-default.jpg
 
+  # 文章底部评论（giscus，基于 GitHub Discussions）
+  comments: true
+
+  giscus:
+    repo: lvxinrong/lv_blog
+    # repoId 已从 GitHub API 取到
+    repoId: R_kgDOUm86Xg
+    # 你在 GitHub Discussions 里选的分类名，要和下面 ID 对应同一个
+    category: Announcements
+    # 已填。取法（不需要去 giscus.app）：
+    #   curl -s -H "Accept: application/vnd.github+json" \
+    #     https://api.github.com/repos/lvxinrong/lv_blog/discussions
+    #   返回里每条的 category.node_id 就是这个值
+    categoryId: "DIC_kwDOUm86Xs4DGRUM"
+    # 用 og:title 而不是默认的 pathname：
+    # 本站改过一次 URL，且还计划改栏目名 —— pathname 一变，已有评论就断了。
+    # og:title 是文章标题（不含站名后缀），比 URL 稳定。
+    mapping: og:title
+    theme: light        # 站点已固定浅色
+    lang: zh-CN
+    title: 评论
+
   # 只覆盖顶栏那行字，不影响 <title> / RSS / 页脚版权
   # （那些仍用 site.Title = 吕炘嵘的博客）。
   label:
