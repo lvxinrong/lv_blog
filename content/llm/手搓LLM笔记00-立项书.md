@@ -1,6 +1,4 @@
 +++
-weight = 1
-# 连载顺序（Hugo 的 Pages 默认按 weight 升序）。抽屉型栏目不设这个字段。
 title = "手搓 LLM 笔记 00：立项书"
 # 短链接用的 slug；aliases 指向改动前的中文路径，保证已分享的链接不失效
 slug = "llm-00-proposal"

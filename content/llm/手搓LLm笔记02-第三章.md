@@ -1,6 +1,4 @@
 +++
-weight = 3
-# 连载顺序（Hugo 的 Pages 默认按 weight 升序）。抽屉型栏目不设这个字段。
 title = "手搓 LLM 笔记 02：注意力，让每个 token 看完全场"
 date = 2026-09-30T10:00:00+08:00
 draft = false

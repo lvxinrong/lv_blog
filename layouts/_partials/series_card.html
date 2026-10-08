@@ -3,21 +3,14 @@
        抽出来是因为首页的「连载」「专栏」两个区和 /columns/ 总览页渲染的是同一张卡，
        写三遍迟早会漂移。
 
-       两种 columnKind 的差别都收在这里：
-         serial —— 显示状态徽章；「最新」取 weight 最大的那一章（最新一章）
-         column —— 不显示状态；「最新」取日期最新的那篇 */ -}}
+       两种 columnKind 的差别只剩「要不要显示状态徽章」—— 因为连载的写作顺序就是
+       时间顺序，所以「最新一章」和「最新一篇」是同一个人（日期最新的那篇），
+       不需要再分两套取法。 */ -}}
 {{- $p := .page -}}
 {{- $kind := $p.Param "columnKind" | default "column" -}}
 {{- $pages := $p.RegularPages -}}
 {{- $latest := "" -}}
-{{- if $pages -}}
-  {{- if eq $kind "serial" -}}
-    {{- $ordered := $pages.ByWeight -}}
-    {{- $latest = index $ordered (sub (len $ordered) 1) -}}
-  {{- else -}}
-    {{- $latest = index ($pages.ByDate.Reverse) 0 -}}
-  {{- end -}}
-{{- end -}}
+{{- if $pages -}}{{- $latest = index ($pages.ByDate.Reverse) 0 -}}{{- end -}}
 {{- $statusLabels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" -}}
 <a class="series-card" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" href="{{ $p.RelPermalink }}">
   <div class="series-head">

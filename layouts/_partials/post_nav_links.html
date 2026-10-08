@@ -1,13 +1,16 @@
 {{- /* 相邻文章只取当前栏目，避免读完连载后跳到无关专栏。
-     连载按 weight 升序，专栏按日期升序；左侧是前一篇，右侧是后一篇。 */ -}}
+     连载和专栏**都按日期升序**（旧 → 新）；左侧是更早的一篇，右侧是更晚的一篇。
+
+     为什么连载不再按 weight：
+       连载现在是「列表页日期倒序（最新在上）+ 写作顺序即时间顺序」，
+       weight 已经全部去掉。如果再按 weight 排，全站 weight 都是 0 时会退化成
+       日期倒序，`$position - 1` 指向的就是更新的一篇 —— 上一篇/下一篇正好反过来。
+       统一走 ByDate 升序，方向就和列表排序解耦了：以后列表怎么排都不影响这里。 */ -}}
 {{- if in site.Params.mainSections .Section -}}
   {{- $current := . -}}
   {{- $section := .CurrentSection -}}
   {{- $isSerial := eq ($section.Param "columnKind") "serial" -}}
   {{- $pages := $section.RegularPages.ByDate -}}
-  {{- if $isSerial -}}
-    {{- $pages = $section.RegularPages.ByWeight -}}
-  {{- end -}}
   {{- $position := -1 -}}
   {{- range $index, $page := $pages -}}
     {{- if eq $page $current -}}
