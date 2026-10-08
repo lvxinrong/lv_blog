@@ -1,0 +1,61 @@
+{{- /* 连载进度条。用法：
+         partial "series_progress.html" (dict "page" $栏目页 "variant" "hero"|"page"|"card")
+
+       数据全部从栏目 _index.md 的参数算，不需要手写任何数字：
+         startDate  = 立项日（TOML 日期）
+         totalWeeks = 周期
+       当前第几周由 now 推出来，所以**每次部署时刷新**。连载是每周更新的，
+       每次发新笔记都会触发一次部署，因此不会明显过期；但如果长期不推，
+       这个数字会停在最后一次构建那天 —— 这是刻意的取舍（构建期算 = 不用 JS）。
+
+       三种形态的语义不同，所以标记是分支写的而不是共用一套：
+         hero  首页 Hero 下方 —— 是「入口」，所以带名字、带 kicker、整块可点
+         page  栏目页头部下方 —— 读者已经在这里了，所以只说事实：进度 + 篇数
+         card  栏目卡片里的一行 —— 最紧凑，只有细条 + 周数
+       没设 startDate/totalWeeks 的栏目（也就是所有 column）不渲染任何东西。 */ -}}
+{{- $p := .page -}}
+{{- $variant := .variant | default "card" -}}
+{{- $start := $p.Param "startDate" -}}
+{{- $total := $p.Param "totalWeeks" -}}
+{{- if and $start $total -}}
+  {{- $days := div (now.Sub (time.AsTime $start)).Hours 24 -}}
+  {{- $week := add (div (int $days) 7) 1 -}}
+  {{- if lt $week 1 }}{{ $week = 1 }}{{ end -}}
+  {{- if gt $week $total }}{{ $week = $total }}{{ end -}}
+  {{- $pct := div (mul (float $week) 100) (float $total) -}}
+  {{- $weekText := printf "第 %d 周 / 共 %d 周" $week $total -}}
+  {{- $notes := len $p.RegularPages -}}
+
+  {{- if eq $variant "hero" -}}
+  {{- /* data-series 必须显式写：首页 Hero 不在任何 [data-series] 容器里，
+         少了它 var(--series) 取不到值，进度条会变成透明。 */ -}}
+  <a class="prog prog-hero" data-series="{{ $p.Section }}" href="{{ $p.RelPermalink }}">
+    <span class="prog-head">
+      <span class="prog-kicker">正在进行</span>
+      <span class="prog-name">{{ $p.Title }}</span>
+      <span class="prog-week">{{ $weekText }}</span>
+    </span>
+    <span class="prog-track"><span class="prog-fill" style="width:{{ $pct }}%"></span></span>
+    <span class="prog-foot">
+      <span class="prog-notes">已写 {{ $notes }} 篇笔记</span>
+      <span class="prog-go">看连载 →</span>
+    </span>
+  </a>
+
+  {{- else if eq $variant "page" -}}
+  {{- /* 不是链接、不说「看连载」—— 读者已经在连载页里了。 */ -}}
+  <div class="prog prog-page" data-series="{{ $p.Section }}">
+    <div class="prog-head">
+      <span class="prog-week">{{ $weekText }}</span>
+      <span class="prog-notes">已写 {{ $notes }} 篇笔记</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:{{ $pct }}%"></div></div>
+  </div>
+
+  {{- else -}}
+  <span class="prog prog-card" data-series="{{ $p.Section }}">
+    <span class="prog-week">{{ $weekText }}</span>
+    <span class="prog-track"><span class="prog-fill" style="width:{{ $pct }}%"></span></span>
+  </span>
+  {{- end -}}
+{{- end -}}

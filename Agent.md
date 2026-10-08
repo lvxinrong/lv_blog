@@ -149,6 +149,40 @@ weight = 1               # 00 是第一篇；Hugo 的 Pages 集合默认按 weig
 **首页怎么决定放什么**：只放 `featured` 有值的栏目 —— 这是个**显式动作**，新增栏目不会自动
 挤上首页。没上首页的不会消失，它们在 `/columns/`（全栏目总览）。连载区最多 4 张、专栏区最多 4 张。
 
+### 进度条：让连载有「跑到哪了」
+
+连载最值钱的东西是**可追踪的进展** —— 读者追的不是知识，是「这个人能不能做到」。
+所以在栏目 `_index.md` 里再给两个参数，进度条就全自动了：
+
+```toml
+startDate  = 2026-09-21   # 立项日（TOML 日期）
+totalWeeks = 12           # 周期
+```
+
+**这两个参数一设，三处的进度条同时出现，不需要手写任何数字：**
+
+| 位置 | 形态 | 内容 |
+|---|---|---|
+| 首页 Hero 下方 | `variant="hero"` | 正在进行 · 栏目名 · 第 N 周 / 共 M 周 · 进度条 · 已写 X 篇 · 看连载 → |
+| 栏目页头部下方 | `variant="page"` | 第 N 周 / 共 M 周 · 已写 X 篇 · 进度条（**不是链接**） |
+| 栏目卡片里 | `variant="card"` | 一行：周数 + 细条 |
+
+实现在 `layouts/_partials/series_progress.html`，三种形态是分支写的而不是共用标记 ——
+它们的语义不同（Hero 是入口、栏目页是现状、卡片是索引），共用会让文案串味。
+栏目页那一处靠 `layouts/_shortcodes/series_progress.html` 落地：在 `content/<栏目>/_index.md`
+正文里写 `{{< series_progress >}}` 就行 —— 这样**不用覆盖主题的 `list.html`**
+（它本来就会渲染 section 的 `.Content`）。
+
+**两个必须知道的取舍：**
+
+1. **周数在构建时算**（`now.Sub startDate`），所以**每次部署刷新一次**。连载是每周更新的，
+   发新笔记必然触发部署，因此日常不会过期；但如果长期不推，这个数字会停在最后一次构建那天。
+   选构建期而不是 JS，是为了让它在无 JS 环境、RSS、以及首屏都正确。
+2. **`data-series` 在 Hero 那块要显式写。** CSS 里 `[data-series="llm"]` 只负责**定义**变量，
+   而首页 Hero 不在任何 `[data-series]` 容器里 —— 漏了它 `var(--series)` 取不到值，进度条会是透明的。
+
+新增连载、或者换项目周期，只需要改 `_index.md` 里那两个数字，模板一行不用碰。
+
 ### 只有两根轴：栏目 + 标签
 
 Hugo 默认给三套分类机制（section / category / tag），本站**只留 section 和 tag**。
@@ -468,7 +502,7 @@ EOF
 
 ---
 
-## 5. layouts/ 覆盖清单（14 个）
+## 5. layouts/ 覆盖清单（16 个）
 
 Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为，**且主题升级不会冲掉**。代价是升级后不会自动获得更新。
 
@@ -527,6 +561,8 @@ cd /path/to/site
 | `home.html` | 首页 = Hero + **连载**区 + **专栏**区 + 最新 6 篇。主题的 `list.html` 把所有文章平铺成一条时间线，分不出连载和抽屉 |
 | `columns.html` | `/columns/` 全栏目总览。首页只放 `featured` 的几张卡，这里是全量兜底 —— 栏目再多也不会没地方去 |
 | `_partials/series_card.html` | 栏目入口卡。首页两个区 + `/columns/` 渲染同一张卡，抽出来避免三处漂移。`serial` / `column` 的差别都收在这里 |
+| `_partials/series_progress.html` | 连载进度条，三种形态（hero / page / card）。第几周由 `startDate` + `now` 推出，见第 4 节 |
+| `_shortcodes/series_progress.html` | 让栏目 `_index.md` 正文里能写 `{{< series_progress >}}`。**这是不覆盖 `list.html` 还能改栏目页头部的关键** |
 | `archives.html` | 主题硬编码 `GroupByDate "January"`，中文站会显示英文月份。改成按 `2006-01` 分组（字典序即时间序）再渲染成「9 月」 |
 | `404.html` | 主题只渲染一个光秃秃的 `404`，加了说明和回首页入口 |
 | `_partials/footer.html` | 在版权行上方插入社交按钮。**注意 `extend_footer.html` 挂载点在 `</footer>` 之后，塞不进去，必须覆盖整个 partial** |
@@ -591,12 +627,32 @@ hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
 
 ### 顶栏与 Hero 的分工（别放同一句话）
 
-- **顶栏**（`params.label.text`）出现在**每一页**，是常驻标识 —— 承载「态度 / 标语」
-- **Hero**（`homeInfoParams.Title`）只出现在**首页**，是开场 —— 承载「我是谁」
+- **顶栏**（`params.label.text`）= `写代码，也写自己`，出现在**每一页**，是常驻标识 —— 承载「态度 / 标语」
+- **Hero**（`homeInfoParams.Title` + `Content`）只出现在**首页**，是开场 —— 承载「我是谁 + 我现在在干什么」
 
 两者取值来自不同配置项，但**如果写成同一句话，首页会把它们上下紧挨着显示两遍**，看起来像渲染 bug（这个坑真出现过一次，见 `homeInfoParams` 附近的注释）。
 
 `layouts/home.html` 里 Hero 的 `h1` 是**条件渲染**的：`Title` 为空时不输出 `<header>`，否则会留一个空标题，而 CSS 给 `.home-info h1` 加的强调色短线会变成一道孤零零的横杠。
+
+**Hero 文案的写法（2026-10 定的）**：
+
+```yaml
+Content: |-
+  写了 11 年代码。信条只有一句：**想学，就实现一个** —— 想看懂字节码，就用 Go 手写了一个 JVM；现在想看懂大模型，正在从零手搓一个 LLM。
+
+  12 周，每周一篇笔记，不复制粘贴，每个字母亲手敲。
+```
+
+思路值得记住，改文案时别丢：
+
+- **开头是信条，不是形容词。** 原来那句「好奇，毅力，自我思考」换成谁都能用，形容词不构成辨识度；
+  `想学，就实现一个` 是**方法**，锚方法的定位比锚话题（「我懂 LLM」）耐用 —— 话题三年就过时。
+- **紧跟两个具体例子把信条落地**，第二个正好是读者眼前的连载 —— 从「我是谁」滑到「你能看到什么」。
+- **最后一行是承诺。** 「不复制粘贴，每个字母亲手敲」才是让人决定要不要追的东西。
+- **Hero 下面紧跟一条进度条**（自动生成，见第 4 节），把「在做什么」变成「做到哪了」。
+
+`params.description`（站点 meta 描述）已同步改成一句事实。原来和 Hero 共用「好奇，毅力，自我思考」，
+搜索引擎和分享卡片拿它说明不了任何事。
 
 ### 已知配置问题
 
@@ -606,7 +662,7 @@ hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
 
 ## 7. 样式系统
 
-**所有自定义样式集中在 `assets/css/extended/custom.css` 一个文件。** PaperMod 会把 `assets/css/extended/*.css` 追加在主题样式之后，所以能覆盖主题、且主题升级不冲掉。前 16 个小节按功能划分。
+**所有自定义样式集中在 `assets/css/extended/custom.css` 一个文件。** PaperMod 会把 `assets/css/extended/*.css` 追加在主题样式之后，所以能覆盖主题、且主题升级不冲掉。文件里按 `/* ---------- 分区名 ---------- */` 注释切成若干小节，找东西直接搜分区名。
 
 ### 设计变量（在文件顶部 `:root` / `:root[data-theme="dark"]`）
 

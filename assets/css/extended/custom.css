@@ -1745,6 +1745,138 @@ html[data-kind="serial"] .post-entry .entry-header h2::before {
     color: var(--series);
 }
 
+/* ---------- 连载进度条 ---------- */
+
+/* 三种形态共用一套标记，靠 variant 类区分：
+     prog-hero  首页 Hero 下方（主 CTA）
+     prog-page  栏目页头部下方（读者点进来后的落地信息）
+     prog-card  栏目卡片里的一行（紧凑）
+   颜色走 var(--series)，由 data-series 提供（Hero 不在 [data-series] 容器里，
+   所以模板在元素上显式写了一份）。 */
+.prog {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prog-hero,
+.md-content .prog-page {
+    margin: 22px 0 6px;
+    padding: 14px 16px;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.prog-hero {
+    /* .md-content a:not(.anchor) 给正文里的链接上了强调色和下划线，
+       Hero 的这块是链接但长得像卡片，要显式压掉。 */
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.prog-hero:hover {
+    border-color: var(--series);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.prog-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-size: 14px;
+}
+
+.prog-kicker {
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--series);
+    background: var(--series-soft);
+    border-radius: 999px;
+}
+
+.prog-name {
+    font-weight: 650;
+    color: var(--primary);
+}
+
+.prog-week {
+    margin-inline-start: auto;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--secondary);
+}
+
+.prog-track {
+    display: block;
+    height: 5px;
+    background: var(--code-bg);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.prog-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    /* 纯色而不是渐变：渐变右端淡出会让「已完成到哪」这个边界变糊，
+       而进度条的整个意义就在那条边界。 */
+    background: var(--series);
+}
+
+/* 栏目页版：读者已经在页面里了，所以左边是周数、右边是篇数，下面一条进度。
+   注意 --series 靠元素上的 data-series 提供，因为 CSS 里 [data-series] 只定义了变量。 */
+.md-content .prog-page .prog-week {
+    margin-inline-start: 0;
+}
+
+.md-content .prog-page .prog-notes {
+    margin-inline-start: auto;
+    font-size: 12.5px;
+    color: var(--secondary);
+}
+
+.prog-foot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--secondary);
+}
+
+.prog-go {
+    font-weight: 600;
+    color: var(--series);
+}
+
+/* 卡片版：一行 —— 文字在左、细条占满剩余宽度，不抢卡片主体的视觉 */
+.prog-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+}
+
+.prog-card .prog-week {
+    flex: 0 0 auto;
+    margin-inline-start: 0;
+    font-size: 11.5px;
+}
+
+.prog-card .prog-track {
+    flex: 1;
+    height: 4px;
+}
+
+/* 卡片版这一行会把描述挤下去一点，卡片高度有点变化是正常的 */
+
 /* ---------- 移动端 ---------- */
 
 @media (max-width: 768px) {

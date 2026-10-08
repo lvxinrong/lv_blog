@@ -42,13 +42,25 @@ languages:
     weight: 1
     title: 吕炘嵘的博客
     params:
-      description: 好奇，毅力，自我思考
+      # 站点描述（<meta name="description"> / og:description / 搜索结果摘要）。
+      # 原来写的是「好奇，毅力，自我思考」—— 那是价值观不是描述，搜索引擎和分享卡片
+      # 拿它说明不了任何事。改成一句事实。
+      description: 写了 11 年代码的工程师。正在从零手搓一个大模型，每周一篇笔记；也写 AI 时代的思考与一线工程实践。
       # 首页 Hero。
-      # 分工：顶栏（params.label.text）= 态度，每页常驻；Hero = 姓名，仅首页。
+      # 分工：顶栏（params.label.text）= 态度，每页常驻；Hero = 姓名 + 正在做的事，仅首页。
       # 两处不要放同一句话 —— 首页会把它们上下紧挨着显示两遍。
+      #
+      # 文案思路：用信条开头（方法层面的定位，比话题层面的更耐用），
+      # 紧跟两个具体例子把它落地 —— 第二个例子正好是读者眼前的连载。
+      # 最后一行是承诺，它才是让人决定「要不要追」的东西。
+      # 后面挂的进度条（layouts/_partials/series_progress.html）会自动补上
+      # 「第 N 周 / 共 12 周 · 已写 M 篇笔记」。
       homeInfoParams:
         Title: 吕炘嵘
-        Content: 好奇，毅力，自我思考
+        Content: |-
+          写了 11 年代码。信条只有一句：**想学，就实现一个** —— 想看懂字节码，就用 Go 手写了一个 JVM；现在想看懂大模型，正在从零手搓一个 LLM。
+
+          12 周，每周一篇笔记，不复制粘贴，每个字母亲手敲。
 
 params:
   env: production
@@ -58,7 +70,8 @@ params:
   defaultTheme: light
   disableThemeToggle: true
   author: 吕炘嵘
-  description: 好奇，毅力，自我思考
+  # 和上面 languages.zh-CN.params.description 保持一致（两处都会被模板读到）
+  description: 写了 11 年代码的工程师。正在从零手搓一个大模型，每周一篇笔记；也写 AI 时代的思考与一线工程实践。
 
   # OG 分享卡片的兜底图（链接转发到微信/推特时显示的预览图）。
   # 查找顺序：文章 front matter 的 images → 同名资源里的 *feature*/*cover* → 这里。

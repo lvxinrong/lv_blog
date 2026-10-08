@@ -55,6 +55,9 @@
     {{ $opts := dict "display" "block" }}
     {{ .Content | $.Page.RenderString $opts }}
   </div>
+  {{- /* Hero 下方挂「当前项目」进度条，取 featured 最靠前的那个连载。
+         没有连载（或没设 startDate / totalWeeks）时什么也不渲染。 */}}
+  {{- with $serials }}{{ partial "series_progress.html" (dict "page" (index . 0).p "variant" "hero") }}{{ end }}
   <footer class="entry-footer">
     {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
   </footer>
