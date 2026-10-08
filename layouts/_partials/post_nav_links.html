@@ -1,0 +1,42 @@
+{{- /* 相邻文章只取当前栏目，避免读完连载后跳到无关专栏。
+     连载按 weight 升序，专栏按日期升序；左侧是前一篇，右侧是后一篇。 */ -}}
+{{- if in site.Params.mainSections .Section -}}
+  {{- $current := . -}}
+  {{- $section := .CurrentSection -}}
+  {{- $isSerial := eq ($section.Param "columnKind") "serial" -}}
+  {{- $pages := $section.RegularPages.ByDate -}}
+  {{- if $isSerial -}}
+    {{- $pages = $section.RegularPages.ByWeight -}}
+  {{- end -}}
+  {{- $position := -1 -}}
+  {{- range $index, $page := $pages -}}
+    {{- if eq $page $current -}}
+      {{- $position = $index -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and (ge $position 0) (or $isSerial (gt (len $pages) 1)) }}
+<nav class="paginav" aria-label="同栏目文章导航">
+    {{- if gt $position 0 -}}
+      {{- with index $pages (sub $position 1) }}
+  <a class="prev" href="{{ .Permalink }}">
+    <span class="title">« 上一篇</span>
+    <span>{{ .Title }}</span>
+  </a>
+      {{- end -}}
+    {{- end -}}
+    {{- if lt $position (sub (len $pages) 1) -}}
+      {{- with index $pages (add $position 1) }}
+  <a class="next" href="{{ .Permalink }}">
+    <span class="title">下一篇 »</span>
+    <span>{{ .Title }}</span>
+  </a>
+      {{- end -}}
+    {{- else if $isSerial }}
+  <a class="next" href="{{ $section.Permalink }}">
+    <span class="title">返回系列目录</span>
+    <span>{{ $section.Title }}</span>
+  </a>
+    {{- end }}
+</nav>
+  {{- end -}}
+{{- end -}}

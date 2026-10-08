@@ -121,7 +121,7 @@ themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优
 | 列表页 | 每篇带章序号徽章（纯 CSS counter） | 普通列表 |
 | 首页卡片 | 带「连载中 / 已完结」状态徽章 | 不带 |
 | 卡片「最新」 | 取 weight 最大的那一章 | 取日期最新那篇 |
-| 上/下一篇 | 跟 weight 走 | 跟日期走 |
+| 上/下一篇 | 栏目内按 weight 升序；末篇返回系列目录 | 栏目内按日期前后走 |
 
 **为什么必须分开**：并排放在同一排卡片里，读者分不清哪个该从头读、哪个可以随便挑 ——
 连载的价值（"我读完了整个系列"）会被抽屉稀释掉。
@@ -142,7 +142,8 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 weight = 1               # 00 是第一篇；Hugo 的 Pages 集合默认按 weight 升序
 ```
 
-设了之后 `/llm/` 列表页和文章底部的上/下一篇都会自动按顺序走，**不需要改任何模板**。
+设了之后 `/llm/` 列表页会按顺序走；文章底部由站点的 `post_nav_links.html`
+按当前栏目单独排序，避免主题默认把不同栏目混在一起。连载徽章从 00 开始，与标题一致。
 但要注意副作用：`site.RegularPages` 也变成 weight 优先，所以首页「最新」区必须显式
 `.ByDate.Reverse`（`layouts/home.html` 里已经写了，别删）。
 
@@ -509,7 +510,7 @@ EOF
 
 ---
 
-## 5. layouts/ 覆盖清单（16 个）
+## 5. layouts/ 覆盖清单（17 个）
 
 Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为，**且主题升级不会冲掉**。代价是升级后不会自动获得更新。
 
@@ -568,6 +569,7 @@ cd /path/to/site
 | `home.html` | 首页 = Hero + **连载**区 + **专栏**区 + 最新 6 篇。主题的 `list.html` 把所有文章平铺成一条时间线，分不出连载和抽屉 |
 | `columns.html` | `/columns/` 全栏目总览。首页只放 `featured` 的几张卡，这里是全量兜底 —— 栏目再多也不会没地方去 |
 | `_partials/series_card.html` | 栏目入口卡。首页两个区 + `/columns/` 渲染同一张卡，抽出来避免三处漂移。`serial` / `column` 的差别都收在这里 |
+| `_partials/post_nav_links.html` | 上一篇 / 下一篇限定当前栏目，连载按 weight、专栏按日期；连载末篇返回目录，避免主题默认跨栏目跳转 |
 | `_partials/series_status.html` | 连载状态栏，两种形态（hero / page）。**刻意不是进度条**，见第 4 节 |
 | `_shortcodes/series_status.html` | 让栏目 `_index.md` 正文里能写 `{{< series_status >}}`。**这是不覆盖 `list.html` 还能改栏目页头部的关键** |
 | `archives.html` | 主题硬编码 `GroupByDate "January"`，中文站会显示英文月份。改成按 `2006-01` 分组（字典序即时间序）再渲染成「9 月」 |

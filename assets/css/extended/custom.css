@@ -1662,7 +1662,8 @@ details.toc a:hover {
    钩子是 extend_footer.html 给 <html> 打的 data-kind，只有本站栏目页会有，
    所以首页「最新」区里的 .post-entry 不会被编上号。 */
 html[data-kind="serial"] body {
-    counter-reset: chapter;
+    /* 首篇是 00 立项书；首张卡片递增后应与标题编号一致。 */
+    counter-reset: chapter -1;
 }
 
 html[data-kind="serial"] .post-entry {
