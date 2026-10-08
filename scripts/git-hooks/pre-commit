@@ -1,0 +1,45 @@
+#!/bin/sh
+# 提交前的文章体检。
+#
+# 为什么需要它：scripts/check-content.py 能抓到「Hugo 构建不报错、但页面上就是不对」
+# 的问题 —— 中文标点导致的加粗失效（页面直接露出 ** 星号）、直引号在中文旁边被渲染成
+# 英文引号、缺 [cover] 导致分享卡片没有图。
+#
+# 这些坑本站已经踩过三次（5 处 → 13 处 → 1 处），每次都是「写的时候没发现、上线后才看到」，
+# 所以改成提交时自动拦。
+#
+# 启用方式（每个 clone 都要做一次）：
+#     git config core.hooksPath scripts/git-hooks
+#
+# 只检查本次暂存的文章，不检查全仓库 —— 否则改个模板也会被别人的旧文章挡住。
+# 确实要绕过：git commit --no-verify
+
+set -u
+
+# core.quotePath=false 是必须的：git 默认会把中文文件名输出成
+#   "content/craft/\351\235\242\350\257\225300\345\234\272\344\271\213\345\220\216.md"
+# 这种裹着双引号的八进制转义，直接喂给 python 会 FileNotFoundError，
+# 表现为「hook 一装就把所有提交都拦下」。
+targets=$(git -c core.quotePath=false diff --cached --name-only --diff-filter=ACMR \
+          -- 'content/*/*.md' | grep -v '/_index\.md$' | grep -v '^$' || true)
+
+if [ -z "$targets" ]; then
+    exit 0
+fi
+
+# 把文件攒成参数列表，一次性交给脚本。两个细节：
+#   - 用 heredoc 而不是 `... | while`：管道会让 while 跑在子 shell 里，攒的参数传不出来；
+#   - 不用 `$targets` 直接展开：那样带空格的文件名会被拆成两个参数。IFS= 逐行读才安全。
+# 一次调用（而不是逐文件调用）是为了让脚本只打一行汇总 —— 逐文件调用时，失败的输出
+# 后面还跟着一个「✓ 1 篇文章」，读起来自相矛盾。
+set --
+while IFS= read -r f; do
+    set -- "$@" "$f"
+done <<EOF
+$targets
+EOF
+
+if ! python3 scripts/check-content.py "$@"; then
+    printf '\n提交被拦下了。上面每条都写了怎么改。\n确实要跳过：git commit --no-verify\n'
+    exit 1
+fi

@@ -150,12 +150,14 @@ markup:
     endLevel: 3
     ordered: false
 
+# 顶栏栏目名。中英之间必须留空格，且要和各栏目 _index.md 的 title 完全一致 ——
+# 否则会出现「顶栏写 手搓LLM、首页系列卡写 手搓 LLM」这种同一屏里两种写法。
 menu:
   main:
-    - name: 手搓LLM
+    - name: 手搓 LLM
       url: /llm/
       weight: 1
-    - name: AI随想
+    - name: AI 随想
       url: /ai/
       weight: 2
     - name: 工程手记

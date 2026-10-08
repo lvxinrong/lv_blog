@@ -323,7 +323,7 @@ python3 scripts/check-content.py <文件>    # 指定文件
 
 | 检查 | 为什么需要 |
 |---|---|
-| 中文标点导致的加粗失效 | **已经踩过两次**（第一次 5 处、第二次 13 处），Hugo 不报错，只是页面上多出两个星号 |
+| 中文标点导致的加粗失效 | **已经踩过三次**（5 处 → 13 处 → 1 处），Hugo 不报错，只是页面上多出两个星号 |
 | 直引号贴近中文导致的引号方向错乱 | Goldmark 的 typographer 按**拉丁文 flanking 规则**猜方向，中文没有空格，同一个 `"` 转不转、转成哪个方向全看左右碰巧是什么字符：两侧都是汉字时**原样输出 `&quot;`**，前面是全角标点时**收尾引号被误判成开引号**。散文里一律写死成 `“ ” ‘ ’` |
 | 代码围栏 ```` ``` ```` 是否配对 | 奇数个会让后面全部被当成代码块 |
 | 缺 `slug` | 中文标题会变成百分号编码的长 URL |
@@ -331,6 +331,16 @@ python3 scripts/check-content.py <文件>    # 指定文件
 | 缺 `date` | 未来日期会静默不构建 |
 
 发现问题时返回码 1，可以直接当 git hook 用。
+
+**已经挂成 pre-commit hook 了**（2026-10），不用再靠自觉：
+
+```bash
+git config core.hooksPath scripts/git-hooks    # 每个 clone 做一次
+```
+
+hook 只体检**本次暂存的文章**，所以改模板不会被别人的旧文章挡住。确实要绕过：`git commit --no-verify`。
+
+> 注意 `core.hooksPath` 是**本地仓库配置**，不进版本库 —— 换机器/重新 clone 都要重跑一次上面那行。
 
 ### ⚠️ 中文写作陷阱：`**加粗**` 在中文标点后会失效
 
@@ -397,7 +407,7 @@ EOF
 
 ---
 
-## 5. layouts/ 覆盖清单（9 个）
+## 5. layouts/ 覆盖清单（10 个）
 
 Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为，**且主题升级不会冲掉**。代价是升级后不会自动获得更新。
 
@@ -406,10 +416,11 @@ Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为
 | 文件 | 改了什么 | 为什么 |
 |---|---|---|
 | `baseof.html` | `dir` 由 `.Language.*Direction` 改成字面量 `"auto"` | 见下方「版本地雷」 |
-| `rss.xml` | `<language>` 改用 `params.languageTag` | 同上 |
+| `rss.xml` | `<language>` 改用 `params.languageTag`；`<image><link>` 改成站点地址 | 前者同上；后者是因为 RSS 规范里这里该是频道主页，主题照抄的内置模板写成了图片地址 |
 | `_partials/templates/opengraph.html` | `og:locale` 改用 `params.languageTag` | 同上 |
+| `_partials/post_meta.html` | 日期 tooltip 由 `(.Date)` 改成 `time.Format "2006-01-02 15:04:05 -0700"` | 见 §8「日期 tooltip 时区重复」 |
 
-这三个存在的唯一原因是**修掉 Hugo 的弃用警告**，同时**不能引入版本特有的 API**。当时也考虑过直接改主题，但那时主题还是 submodule —— 改脏了会被 `git submodule update` 静默还原。
+前三个存在的唯一原因是**修掉 Hugo 的弃用警告**，同时**不能引入版本特有的 API**。当时也考虑过直接改主题，但那时主题还是 submodule —— 改脏了会被 `git submodule update` 静默还原。
 
 `opengraph.html`（86 行）风险最高：逻辑多、主题更新时改动概率也大。**升级主题后如果 OG 标签行为异常，优先查这个文件。**
 
@@ -484,7 +495,7 @@ diff -rq /tmp/pm-new themes/PaperMod | grep -v '^Only in /tmp/pm-new: .git'
 rm -rf themes/PaperMod && cp -R /tmp/pm-new themes/PaperMod
 rm -rf themes/PaperMod/.git
 
-# 4. 检查站点覆盖的 9 个 layouts/ 文件是否仍与新版主题兼容
+# 4. 检查站点覆盖的 10 个 layouts/ 文件是否仍与新版主题兼容
 hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
 ```
 
@@ -588,6 +599,15 @@ var series = {{ site.Params.mainSections | jsonify | safeJS }}; {{/* ✅ 得到 
 `baseof.html` 只输出 `<body class="list">`，不带分区信息。所以 `extend_footer.html` 里读 URL 第一段给 `<html>` 打 `data-series`，分区页才能用上各自的系列色。系列列表由 Hugo 注入，会自动跟随 `mainSections`。
 
 **9. `layouts/home.html` 是首页的覆盖点**，不是 `list.html`。改首页只动 `home.html`，不会影响 `/llm/` `/ai/` `/craft/` 分区页。
+
+**10. 模板里别把 `time.Time` 直接 `printf "%s"`。**
+主题 `post_meta.html` 原来是 `printf "<span title='%s'>" (.Date)`。Go 的 `time.Time.String()` 在**地点没有时区名**时（Hugo 解析 front matter 里的 `+08:00` 得到的就是这种）会打印成：
+
+```text
+2026-09-30 10:00:00 +0800 +0800     ← 偏移量出现两遍
+```
+
+线上表现为「鼠标悬停文章日期，tooltip 里时区重复」。**凡是要把时间输出成字符串，一律走 `time.Format`**。这也是为什么有了 `layouts/_partials/post_meta.html` 这个覆盖。
 
 ---
 

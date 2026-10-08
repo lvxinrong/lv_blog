@@ -45,7 +45,9 @@
     <image>
       <title>{{ site.Title }}</title>
       <url>{{ index . 0 | absURL }}</url>
-      <link>{{ index . 0 | absURL }}</link>
+      {{/* RSS 规范里 <image><link> 是「这个频道的主页」而不是图片地址。
+           主题／Hugo 内置模板这里也写成图片地址，阅读器点图标会跳到一张 jpg。 */}}
+      <link>{{ $.Permalink }}</link>
     </image>
     {{- end }}
     <generator>Hugo</generator>

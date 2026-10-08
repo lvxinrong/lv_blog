@@ -1,0 +1,36 @@
+{{/*
+    覆盖主题的 post_meta.html，只为一件事：修日期 tooltip 里重复的时区。
+
+    主题原文是 printf "<span title='%s'>" (.Date) —— 直接把 time.Time 当字符串打。
+    Go 的 time.Time.String() 在「地点没有时区名」时（Hugo 解析 `+08:00` 得到的就是
+    这种），会打印成 `2026-09-30 10:00:00 +0800 +0800`，偏移量出现两遍。
+    鼠标悬停在文章日期上就能看到这个丑东西。
+
+    改成显式 time.Format，输出 `2026-09-30 10:00:00 +0800`。
+    正文里显示的日期仍走 site.Params.DateFormat（2006年1月2日），不受影响。
+*/}}
+{{- $scratch := newScratch }}
+
+{{- if not .Date.IsZero -}}
+    {{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date | time.Format "2006-01-02 15:04:05 -0700") (.Date | time.Format (default ":date_long" site.Params.DateFormat)))) }}
+{{- end }}
+
+{{- if (.Param "ShowReadingTime") -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime)))) }}
+{{- end }}
+
+{{- if (.Param "ShowWordCount") -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (i18n "words" .WordCount | default (printf "%d words" .WordCount)))) }}
+{{- end }}
+
+{{- if not (.Param "hideAuthor") -}}
+    {{- with (partial "author.html" .) }}
+        {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
+    {{- end }}
+{{- end }}
+
+{{/* Combine all meta information into a single string with separators and render it as HTML.*/}}
+
+{{- with ($scratch.Get "meta") }}
+    {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
+{{- end -}}
