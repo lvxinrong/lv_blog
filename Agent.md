@@ -204,8 +204,9 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 
 ### 生产排查 Skill 连载的样式预览
 
-`content/incident-skill/` 是第二个连载。栏目和 00 至 05 六篇占位稿均为 `draft = true`，
-本地用 `hugo server --renderToMemory --buildDrafts` 才能看到；普通构建不会发布它们。
+`content/incident-skill/` 是第二个连载。栏目目录公开，展示筹备状态与章节规划，
+让首页和「工程实践」导航里的入口在线上也能访问。00 至 05 六篇占位稿保留 `draft = true`，
+本地用 `hugo server --renderToMemory --buildDrafts` 才能看到正文预览；普通构建不会发布占位稿。
 占位稿另有 `placeholder = true`，在动态条和连载卡片中计为“待写”，不计为“已发布”，
 也不进入首页最新文章。占位稿用 `hiddenInRss = true` 排除 RSS。
 
@@ -214,7 +215,7 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 列表继续按日期倒序，相邻文章仍只在当前栏目内按日期升序计算。
 
 正式发布时先补正文并设置真实日期，移除文章的 `placeholder`、`draft` 和 `hiddenInRss`，
-再移除栏目草稿标记、把 `status` 从 `planning` 改成 `ongoing`，并替换目录中的预览说明。
+把栏目 `status` 从 `planning` 改成 `ongoing`，并随写作更新目录中的章节规划。
 这里的六篇是可调整的章节规划，不是固定总篇数或完成承诺。
 
 ### 只有两根轴：栏目 + 标签
@@ -856,7 +857,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 | **部署** | ✅ 已上线 `https://blog.lvxinrong.com`。Cloudflare Pages，Git 连着 `main`，推上去自动构建。**不需要也不应该手动跑 `hugo` 再传产物** |
 | **Cloudflare 的 `HUGO_VERSION` 没 pin** | 本地 `0.166.0`，线上 `0.147.7`。这是全仓库最大的悬顶风险：Cloudflare 哪次升级默认版本就可能重演 §8 的两个构建失败。**修法**：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables → 加 `HUGO_VERSION = 0.147.7`（改完做一次重新部署验证） |
 | 标签体系需要收敛 | 21 个标签里 15 个只用过 1 次（`Attention` `BPE` `Embedding` `书单` `伙伴` `多模型` `思考` `思考方式` `特别篇` `生产排查` `程序员` `立项` `系统扫描` `脑暴` `面试`）。另有近义重复 `思考` / `思考方式`。目标 8~12 个能横跨栏目的标签；单个标签只有 1 篇时它其实是关键词，不是标签 |
-| 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记与生产排查 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。草稿系列只在草稿预览里显示入口 |
+| 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记与生产排查 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。系列目录公开即可显示入口，正文可以继续保留草稿状态 |
 | `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」有点滑稽，建议给该页加 `ShowReadingTime = false` |
 | 深色模式 CSS | 仍在 `custom.css` 里，当前不生效（`defaultTheme: light`）。是给未来恢复留的 |
 
