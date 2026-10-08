@@ -1,5 +1,4 @@
-{{- /* 覆盖主题的 header.html：唯一改动是在 logo 旁插入一个搜索入口（见下方注释）。
-       其余与主题完全一致，方便主题升级时 diff。 */ -}}
+{{- /* 覆盖主题的 header.html：logo 旁的搜索入口，以及支持子项的导航下拉。 */ -}}
 <header class="header">
     <nav class="header-nav">
         <div class="logo">
@@ -34,7 +33,7 @@
             </a>
             {{- end }}
 
-            {{- /* 本站唯一改动：在 logo 旁加一个搜索入口。
+            {{- /* 在 logo 旁加一个搜索入口。
                    为什么不放进菜单 —— 菜单已有 5 项，手机上刚好放得下，
                    第 6 项会把最后一项挤出屏幕（实测 390px 下出屏）。 */}}
             {{- with site.GetPage "/search" }}
@@ -102,6 +101,44 @@
         {{- $currentPage := . }}
         <ul id="menu" class="menu">
             {{- range site.Menus.main }}
+            {{- if .HasChildren }}
+            {{- $groupName := .Name }}
+            {{- /* 只显示本次构建中存在的页面，避免草稿入口在线上指向 404。 */ -}}
+            {{- $children := slice }}
+            {{- $active := false }}
+            {{- range .Children }}
+                {{- if and .Page .Page.RelPermalink }}
+                    {{- $children = $children | append . }}
+                    {{- if hasPrefix $currentPage.RelPermalink .Page.RelPermalink }}
+                        {{- $active = true }}
+                    {{- end }}
+                {{- end }}
+            {{- end }}
+            {{- with $children }}
+            <li>
+                <details class="nav-dropdown">
+                    <summary class="nav-dropdown-toggle{{ if $active }} active{{ end }}">
+                        <span>{{ $groupName }}</span>
+                        <svg class="nav-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
+                    </summary>
+                    <ul class="nav-submenu">
+                        {{- range . }}
+                        {{- $childActive := hasPrefix $currentPage.RelPermalink .Page.RelPermalink }}
+                        <li>
+                            <a href="{{ .Page.RelPermalink }}"{{ if $childActive }} class="active"{{ end }}{{ if eq $currentPage.RelPermalink .Page.RelPermalink }} aria-current="page"{{ end }}>
+                                <div class="nav-submenu-heading">
+                                    <span>{{ .Name }}</span>
+                                    {{- with .Params.kind }}<small class="nav-submenu-kind">{{ . }}</small>{{ end }}
+                                </div>
+                                {{- with .Params.description }}<small class="nav-submenu-description">{{ . }}</small>{{ end }}
+                            </a>
+                        </li>
+                        {{- end }}
+                    </ul>
+                </details>
+            </li>
+            {{- end }}
+            {{- else }}
             {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
             {{- $page_url:= $currentPage.Permalink | absLangURL }}
             {{- $is_search := eq (site.GetPage .KeyName).Layout `search` }}
@@ -123,6 +160,7 @@
                     {{- end }}
                 </a>
             </li>
+            {{- end }}
             {{- end }}
         </ul>
     </nav>

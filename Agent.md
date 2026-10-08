@@ -603,7 +603,8 @@ cd /path/to/site
 | `404.html` | 主题只渲染一个光秃秃的 `404`，加了说明和回首页入口 |
 | `_partials/footer.html` | 在版权行上方插入社交按钮。**注意 `extend_footer.html` 挂载点在 `</footer>` 之后，塞不进去，必须覆盖整个 partial** |
 | `_partials/social_icons.html` | 主题只渲染裸图标，认不出是 GitHub。加了文字标签，支持 `variant: hero/footer` 两种尺寸 |
-| `_partials/extend_footer.html` | 三件事：吸顶导航滚动分隔线、≥1280px 自动展开目录、按 URL 给栏目页打 `data-series`（配色）和 `data-kind`（连载标记，供 CSS 区分） |
+| `_partials/header.html` | logo 旁的搜索入口，以及「工程实践」下拉。子项由 `menu.main` 的 `parent` + `pageRef` 配置，只显示本次构建中存在的页面；当前栏目及其文章会高亮分组 |
+| `_partials/extend_footer.html` | 导航下拉的外部点击 / 焦点离开 / Esc 收起、吸顶导航滚动分隔线、≥1280px 自动展开目录、按 URL 给栏目页打 `data-series`（配色）和 `data-kind`（连载标记，供 CSS 区分） |
 
 **注意 `list.html` 不在覆盖清单里** —— 这是刻意的。连载排序靠 `date`、上下篇靠一个 40 行的
 partial、状态栏靠 shortcode，都在主题模板之外解决，所以不用为了个性化多养一个 121 行的覆盖文件。
@@ -855,7 +856,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 | **部署** | ✅ 已上线 `https://blog.lvxinrong.com`。Cloudflare Pages，Git 连着 `main`，推上去自动构建。**不需要也不应该手动跑 `hugo` 再传产物** |
 | **Cloudflare 的 `HUGO_VERSION` 没 pin** | 本地 `0.166.0`，线上 `0.147.7`。这是全仓库最大的悬顶风险：Cloudflare 哪次升级默认版本就可能重演 §8 的两个构建失败。**修法**：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables → 加 `HUGO_VERSION = 0.147.7`（改完做一次重新部署验证） |
 | 标签体系需要收敛 | 21 个标签里 15 个只用过 1 次（`Attention` `BPE` `Embedding` `书单` `伙伴` `多模型` `思考` `思考方式` `特别篇` `生产排查` `程序员` `立项` `系统扫描` `脑暴` `面试`）。另有近义重复 `思考` / `思考方式`。目标 8~12 个能横跨栏目的标签；单个标签只有 1 篇时它其实是关键词，不是标签 |
-| 导航还没分层 | 现在 5 项平铺（3 栏目 + 归档 + 关于）。经验阈值是 **7 项**：栏目 ≥ 5 个时该收成「连载 ▾ / 专栏 ▾ / 归档 / 关于」。等到真到 5 个再动，否则是在猜形状 |
+| 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记与生产排查 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。草稿系列只在草稿预览里显示入口 |
 | `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」有点滑稽，建议给该页加 `ShowReadingTime = false` |
 | 深色模式 CSS | 仍在 `custom.css` 里，当前不生效（`defaultTheme: light`）。是给未来恢复留的 |
 

@@ -10,6 +10,29 @@
   {{- end }}
 {{- end }}
 <script>
+    /* 原生 details 支持触屏与键盘；补上外部点击、焦点离开和 Esc 收起。 */
+    (function () {
+        var dropdowns = document.querySelectorAll('.nav-dropdown');
+        dropdowns.forEach(function (dropdown) {
+            document.addEventListener('click', function (event) {
+                if (!dropdown.contains(event.target)) dropdown.open = false;
+            });
+            dropdown.addEventListener('focusout', function (event) {
+                if (!dropdown.contains(event.relatedTarget)) dropdown.open = false;
+            });
+            dropdown.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && dropdown.open) {
+                    dropdown.open = false;
+                    dropdown.querySelector('summary').focus();
+                    event.preventDefault();
+                }
+            });
+            dropdown.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () { dropdown.open = false; });
+            });
+        });
+    })();
+
     /* 吸顶导航：滚动后才出现分隔线，静止时保持干净。 */
     (function () {
         var header = document.querySelector('.header');

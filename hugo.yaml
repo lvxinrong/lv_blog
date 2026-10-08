@@ -176,8 +176,8 @@ markup:
     endLevel: 3
     ordered: false
 
-# 顶栏栏目名。中英之间必须留空格，且要和各栏目 _index.md 的 title 完全一致 ——
-# 否则会出现「顶栏写 手搓LLM、首页系列卡写 手搓 LLM」这种同一屏里两种写法。
+# 栏目入口沿用各自 _index.md 的标题；「工程实践」是容纳专栏与系列的导航分组。
+# 下拉子项用 pageRef 关联页面，未参与构建的草稿不会生成入口。
 menu:
   main:
     - name: 手搓 LLM
@@ -186,9 +186,23 @@ menu:
     - name: AI 随想
       url: /ai/
       weight: 2
-    - name: 工程手记
-      url: /craft/
+    - name: 工程实践
+      identifier: engineering
       weight: 3
+    - name: 工程手记
+      parent: engineering
+      pageRef: /craft
+      weight: 1
+      params:
+        kind: 专栏
+        description: 工程中的判断、取舍与踩坑
+    - name: 生产排查 Skill 诞生记
+      parent: engineering
+      pageRef: /incident-skill
+      weight: 2
+      params:
+        kind: 连载
+        description: 从排查困境到一个 Skill 的打磨过程
     - name: 归档
       url: /archives/
       weight: 4

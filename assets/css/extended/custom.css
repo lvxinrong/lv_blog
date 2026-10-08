@@ -267,6 +267,7 @@ a {
 
 .menu {
     column-gap: 4px;
+    overflow: visible;
 }
 
 /* 药丸画在 <a> 内层的 <span> 上 —— 主题的 .active 也是加在 span 上的，
@@ -279,7 +280,7 @@ a {
     transition: color 0.16s ease, background-color 0.16s ease;
 }
 
-.menu a > span {
+.menu > li > a > span {
     display: inline-block;
     /* 必须显式给 line-height：.header-nav 上是 line-height: 60px，
        span 会继承它，再加上下面的 padding，导航栏会被撑到 75px 而不是 60px。 */
@@ -289,7 +290,7 @@ a {
     transition: color 0.16s ease, background-color 0.16s ease;
 }
 
-.menu a:hover > span {
+.menu > li > a:hover > span {
     color: var(--primary);
     background: var(--accent-soft);
 }
@@ -300,6 +301,99 @@ a {
     font-weight: 600;
     text-decoration: none;
     background: var(--accent-soft);
+}
+
+/* 工程实践：顶层保持药丸样式，子项用说明区分手记和连载。 */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    color: var(--secondary);
+    font-size: 15px;
+    line-height: 1.4;
+    vertical-align: middle;
+    list-style: none;
+    cursor: pointer;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.nav-dropdown-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.nav-dropdown-toggle:hover,
+.nav-dropdown[open] > summary {
+    color: var(--primary);
+    background: var(--accent-soft);
+}
+
+.nav-chevron {
+    flex: none;
+    transition: transform 0.16s ease;
+}
+
+.nav-dropdown[open] .nav-chevron {
+    transform: rotate(180deg);
+}
+
+.nav-submenu {
+    position: absolute;
+    top: calc(100% - 4px);
+    right: 0;
+    width: 300px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    white-space: normal;
+    line-height: 1.5;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+}
+
+.nav-submenu a {
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.nav-submenu a:hover {
+    background: var(--accent-soft);
+}
+
+.nav-submenu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-submenu-kind {
+    flex: none;
+    color: var(--secondary);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.nav-submenu-description {
+    display: block;
+    margin-top: 4px;
+    color: var(--secondary);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.nav-submenu a.active .nav-submenu-heading {
+    color: var(--accent);
 }
 
 /* 顶栏搜索入口（在 logo 右侧，由 layouts/_partials/header.html 插入）。
@@ -1222,8 +1316,23 @@ details.toc a:hover {
 
     /* 收紧横向内边距（纵向不动，保住 48px 的触控高度），
        让 5 个菜单项在 360–430px 的主流机型上都放得下、且不再出屏 */
-    .menu a > span {
+    .menu > li > a > span,
+    .nav-dropdown-toggle {
         padding: 9px 9px;
+    }
+
+    .header-nav {
+        position: relative;
+    }
+
+    .nav-dropdown {
+        position: static;
+    }
+
+    .nav-submenu {
+        left: var(--gap);
+        right: var(--gap);
+        width: auto;
     }
 
     .home-info {
@@ -1267,11 +1376,13 @@ details.toc a:hover {
 
 /* 更窄的机器（iPhone SE 等 ≤380px）：菜单再收一档，避免又变成横向滚动 */
 @media screen and (max-width: 380px) {
-    .menu a {
+    .menu > li > a,
+    .nav-dropdown-toggle {
         font-size: 13.5px;
     }
 
-    .menu a > span {
+    .menu > li > a > span,
+    .nav-dropdown-toggle {
         padding: 9px 8px;
     }
 }
