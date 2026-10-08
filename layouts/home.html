@@ -55,9 +55,12 @@
     {{ $opts := dict "display" "block" }}
     {{ .Content | $.Page.RenderString $opts }}
   </div>
-  {{- /* Hero 下方挂「当前连载」状态栏，取 featured 最靠前的那个连载。
-         只是状态，不是进度 —— 没有分母也没有时间承诺，原因见该 partial 的注释。 */}}
-  {{- with $serials }}{{ partial "series_status.html" (dict "page" (index . 0).p "variant" "hero") }}{{ end }}
+  {{- /* 每个首页连载都有自己的状态；占位草稿不计入已发布篇数。 */}}
+  {{- with $serials }}
+  <div class="series-activity" aria-label="连载动态">
+    {{- range . }}{{ partial "series_status.html" (dict "page" .p "variant" "hero") }}{{ end }}
+  </div>
+  {{- end }}
   <footer class="entry-footer">
     {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
   </footer>
@@ -93,7 +96,8 @@
 {{- /* ---------- 最新文章 ---------- */}}
 {{- /* 必须显式按日期倒序：连载文章设了 weight 之后，site.RegularPages 会变成
        weight 优先，直接 first 6 会把连载的 00/01/02 顶到最新区最前面。 */}}
-{{- $latest := first 6 ((where site.RegularPages "Type" "in" $sectionKeys).ByDate.Reverse) }}
+{{- $articles := where site.RegularPages "Type" "in" $sectionKeys }}
+{{- $latest := first 6 ((where $articles "Params.placeholder" "ne" true).ByDate.Reverse) }}
 {{- with $latest }}
 <section class="block" aria-label="最新文章">
   <div class="block-head">

@@ -1,0 +1,15 @@
+{{- /* 新读者从首篇进入，追更读者进最新篇；纯草稿连载显示预览入口。 */ -}}
+{{- $pages := .Page.RegularPages.ByDate -}}
+{{- $published := where (where $pages "Params.placeholder" "ne" true) "Draft" false -}}
+{{- $planned := where $pages "Params.placeholder" true -}}
+<nav class="series-reading" aria-label="连载阅读入口">
+  {{- if $published }}
+    {{- with index $published 0 }}<a class="series-start" href="{{ .RelPermalink }}">从头阅读 <span>从第一篇开始 →</span></a>{{ end }}
+    {{- with index ($published.ByDate.Reverse) 0 }}<a href="{{ .RelPermalink }}">阅读最新 <span>{{ .Title }} →</span></a>{{ end }}
+  {{- else if $planned }}
+    {{- with index $planned 0 }}<a class="series-start" href="{{ .RelPermalink }}">预览首篇 <span>从第一篇开始 →</span></a>{{ end }}
+    {{- with index ($planned.ByDate.Reverse) 0 }}<a href="{{ .RelPermalink }}">预览末篇 <span>查看目前规划的最后一篇 →</span></a>{{ end }}
+  {{- else }}
+  <p>章节正在准备中。</p>
+  {{- end }}
+</nav>

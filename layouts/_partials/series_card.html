@@ -1,34 +1,52 @@
-{{- /* 系列 / 专栏入口卡。用法：partial "series_card.html" (dict "page" $栏目页)
-
-       抽出来是因为首页的「连载」「专栏」两个区和 /columns/ 总览页渲染的是同一张卡，
-       写三遍迟早会漂移。
-
-       两种 columnKind 的差别只剩「要不要显示状态徽章」—— 因为连载的写作顺序就是
-       时间顺序，所以「最新一章」和「最新一篇」是同一个人（日期最新的那篇），
-       不需要再分两套取法。 */ -}}
+{{- /* 连载提供目录、从头读与读最新三个入口；专栏保留整卡进入栏目。
+     预览占位稿独立计数，不冒充已经发布的文章。 */ -}}
 {{- $p := .page -}}
 {{- $kind := $p.Param "columnKind" | default "column" -}}
 {{- $pages := $p.RegularPages -}}
+{{- $published := where (where $pages "Params.placeholder" "ne" true) "Draft" false -}}
+{{- $planned := where $pages "Params.placeholder" true -}}
 {{- $latest := "" -}}
-{{- if $pages -}}{{- $latest = index ($pages.ByDate.Reverse) 0 -}}{{- end -}}
-{{- $statusLabels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" -}}
-<a class="series-card" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" href="{{ $p.RelPermalink }}">
+{{- if $published -}}{{- $latest = index ($published.ByDate.Reverse) 0 -}}{{- end -}}
+{{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" -}}
+{{- if eq $kind "serial" }}
+<article class="series-card" data-series="{{ $p.Section }}" data-kind="serial">
+{{- else }}
+<a class="series-card" data-series="{{ $p.Section }}" data-kind="column" href="{{ $p.RelPermalink }}">
+{{- end }}
   <div class="series-head">
     <span class="series-dot" aria-hidden="true"></span>
+    {{- if eq $kind "serial" }}
+    <a class="series-name" href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+    {{- else }}
     <span class="series-name">{{ $p.Title }}</span>
-    {{- if eq $kind "serial" -}}
-    {{- with $p.Param "status" }}
-    <span class="series-status">{{ index $statusLabels . | default . }}</span>
-    {{- end -}}
     {{- end }}
-    <span class="series-count">{{ len $pages }} 篇</span>
+    {{- if eq $kind "serial" }}{{- with $p.Param "status" }}
+    <span class="series-status">{{ index $labels . | default . }}</span>
+    {{- end }}{{- end }}
+    <span class="series-count">{{ len $published }} 篇</span>
   </div>
-  {{- with $p.Description }}
-  <p class="series-desc">{{ . }}</p>
-  {{- end }}
-  {{- with $latest }}
+  {{- with $p.Description }}<p class="series-desc">{{ . }}</p>{{ end }}
+  {{- if $latest }}{{- with $latest }}
   <p class="series-latest"><span>最新</span>{{ .Title }}</p>
-  {{- else }}
-  <p class="series-latest series-empty">还没有文章</p>
   {{- end }}
+  {{- else if $planned }}
+  <p class="series-latest series-empty">{{ len $planned }} 篇章节规划 · 内容待写</p>
+  {{- else }}
+  <p class="series-latest series-empty">章节正在准备中</p>
+  {{- end }}
+  {{- if eq $kind "serial" }}
+  <div class="series-actions">
+    {{- if $published }}
+      {{- with index ($published.ByDate) 0 }}<a href="{{ .RelPermalink }}">从头阅读 →</a>{{ end }}
+      {{- with $latest }}<a href="{{ .RelPermalink }}">阅读最新 →</a>{{ end }}
+    {{- else if $planned }}
+      {{- with index ($planned.ByDate) 0 }}<a href="{{ .RelPermalink }}">预览首篇 →</a>{{ end }}
+      <a href="{{ $p.RelPermalink }}">章节目录 →</a>
+    {{- else }}
+      <a href="{{ $p.RelPermalink }}">查看连载 →</a>
+    {{- end }}
+  </div>
+</article>
+  {{- else }}
 </a>
+  {{- end }}

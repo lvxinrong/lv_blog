@@ -2,22 +2,24 @@
          partial "series_status.html" (dict "page" $栏目页 "variant" "hero"|"page")
 
        刻意**不是**进度条：没有分母、没有百分比、没有任何时间承诺。
-       只说三件从数据里推得出来的事实 —— 已写多少篇、最近什么时候动过、在读什么。
+       只说从数据里推得出来的事实 —— 已发布多少篇、最近更新时间、预览中多少篇待写。
        这样读者知道「这东西是活的、已经有东西可看」，但作者不被任何周期绑住。
 
        两种形态语义不同，所以标记是分支写的：
-         hero  首页 Hero 下方 —— 是入口，所以给名字和「看连载 →」，整块可点
+         hero  首页 Hero 下方 —— 紧凑动态条，给名字、状态和事实，整块可点
          page  栏目页头部下方 —— 读者已经在这里了，所以只说事实，不是链接
 
        只有 columnKind = "serial" 的栏目会渲染。column 没有「连载状态」可言。 */ -}}
 {{- $p := .page -}}
 {{- $variant := .variant | default "page" -}}
 {{- if eq ($p.Param "columnKind") "serial" -}}
-  {{- $notes := $p.RegularPages -}}
-  {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" -}}
+  {{- $notes := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false -}}
+  {{- $planned := where $p.RegularPages "Params.placeholder" true -}}
+  {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" -}}
   {{- $status := "" -}}
   {{- with $p.Param "status" -}}{{- $status = index $labels . | default . -}}{{- end -}}
-  {{- $facts := printf "已写 %d 篇笔记" (len $notes) -}}
+  {{- $facts := printf "已发布 %d 篇" (len $notes) -}}
+  {{- if $planned -}}{{- $facts = printf "%s · %d 篇待写" $facts (len $planned) -}}{{- end -}}
   {{- with $notes -}}
     {{- $latest := index (.ByDate.Reverse) 0 -}}
     {{- $facts = printf "%s · 最近更新 %s" $facts ($latest.Date.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
@@ -31,12 +33,9 @@
       {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
       <span class="pstat-name">{{ $p.Title }}</span>
     </span>
-    {{- with $p.Description }}
-    <span class="pstat-desc">{{ . }}</span>
-    {{- end }}
     <span class="pstat-foot">
       <span class="pstat-facts">{{ $facts }}</span>
-      <span class="pstat-go">看连载 →</span>
+      <span class="pstat-go" aria-hidden="true">→</span>
     </span>
   </a>
 

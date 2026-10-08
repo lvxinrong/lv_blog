@@ -167,8 +167,8 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 
 | 位置 | 形态 | 内容 |
 |---|---|---|
-| 首页 Hero 下方 | `variant="hero"` | 连载中 · 栏目名 · 在读什么书 · 已写 N 篇 · 最近更新 X 日期 · 看连载 → |
-| 栏目页头部下方 | `variant="page"` | 连载中 · 已写 N 篇 · 最近更新 X 日期（**不是链接**） |
+| 首页 Hero 下方 | `variant="hero"` | 多条紧凑动态：状态 · 栏目名 · 已发布篇数 · 最近更新；草稿预览另列待写篇数 |
+| 栏目页头部下方 | `variant="page"` | 状态 · 已发布篇数 · 最近更新；草稿预览另列待写篇数（**不是链接**） |
 
 实现在 `layouts/_partials/series_status.html`，两种形态分支写（Hero 是入口、栏目页是现状，
 共用标记会让文案串味）。栏目页那一处靠 `layouts/_shortcodes/series_status.html` 落地：
@@ -201,6 +201,21 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 > 遗留：`content/llm/手搓LLM笔记00-立项书.md` 正文里仍写着「周期：12 周」和
 > 「每周一篇三问式笔记」—— 那是作者自己的立项文档，且带立项日期，属于历史记录，
 > **未改动，等作者决定**。
+
+### 生产排查 Skill 连载的样式预览
+
+`content/incident-skill/` 是第二个连载。栏目和 00 至 05 六篇占位稿均为 `draft = true`，
+本地用 `hugo server --renderToMemory --buildDrafts` 才能看到；普通构建不会发布它们。
+占位稿另有 `placeholder = true`，在动态条和连载卡片中计为“待写”，不计为“已发布”，
+也不进入首页最新文章。占位稿用 `hiddenInRss = true` 排除 RSS。
+
+首页动态区展示所有 featured 连载，使用紧凑状态条；连载卡片分别提供目录、
+从头阅读和阅读最新的入口。`series_reading` shortcode 可在栏目正文里提供相同的阅读路径。
+列表继续按日期倒序，相邻文章仍只在当前栏目内按日期升序计算。
+
+正式发布时先补正文并设置真实日期，移除文章的 `placeholder`、`draft` 和 `hiddenInRss`，
+再移除栏目草稿标记、把 `status` 从 `planning` 改成 `ongoing`，并替换目录中的预览说明。
+这里的六篇是可调整的章节规划，不是固定总篇数或完成承诺。
 
 ### 只有两根轴：栏目 + 标签
 
@@ -521,7 +536,7 @@ EOF
 
 ---
 
-## 5. layouts/ 覆盖清单（17 个）
+## 5. layouts/ 覆盖清单（18 个）
 
 Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为，**且主题升级不会冲掉**。代价是升级后不会自动获得更新。
 
@@ -583,6 +598,7 @@ cd /path/to/site
 | `_partials/post_nav_links.html` | 上一篇 / 下一篇限定当前栏目，**连载和专栏都按日期升序**算（旧→新）；连载末篇返回目录。避开主题默认的全站跨栏目跳转 |
 | `_partials/series_status.html` | 连载状态栏，两种形态（hero / page）。**刻意不是进度条**，见第 4 节 |
 | `_shortcodes/series_status.html` | 让栏目 `_index.md` 正文里能写 `{{< series_status >}}`。**这是不覆盖 `list.html` 还能改栏目页头部的关键** |
+| `_shortcodes/series_reading.html` | 栏目正文的首篇与最新篇入口；占位稿只提供明确标注的预览入口 |
 | `archives.html` | 主题硬编码 `GroupByDate "January"`，中文站会显示英文月份。改成按 `2006-01` 分组（字典序即时间序）再渲染成「9 月」 |
 | `404.html` | 主题只渲染一个光秃秃的 `404`，加了说明和回首页入口 |
 | `_partials/footer.html` | 在版权行上方插入社交按钮。**注意 `extend_footer.html` 挂载点在 `</footer>` 之后，塞不进去，必须覆盖整个 partial** |

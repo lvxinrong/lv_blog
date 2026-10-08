@@ -120,6 +120,7 @@ params:
 
   mainSections:
     - llm
+    - incident-skill
     - ai
     - craft
 

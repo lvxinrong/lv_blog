@@ -1470,6 +1470,7 @@ details.toc a:hover {
 [data-series="llm"]   { --series: var(--series-llm);   --series-soft: var(--series-llm-soft); }
 [data-series="ai"]    { --series: var(--series-ai);    --series-soft: var(--series-ai-soft); }
 [data-series="craft"] { --series: var(--series-craft); --series-soft: var(--series-craft-soft); }
+[data-series="incident-skill"] { --series: #2b7a5a; --series-soft: rgba(43, 122, 90, 0.10); }
 
 /* ---------- 系列入口卡 ---------- */
 
@@ -1523,6 +1524,7 @@ details.toc a:hover {
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 
 .series-dot {
@@ -1534,11 +1536,14 @@ details.toc a:hover {
 }
 
 .series-name {
+    min-width: 0;
+    flex: 1;
     font-size: 16px;
     font-weight: 650;
     letter-spacing: -0.01em;
     color: var(--primary);
     transition: color 0.16s ease;
+    text-decoration: none;
 }
 
 .series-card:hover .series-name {
@@ -1615,6 +1620,88 @@ details.toc a:hover {
 
 .series-empty {
     opacity: 0.65;
+}
+
+.series-actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--series);
+}
+
+.series-actions a:hover,
+.series-actions a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* 两个连载共用紧凑动态区，避免每增加一个系列就多占一整张介绍卡的高度。 */
+.series-activity {
+    display: grid;
+    gap: 8px;
+    margin: 24px 0 6px;
+}
+
+.series-activity .pstat-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding: 12px 14px;
+}
+
+.series-activity .pstat-foot {
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* 目录页保留日期倒序，首次阅读入口明确指向最早一篇。 */
+.md-content .series-reading {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 22px 0;
+}
+
+.md-content .series-reading a {
+    display: block;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--entry);
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.md-content .series-reading a.series-start {
+    border-color: var(--series);
+    background: var(--series-soft);
+}
+
+.md-content .series-reading a:hover,
+.md-content .series-reading a:focus-visible {
+    border-color: var(--series);
+    color: var(--series);
+}
+
+.series-reading a span {
+    display: block;
+    margin-top: 7px;
+    color: var(--secondary);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 /* ---------- 分区标题（连载 / 专栏 / 最新 三个区共用） ---------- */
@@ -1831,5 +1918,18 @@ details.toc a:hover {
 
     .series-desc {
         -webkit-line-clamp: 3;
+    }
+
+    .series-activity .pstat-hero {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .series-activity .pstat-foot {
+        justify-content: space-between;
+    }
+
+    .md-content .series-reading {
+        grid-template-columns: 1fr;
     }
 }
