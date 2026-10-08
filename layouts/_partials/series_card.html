@@ -30,8 +30,6 @@
     {{- end }}
     <span class="series-count">{{ len $pages }} 篇</span>
   </div>
-  {{- /* 只有设了 startDate/totalWeeks 的连载会渲染出东西 */ -}}
-  {{- partial "series_progress.html" (dict "page" $p "variant" "card") }}
   {{- with $p.Description }}
   <p class="series-desc">{{ . }}</p>
   {{- end }}

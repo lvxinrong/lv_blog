@@ -1,0 +1,52 @@
+{{- /* 连载状态栏。用法：
+         partial "series_status.html" (dict "page" $栏目页 "variant" "hero"|"page")
+
+       刻意**不是**进度条：没有分母、没有百分比、没有任何时间承诺。
+       只说三件从数据里推得出来的事实 —— 已写多少篇、最近什么时候动过、在读什么。
+       这样读者知道「这东西是活的、已经有东西可看」，但作者不被任何周期绑住。
+
+       两种形态语义不同，所以标记是分支写的：
+         hero  首页 Hero 下方 —— 是入口，所以给名字和「看连载 →」，整块可点
+         page  栏目页头部下方 —— 读者已经在这里了，所以只说事实，不是链接
+
+       只有 columnKind = "serial" 的栏目会渲染。column 没有「连载状态」可言。 */ -}}
+{{- $p := .page -}}
+{{- $variant := .variant | default "page" -}}
+{{- if eq ($p.Param "columnKind") "serial" -}}
+  {{- $notes := $p.RegularPages -}}
+  {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" -}}
+  {{- $status := "" -}}
+  {{- with $p.Param "status" -}}{{- $status = index $labels . | default . -}}{{- end -}}
+  {{- $facts := printf "已写 %d 篇笔记" (len $notes) -}}
+  {{- with $notes -}}
+    {{- $latest := index (.ByDate.Reverse) 0 -}}
+    {{- $facts = printf "%s · 最近更新 %s" $facts ($latest.Date.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
+  {{- end -}}
+
+  {{- if eq $variant "hero" -}}
+  {{- /* data-series 必须显式写：首页 Hero 不在任何 [data-series] 容器里，
+         少了它 var(--series) 取不到值（CSS 里 [data-series] 只负责定义变量）。 */ -}}
+  <a class="pstat pstat-hero" data-series="{{ $p.Section }}" href="{{ $p.RelPermalink }}">
+    <span class="pstat-head">
+      {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
+      <span class="pstat-name">{{ $p.Title }}</span>
+    </span>
+    {{- with $p.Description }}
+    <span class="pstat-desc">{{ . }}</span>
+    {{- end }}
+    <span class="pstat-foot">
+      <span class="pstat-facts">{{ $facts }}</span>
+      <span class="pstat-go">看连载 →</span>
+    </span>
+  </a>
+
+  {{- else -}}
+  {{- /* 不是链接、不说「看连载」—— 读者已经在连载页里了。 */ -}}
+  <div class="pstat pstat-page" data-series="{{ $p.Section }}">
+    <div class="pstat-head">
+      {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
+      <span class="pstat-facts">{{ $facts }}</span>
+    </div>
+  </div>
+  {{- end -}}
+{{- end -}}

@@ -1,0 +1,4 @@
+{{- /* 让连载的 _index.md 正文里可以直接写 {{< series_status >}} 来渲染状态栏。
+       这样可以不改主题的 list.html 就把状态放进栏目页头部下方
+       （list.html 本来就会渲染 section 的 .Content，见其第 33~39 行）。 */ -}}
+{{- partial "series_status.html" (dict "page" .Page "variant" "page") -}}
