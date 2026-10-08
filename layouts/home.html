@@ -1,10 +1,45 @@
 {{- define "main" }}
 
-{{/* 自定义首页：三个系列分开呈现，而不是混成一条时间线。
-     结构 = Hero → 系列入口卡（固定 3 张）→ 最新文章（带系列徽章）。
-     分区页 /llm/ /ai/ /craft/ 仍由主题的 list.html 渲染，不受影响。 */}}
+{{/* 自定义首页：分三个区，而不是把两种物种混成一条时间线。
+     结构 = Hero → 连载 → 专栏 → 最新。
+
+     为什么分区：连载（serial，有顺序、会追更）和专栏（column，主题抽屉、篇与篇
+     独立）是两种完全不同的东西，并排躺在同一排卡片里会互相稀释 —— 读者分不清
+     哪个该从头读、哪个可以随便挑。
+
+     两个区各自独立地不膨胀：
+       - 连载同时维护的通常 1~3 个，本来就少；
+       - 专栏靠 _index.md 里的 featured 卡在首页 4 张以内，多的沉到 /columns/。
+     所以首页不会随着栏目总数线性变长。
+
+     栏目页 /llm/ /ai/ /craft/ 仍由主题的 list.html 渲染，不受这里影响。 */}}
 
 {{- $sectionKeys := site.Params.mainSections }}
+
+{{- /* 把栏目页收成一个列表。featured 只在首页用来筛选和排序，/columns/ 不看它。 */}}
+{{- $sections := slice }}
+{{- range $sectionKeys }}
+  {{- with site.GetPage (printf "/%s" .) }}
+    {{- $sections = $sections | append . }}
+  {{- end }}
+{{- end }}
+
+{{- /* 首页只展示设了 featured 的栏目，按 featured 升序；没设的不上首页。
+       这是个显式动作 —— 首页位置是稀缺资源，新增栏目不该自动挤进来。 */}}
+{{- $serials := slice }}
+{{- $columns := slice }}
+{{- range $sections }}
+  {{- $p := . }}
+  {{- with .Param "featured" }}
+    {{- if eq ($p.Param "columnKind") "serial" }}
+      {{- $serials = $serials | append (dict "w" . "p" $p) }}
+    {{- else }}
+      {{- $columns = $columns | append (dict "w" . "p" $p) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $serials = first 4 (sort $serials "w") }}
+{{- $columns = first 4 (sort $columns "w") }}
 
 {{- /* ---------- Hero ---------- */}}
 {{- with site.Params.homeInfoParams }}
@@ -26,40 +61,41 @@
 </article>
 {{- end }}
 
-{{- /* ---------- 系列入口卡 ---------- */}}
-<section class="series-section" aria-label="文章系列">
+{{- /* ---------- 连载 ---------- */}}
+{{- with $serials }}
+<section class="block" aria-label="连载">
+  <div class="block-head">
+    <h2 class="block-title">连载</h2>
+    <a class="block-more" href="{{ "columns/" | absLangURL }}">全部连载 →</a>
+  </div>
   <div class="series-grid">
-    {{- range $sectionKeys }}
-    {{- $key := . }}
-    {{- with site.GetPage (printf "/%s" $key) }}
-    {{- $pages := sort .RegularPages "Date" "desc" }}
-    <a class="series-card" data-series="{{ $key }}" href="{{ .RelPermalink }}">
-      <div class="series-head">
-        <span class="series-dot" aria-hidden="true"></span>
-        <span class="series-name">{{ .Title }}</span>
-        <span class="series-count">{{ len $pages }} 篇</span>
-      </div>
-      {{- with .Description }}
-      <p class="series-desc">{{ . }}</p>
-      {{- end }}
-      {{- with index $pages 0 }}
-      <p class="series-latest"><span>最新</span>{{ .Title }}</p>
-      {{- else }}
-      <p class="series-latest series-empty">还没有文章</p>
-      {{- end }}
-    </a>
-    {{- end }}
-    {{- end }}
+    {{- range . }}{{ partial "series_card.html" (dict "page" .p) }}{{ end }}
   </div>
 </section>
+{{- end }}
+
+{{- /* ---------- 专栏 ---------- */}}
+{{- with $columns }}
+<section class="block" aria-label="专栏">
+  <div class="block-head">
+    <h2 class="block-title">专栏</h2>
+    <a class="block-more" href="{{ "columns/" | absLangURL }}">全部专栏 →</a>
+  </div>
+  <div class="series-grid">
+    {{- range . }}{{ partial "series_card.html" (dict "page" .p) }}{{ end }}
+  </div>
+</section>
+{{- end }}
 
 {{- /* ---------- 最新文章 ---------- */}}
-{{- $latest := first 6 (where site.RegularPages "Type" "in" $sectionKeys) }}
+{{- /* 必须显式按日期倒序：连载文章设了 weight 之后，site.RegularPages 会变成
+       weight 优先，直接 first 6 会把连载的 00/01/02 顶到最新区最前面。 */}}
+{{- $latest := first 6 ((where site.RegularPages "Type" "in" $sectionKeys).ByDate.Reverse) }}
 {{- with $latest }}
-<section class="latest-section" aria-label="最新文章">
-  <div class="latest-head">
-    <h2 class="latest-title">最新</h2>
-    <a class="latest-more" href="{{ "archives/" | absLangURL }}">全部文章 →</a>
+<section class="block" aria-label="最新文章">
+  <div class="block-head">
+    <h2 class="block-title">最新</h2>
+    <a class="block-more" href="{{ "archives/" | absLangURL }}">全部文章 →</a>
   </div>
 
   {{- range . }}

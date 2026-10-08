@@ -1,0 +1,41 @@
+{{- /* 系列 / 专栏入口卡。用法：partial "series_card.html" (dict "page" $栏目页)
+
+       抽出来是因为首页的「连载」「专栏」两个区和 /columns/ 总览页渲染的是同一张卡，
+       写三遍迟早会漂移。
+
+       两种 columnKind 的差别都收在这里：
+         serial —— 显示状态徽章；「最新」取 weight 最大的那一章（最新一章）
+         column —— 不显示状态；「最新」取日期最新的那篇 */ -}}
+{{- $p := .page -}}
+{{- $kind := $p.Param "columnKind" | default "column" -}}
+{{- $pages := $p.RegularPages -}}
+{{- $latest := "" -}}
+{{- if $pages -}}
+  {{- if eq $kind "serial" -}}
+    {{- $ordered := $pages.ByWeight -}}
+    {{- $latest = index $ordered (sub (len $ordered) 1) -}}
+  {{- else -}}
+    {{- $latest = index ($pages.ByDate.Reverse) 0 -}}
+  {{- end -}}
+{{- end -}}
+{{- $statusLabels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" -}}
+<a class="series-card" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" href="{{ $p.RelPermalink }}">
+  <div class="series-head">
+    <span class="series-dot" aria-hidden="true"></span>
+    <span class="series-name">{{ $p.Title }}</span>
+    {{- if eq $kind "serial" -}}
+    {{- with $p.Param "status" }}
+    <span class="series-status">{{ index $statusLabels . | default . }}</span>
+    {{- end -}}
+    {{- end }}
+    <span class="series-count">{{ len $pages }} 篇</span>
+  </div>
+  {{- with $p.Description }}
+  <p class="series-desc">{{ . }}</p>
+  {{- end }}
+  {{- with $latest }}
+  <p class="series-latest"><span>最新</span>{{ .Title }}</p>
+  {{- else }}
+  <p class="series-latest series-empty">还没有文章</p>
+  {{- end }}
+</a>

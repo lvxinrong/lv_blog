@@ -5,7 +5,6 @@ slug = "programmers-in-ai-era"
 aliases = ["/ai/ai时代下程序员何去何从/"]
 date = 2026-06-25T13:34:00+08:00
 draft = false
-categories = ["AI随想"]
 tags = ["AI", "职业", "程序员", "长文"]
 summary = "一个 11 年开发者的焦虑、重构与共生实践。AI 不是敌人，是放大器。"
 [cover]

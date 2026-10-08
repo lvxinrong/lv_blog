@@ -1,10 +1,11 @@
 +++
+weight = 3
+# 连载顺序（Hugo 的 Pages 默认按 weight 升序）。抽屉型栏目不设这个字段。
 title = "手搓 LLM 笔记 02：注意力，让每个 token 看完全场"
 date = 2026-09-30T10:00:00+08:00
 draft = false
 slug = "llm-02-attention"
 aliases = ["/llm/手搓llm笔记02-第三章/"]
-categories = ["手搓LLM"]
 tags = ["LLM", "Attention", "学习笔记"]
 summary = "从简化版到带可训练权重的自注意力：三步走、三块矩阵、sqrt(d_k)、以及梯度怎么流回去。学了三小时，答了五道题。"
 [cover]

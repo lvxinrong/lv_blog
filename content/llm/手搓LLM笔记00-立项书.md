@@ -1,11 +1,12 @@
 +++
+weight = 1
+# 连载顺序（Hugo 的 Pages 默认按 weight 升序）。抽屉型栏目不设这个字段。
 title = "手搓 LLM 笔记 00：立项书"
 # 短链接用的 slug；aliases 指向改动前的中文路径，保证已分享的链接不失效
 slug = "llm-00-proposal"
 aliases = ["/llm/手搓llm笔记00-立项书/"]
 date = 2026-09-21T22:00:00+08:00
 draft = false
-categories = ["手搓LLM"]
 tags = ["LLM", "立项", "学习笔记"]
 summary = "为什么我要从零造一个大模型。这不是教程的开篇，是一份写给自己的立项文档。"
 [cover]

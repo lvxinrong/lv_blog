@@ -1475,7 +1475,9 @@ details.toc a:hover {
 
 .series-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* auto-fit 而不是写死 3 列：写死 3 列时，第 4 个栏目会在第二行孤零零挂一张，
+       栅格不会重排。auto-fit + minmax 让 2 个不空、4 个不挤、5 个自动折行。 */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 44px;
 }
@@ -1484,6 +1486,9 @@ details.toc a:hover {
     position: relative;
     display: flex;
     flex-direction: column;
+    /* 栅格是 1fr 会拉伸，只有一个栏目时卡片会撑满整行、和下面两列的那排不成比例。
+       封顶之后 1 张卡是卡片宽度、2~3 张仍然铺满，观感才一致。 */
+    max-width: 360px;
     padding: 20px;
     overflow: hidden;
     color: inherit;
@@ -1552,6 +1557,28 @@ details.toc a:hover {
     border-radius: 999px;
 }
 
+/* 连载状态徽章（连载中 / 已完结 / 暂缓）。只有 serial 栏目的卡片会渲染它。
+   视觉上比右侧的篇数徽章轻，避免两个胶囊互相抢。 */
+.series-status {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--secondary);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+}
+
+.series-card[data-kind="serial"] .series-status {
+    color: var(--series);
+    background: transparent;
+    border-color: var(--series);
+    opacity: 0.85;
+}
+
 .series-desc {
     position: relative;
     margin: 0 0 14px;
@@ -1590,13 +1617,18 @@ details.toc a:hover {
     opacity: 0.65;
 }
 
-/* ---------- 最新列表 ---------- */
+/* ---------- 分区标题（连载 / 专栏 / 最新 三个区共用） ---------- */
 
-.latest-section {
+.block {
     margin-top: 4px;
 }
 
-.latest-head {
+/* 首页上三个区之间的呼吸。用相邻兄弟选择器，第一区不会多出一块上边距。 */
+.block + .block {
+    margin-top: 40px;
+}
+
+.block-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -1604,7 +1636,7 @@ details.toc a:hover {
     margin-bottom: 14px;
 }
 
-.latest-title {
+.block-title {
     margin: 0;
     font-size: 15px;
     font-weight: 700;
@@ -1612,15 +1644,50 @@ details.toc a:hover {
     color: var(--secondary);
 }
 
-.latest-more {
+.block-more {
     font-size: 13px;
     color: var(--secondary);
     text-decoration: none;
     transition: color 0.16s ease;
 }
 
-.latest-more:hover {
+.block-more:hover {
     color: var(--accent);
+}
+
+/* ---------- 连载列表的章序号 ---------- */
+
+/* 序号用纯 CSS counter 生成，不改主题的 list.html —— 这样就不用再多一个
+   要跟着主题升级 diff 的覆盖文件。
+   钩子是 extend_footer.html 给 <html> 打的 data-kind，只有本站栏目页会有，
+   所以首页「最新」区里的 .post-entry 不会被编上号。 */
+html[data-kind="serial"] body {
+    counter-reset: chapter;
+}
+
+html[data-kind="serial"] .post-entry {
+    counter-increment: chapter;
+}
+
+html[data-kind="serial"] .post-entry .entry-header h2 {
+    /* 主题给 .entry-hint-parent 设了 justify-content: space-between，
+       不加这句，序号和标题会被推到列表的两端（标题右对齐），看着像坏了。 */
+    justify-content: flex-start;
+}
+
+html[data-kind="serial"] .post-entry .entry-header h2::before {
+    content: counter(chapter, decimal-leading-zero);
+    flex: 0 0 auto;
+    align-self: center;
+    margin-inline-end: 10px;
+    padding: 2px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+    color: var(--series);
+    background: var(--series-soft);
+    border-radius: 6px;
 }
 
 /* 卡片上的系列徽章 */
@@ -1688,6 +1755,8 @@ details.toc a:hover {
     }
 
     .series-card {
+        /* 单列时不该再有宽度上限，否则窄屏上右边会空出一条 */
+        max-width: none;
         padding: 16px;
     }
 

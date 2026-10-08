@@ -1,0 +1,62 @@
+{{- define "main" }}
+
+{{/* 全栏目总览。首页只放 featured 的那几张卡，这里是**全量**的兜底目的地 ——
+     所以栏目再多也不会没地方去。
+
+     和首页的区别：首页按 featured 筛选 + 截断，这里不筛不截，按 featured 排序
+     （没设 featured 的用 999 兜底排到最后，顺序回落到 mainSections 的配置顺序）。 */}}
+
+{{- $sections := slice }}
+{{- range site.Params.mainSections }}
+  {{- with site.GetPage (printf "/%s" .) }}
+    {{- $sections = $sections | append . }}
+  {{- end }}
+{{- end }}
+
+{{- $serials := slice }}
+{{- $columns := slice }}
+{{- range $sections }}
+  {{- $p := . }}
+  {{- $w := .Param "featured" | default 999 }}
+  {{- if eq (.Param "columnKind") "serial" }}
+    {{- $serials = $serials | append (dict "w" $w "p" $p) }}
+  {{- else }}
+    {{- $columns = $columns | append (dict "w" $w "p" $p) }}
+  {{- end }}
+{{- end }}
+
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <div class="post-description">{{ . | markdownify }}</div>
+  {{- end }}
+</header>
+
+{{- with .Content }}
+<div class="post-content md-content">{{ . }}</div>
+{{- end }}
+
+{{- with $serials }}
+<section class="block" aria-label="连载">
+  <div class="block-head">
+    <h2 class="block-title">连载</h2>
+  </div>
+  <div class="series-grid">
+    {{- range sort . "w" }}{{ partial "series_card.html" (dict "page" .p) }}{{ end }}
+  </div>
+</section>
+{{- end }}
+
+{{- with $columns }}
+<section class="block" aria-label="专栏">
+  <div class="block-head">
+    <h2 class="block-title">专栏</h2>
+  </div>
+  <div class="series-grid">
+    {{- range sort . "w" }}{{ partial "series_card.html" (dict "page" .p) }}{{ end }}
+  </div>
+</section>
+{{- end }}
+
+{{- end }}{{/* end main */}}

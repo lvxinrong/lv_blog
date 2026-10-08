@@ -17,6 +17,16 @@ summaryLength: 80
 pagination:
   pagerSize: 10
 
+# 只保留两根轴：栏目（section）和标签（tag）。
+# Hugo 默认还会生成 category 分类法，但本站每篇文章的 categories 值和它所在的
+# section 完全一一对应 —— 结果 /ai/ 和 /categories/ai随想/ 这三对页面内容一模一样，
+# 白多一套 URL、一套命名（分类名还少了空格），canonical 又各指自己，是重复内容。
+# 显式声明 taxonomies 只留 tag 就等于关掉了 category。
+# 注意：原来那个专门给出「分类」中文标题的 content/categories/_index.md 必须一起删，
+# 否则它会被当成普通 section，照样生成一个空的 /categories/ 页面。
+taxonomies:
+  tag: tags
+
 # 首页额外输出一份 JSON，作为搜索索引（PaperMod 的搜索靠它）
 outputs:
   home:

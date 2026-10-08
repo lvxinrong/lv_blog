@@ -14,10 +14,15 @@
 | 主题 | PaperMod **已内置在仓库里**（不再是 submodule），上游 commit `d376885` |
 | Hugo | `v0.166.0+extended+withdeploy`（Homebrew / macOS arm64） |
 | 站点目录 | 仓库根目录（`hugo.yaml` 在根） |
-| 线上域名 | `blog.lvxinrong.com`（`hugo.yaml` 的 `baseURL`）—— 尚未部署，参见第 11 节 |
+| 线上域名 | `blog.lvxinrong.com`（`hugo.yaml` 的 `baseURL`）—— 已上线，Cloudflare Pages 自动部署，见第 11 节 |
 | 语言 | 简体中文（`zh-CN`），单语言 |
 
-内容分三个系列：`llm`（手搓 LLM）、`ai`（AI 随想）、`craft`（工程手记）。
+内容分三个栏目，分属两种性格（这是全站信息架构的地基，见第 4 节）：
+
+- `llm` 手搓 LLM —— **连载**（有顺序，00 → 01 → 02）
+- `ai` AI 随想、`craft` 工程手记 —— **专栏**（主题抽屉，篇与篇独立）
+
+栏目之上只有一根检索轴：标签。分类（category）已砍掉。
 
 ---
 
@@ -84,23 +89,79 @@ Bug 复现需要两个条件同时成立：**dev server 正在运行** + **期�
 ```
 hugo.yaml                  全站配置（不要在 config/ 里放环境差异配置，见第 3 节）
 content/
-  {llm,ai,craft}/          三个系列，**每个必须有自己的 _index.md**
-  {tags,categories}/_index.md   中文标题（否则会渲染成英文复数）
-  about.md  archives.md
+  {llm,ai,craft}/          三个栏目，**每个必须有自己的 _index.md**（栏目的性格写在里面）
+  tags/_index.md           中文标题（否则会渲染成英文复数）
+  about.md  archives.md  columns.md
 assets/css/extended/
-  custom.css               全部自定义样式（唯一一个文件，16 个小节）
-layouts/                   9 个主题覆盖文件（见下）
-static/                    favicon 全套
+  custom.css               全部自定义样式（唯一一个文件）
+layouts/                   站点覆盖的主题模板（见第 5 节）
+static/                    favicon 全套 + covers/ 文章封面
 public/                    构建产物，gitignore
 themes/PaperMod/           主题源码（已内置，见第 5.3 节；改动优先写在站点 layouts/）
 ```
 
 ### 内容约定
 
-- **新增系列**：建 `content/<名字>/`，里面放 `_index.md`（带 `title`、`description`），再把名字加进 `hugo.yaml` 的 `params.mainSections`。首页卡片、系列配色、归档页都跟着这个列表走。
+- **新增栏目**：建 `content/<名字>/`，里面放 `_index.md`（带 `title`、`description`、
+  `columnKind`、`featured`），再把名字加进 `hugo.yaml` 的 `params.mainSections`。
+  首页两个区、栏目配色、归档页都跟着这个列表走。
 - **不建 `_index.md` 会出事**：Hugo 会拿目录名自动衍生成英文复数标题（`llm` → "Llms"）。这个坑踩过一次。
 - 文章用 `#` 或 `##` 作章节标题（`markup.tableOfContents.startLevel: 1` 才能抓到）。
 - **正文散文里的引号一律直接写 `“ ”` 和 `‘ ’`，不要写 `"` 和 `'`。** 原因见下方「中文写作陷阱：直引号会被 typographer 猜错方向」。写完跑一次 `python3 scripts/check-content.py`。
+
+### 栏目只有两种性格：连载（serial）和专栏（column）
+
+这是全站信息架构的地基，改之前先读这段。
+
+| | 连载 `serial` | 专栏 `column` |
+|---|---|---|
+| 判据 | 文章之间有**先后关系**，读者会从头追 | 主题抽屉，篇与篇互相独立 |
+| 例子 | 手搓 LLM 笔记（00 → 01 → 02） | AI 随想、工程手记 |
+| 文章排序 | 按 `weight` 升序（**不要**按日期） | 按日期倒序 |
+| 列表页 | 每篇带章序号徽章（纯 CSS counter） | 普通列表 |
+| 首页卡片 | 带「连载中 / 已完结」状态徽章 | 不带 |
+| 卡片「最新」 | 取 weight 最大的那一章 | 取日期最新那篇 |
+| 上/下一篇 | 跟 weight 走 | 跟日期走 |
+
+**为什么必须分开**：并排放在同一排卡片里，读者分不清哪个该从头读、哪个可以随便挑 ——
+连载的价值（"我读完了整个系列"）会被抽屉稀释掉。
+
+**栏目页的参数**（写在 `content/<名字>/_index.md`）：
+
+```toml
+columnKind = "serial"    # serial | column
+status = "ongoing"       # ongoing 连载中 | complete 已完结 | paused 暂缓（只有 serial 用）
+featured = 1             # 首页展示顺序；不填 = 不上首页
+```
+
+⚠️ **参数名不能叫 `kind`** —— 那是 Hugo 的保留 front matter 键，0.147.7 上会直接构建失败。见 §8。
+
+**连载文章要设 `weight`**：
+
+```toml
+weight = 1               # 00 是第一篇；Hugo 的 Pages 集合默认按 weight 升序
+```
+
+设了之后 `/llm/` 列表页和文章底部的上/下一篇都会自动按顺序走，**不需要改任何模板**。
+但要注意副作用：`site.RegularPages` 也变成 weight 优先，所以首页「最新」区必须显式
+`.ByDate.Reverse`（`layouts/home.html` 里已经写了，别删）。
+
+**首页怎么决定放什么**：只放 `featured` 有值的栏目 —— 这是个**显式动作**，新增栏目不会自动
+挤上首页。没上首页的不会消失，它们在 `/columns/`（全栏目总览）。连载区最多 4 张、专栏区最多 4 张。
+
+### 只有两根轴：栏目 + 标签
+
+Hugo 默认给三套分类机制（section / category / tag），本站**只留 section 和 tag**。
+
+砍掉 category 的原因：每篇文章的 `categories` 值和它所在的 section 完全一一对应，
+于是 `/ai/` 和 `/categories/ai随想/` 内容一模一样（三对），白多一套 URL、一套命名
+（分类名还少了空格），canonical 又各指自己 —— 是标准意义上的重复内容。
+`hugo.yaml` 里 `taxonomies: {tag: tags}` 显式声明只留 tag 就关掉了它。
+
+**别再加回来。** 判断一个东西该用哪根轴：
+- 有先后顺序、会追更 → **新栏目**（section）
+- 只是横切的话题、用于检索 → **标签**（tag）
+
 
 ### RSS 输出全文（已配置）
 
@@ -407,7 +468,7 @@ EOF
 
 ---
 
-## 5. layouts/ 覆盖清单（10 个）
+## 5. layouts/ 覆盖清单（14 个）
 
 Hugo 里站点 `layouts/` 优先于主题，所以这些文件覆盖主题行为，**且主题升级不会冲掉**。代价是升级后不会自动获得更新。
 
@@ -441,6 +502,9 @@ layouts/baseof.html:13:50: at <.Language.Direction>: can't evaluate field Direct
 
 **规则：这几个模板里禁止出现任何跨版本改过名的 API**（`LanguageCode` / `Locale` / `Direction` / `LanguageDirection`）。需要语言标签就用 `params.languageTag`，需要方向就写字面量。
 
+**还有一类更隐蔽的版本差异：front matter 键的保留字。** 见 §8「`kind` 是保留的 front matter 键」——
+它不报弃用警告，只在旧版上直接构建失败。
+
 ### 改模板后必须用 0.147.7 复测
 
 ```bash
@@ -460,12 +524,18 @@ cd /path/to/site
 
 | 文件 | 作用 |
 |---|---|
-| `home.html` | 首页 = Hero + 系列入口卡 + 最新 6 篇。主题的 `list.html` 是把所有文章平铺，观感「三个系列混在一起」 |
+| `home.html` | 首页 = Hero + **连载**区 + **专栏**区 + 最新 6 篇。主题的 `list.html` 把所有文章平铺成一条时间线，分不出连载和抽屉 |
+| `columns.html` | `/columns/` 全栏目总览。首页只放 `featured` 的几张卡，这里是全量兜底 —— 栏目再多也不会没地方去 |
+| `_partials/series_card.html` | 栏目入口卡。首页两个区 + `/columns/` 渲染同一张卡，抽出来避免三处漂移。`serial` / `column` 的差别都收在这里 |
 | `archives.html` | 主题硬编码 `GroupByDate "January"`，中文站会显示英文月份。改成按 `2006-01` 分组（字典序即时间序）再渲染成「9 月」 |
 | `404.html` | 主题只渲染一个光秃秃的 `404`，加了说明和回首页入口 |
 | `_partials/footer.html` | 在版权行上方插入社交按钮。**注意 `extend_footer.html` 挂载点在 `</footer>` 之后，塞不进去，必须覆盖整个 partial** |
 | `_partials/social_icons.html` | 主题只渲染裸图标，认不出是 GitHub。加了文字标签，支持 `variant: hero/footer` 两种尺寸 |
-| `_partials/extend_footer.html` | 三件事：吸顶导航滚动分隔线、≥1280px 自动展开目录、按 URL 给分区页打系列标记 |
+| `_partials/extend_footer.html` | 四件事：吸顶导航滚动分隔线、≥1280px 自动展开目录、按 URL 给栏目页打 `data-series`（配色）和 `data-kind`（连载章序号的 CSS 开关） |
+
+**注意 `list.html` 不在覆盖清单里** —— 这是刻意的。连载排序靠 `weight`、章序号靠 CSS counter，
+都在主题模板之外解决，所以不用为了个性化多养一个 121 行的覆盖文件。新增这类需求时先想
+「能不能不改模板」，实在不行再覆盖。
 
 ### 5.3 主题已内置（2026-09 起不再是 submodule）
 
@@ -609,6 +679,25 @@ var series = {{ site.Params.mainSections | jsonify | safeJS }}; {{/* ✅ 得到 
 
 线上表现为「鼠标悬停文章日期，tooltip 里时区重复」。**凡是要把时间输出成字符串，一律走 `time.Format`**。这也是为什么有了 `layouts/_partials/post_meta.html` 这个覆盖。
 
+**11. `kind` 是保留的 front matter 键 —— 用它会构建失败，而且只在旧版 Hugo 上失败。**
+
+栏目的性格参数本来叫 `kind`，本地 0.166 构建完全正常，`.Param "kind"` 也能取到值
+（和模板里 Page 的方法 `.Kind` 是两个命名空间，不冲突）。但 0.147.7（**Cloudflare 线上用的版本**）直接拒绝：
+
+```
+Error: error building site: process: readAndProcessContent: "content/craft/_index.md:1:1":
+unknown kind "column" in front matter
+```
+
+改名为 `columnKind` 后两个版本都通过。
+
+**教训有两条**：
+1. Hugo 对 front matter 保留字的校验是**逐版本收紧**的。自定义 front matter 键**不要用**这些词：
+   `kind` / `type` / `layout` / `title` / `date` / `weight` / `slug` / `draft` / `path` / `url` / `aliases` / `outputs` 等。
+   拿不准就起个组合词（`columnKind`、`entryType`）或加前缀。
+2. **这就是为什么每次改模板/配置都要跑 0.147.7 复测**（§5）。0.166 通过完全不能说明问题 ——
+   这次要不是跑了双版本，会在推送后才在 Cloudflare 上炸。
+
 ---
 
 ## 9. 验证方法
@@ -670,10 +759,19 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 
 | 项 | 状态 |
 |---|---|
-| **部署** | `public/` 尚未部署；`lvxinrong.com` 托管在 Cloudflare（NS: `james.ns.cloudflare.com`）。截至撰写时 apex 无 A/AAAA 记录、`www` 为 NXDOMAIN；`baseURL` 用的是 `blog.lvxinrong.com` 子域，**上线前需确认该子域已加 DNS 记录**。上线需要：部署产物 + DNS 记录 |
-| 深色模式 CSS | 仍在 `custom.css` 中，当前不生效（`defaultTheme: light`）。是给未来恢复用的 |
-| `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」，建议加 `ShowReadingTime = false` |
-| git | 部分改动尚未提交 |
+| **部署** | ✅ 已上线 `https://blog.lvxinrong.com`。Cloudflare Pages，Git 连着 `main`，推上去自动构建。**不需要也不应该手动跑 `hugo` 再传产物** |
+| **Cloudflare 的 `HUGO_VERSION` 没 pin** | 本地 `0.166.0`，线上 `0.147.7`。这是全仓库最大的悬顶风险：Cloudflare 哪次升级默认版本就可能重演 §8 的两个构建失败。**修法**：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables → 加 `HUGO_VERSION = 0.147.7`（改完做一次重新部署验证） |
+| 标签体系需要收敛 | 21 个标签里 15 个只用过 1 次（`Attention` `BPE` `Embedding` `书单` `伙伴` `多模型` `思考` `思考方式` `特别篇` `生产排查` `程序员` `立项` `系统扫描` `脑暴` `面试`）。另有近义重复 `思考` / `思考方式`。目标 8~12 个能横跨栏目的标签；单个标签只有 1 篇时它其实是关键词，不是标签 |
+| 导航还没分层 | 现在 5 项平铺（3 栏目 + 归档 + 关于）。经验阈值是 **7 项**：栏目 ≥ 5 个时该收成「连载 ▾ / 专栏 ▾ / 归档 / 关于」。等到真到 5 个再动，否则是在猜形状 |
+| `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」有点滑稽，建议给该页加 `ShowReadingTime = false` |
+| 深色模式 CSS | 仍在 `custom.css` 里，当前不生效（`defaultTheme: light`）。是给未来恢复留的 |
+
+### 没做的两件事（有意）
+
+- **`/tags/` 和 `/columns/` 没进导航。** `/columns/` 从首页两个区的「全部… →」进得去；
+  `/tags/` 从文章底部的标签进得去。导航留给栏目本身，等分层时一起处理。
+- **分类页没做 301 重定向。** 站点还在早期，已分享的 `/categories/*` 链接直接 404 可以接受。
+  如果以后发现外链还在被访问，再在 `static/_redirects` 里补（Cloudflare Pages 原生支持这个文件）。
 
 ### 排查线上域名的一个提醒
 
