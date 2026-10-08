@@ -202,9 +202,10 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 > 「每周一篇三问式笔记」—— 那是作者自己的立项文档，且带立项日期，属于历史记录，
 > **未改动，等作者决定**。
 
-### 生产排查 Skill 连载的样式预览
+### 两个 Skill 连载的目录与草稿预览
 
-`content/incident-skill/` 是第二个连载。栏目目录公开，展示筹备状态与章节规划，
+`content/incident-skill/` 和 `content/scan-skill/` 分别记录生产排查与系统扫描 Skill，
+在首页连载区的 `featured` 分别为 2、3，使用绿色与紫色区分。两个栏目目录公开，展示筹备状态与章节规划，
 让首页和「工程实践」导航里的入口在线上也能访问。00 至 05 六篇占位稿保留 `draft = true`，
 本地用 `hugo server --renderToMemory --buildDrafts` 才能看到正文预览；普通构建不会发布占位稿。
 占位稿另有 `placeholder = true`，在动态条和连载卡片中计为“待写”，不计为“已发布”，
@@ -212,6 +213,7 @@ featured = 1             # 首页展示顺序；不填 = 不上首页
 
 首页动态区展示所有 featured 连载，使用紧凑状态条；连载卡片分别提供目录、
 从头阅读和阅读最新的入口。`series_reading` shortcode 可在栏目正文里提供相同的阅读路径。
+三张连载卡并排时，标题单独占一行，状态与篇数另起一行，避免长标题被徽章挤碎。
 列表继续按日期倒序，相邻文章仍只在当前栏目内按日期升序计算。
 
 正式发布时先补正文并设置真实日期，移除文章的 `placeholder`、`draft` 和 `hiddenInRss`，
@@ -656,7 +658,7 @@ hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
 | `defaultContentLanguage` | `zh-CN` | **原来的 `locale: zh-CN` 根本不是 Hugo 的键**，等于没写，所以中文站渲染出 `September 23, 2026` / `1 min` |
 | `hasCJKLanguage` | `true` | 不开的话 Hugo 按空格数「词」，3543 字的长文算成 1 个词、阅读时长恒为 1 分钟 |
 | `defaultTheme` + `disableThemeToggle` | `light` + `true` | **必须成对设置**：只设前者按钮还在；只设后者会退回「跟随系统」，系统深色时页面反而变暗 |
-| `mainSections` | `llm / ai / craft` | 同时驱动首页系列卡、归档页、系列配色 |
+| `mainSections` | `llm / incident-skill / scan-skill / ai / craft` | 同时驱动首页系列卡、归档页、系列配色 |
 | `markup.tableOfContents.startLevel` | `1` | 文章用 `#` 当章节标题，从 2 开始抓会得到空目录 |
 | `params.DateFormat` | `2006年1月2日` | Go 时间布局写法 |
 | `params.label.text` | `写代码，也写自己` | **只覆盖顶栏那行字**，不影响 `<title>` / RSS / 页脚（那些用 `site.Title`） |
@@ -857,7 +859,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 | **部署** | ✅ 已上线 `https://blog.lvxinrong.com`。Cloudflare Pages，Git 连着 `main`，推上去自动构建。**不需要也不应该手动跑 `hugo` 再传产物** |
 | **Cloudflare 的 `HUGO_VERSION` 没 pin** | 本地 `0.166.0`，线上 `0.147.7`。这是全仓库最大的悬顶风险：Cloudflare 哪次升级默认版本就可能重演 §8 的两个构建失败。**修法**：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables → 加 `HUGO_VERSION = 0.147.7`（改完做一次重新部署验证） |
 | 标签体系需要收敛 | 21 个标签里 15 个只用过 1 次（`Attention` `BPE` `Embedding` `书单` `伙伴` `多模型` `思考` `思考方式` `特别篇` `生产排查` `程序员` `立项` `系统扫描` `脑暴` `面试`）。另有近义重复 `思考` / `思考方式`。目标 8~12 个能横跨栏目的标签；单个标签只有 1 篇时它其实是关键词，不是标签 |
-| 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记与生产排查 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。系列目录公开即可显示入口，正文可以继续保留草稿状态 |
+| 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记、生产排查与系统扫描两个 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。系列目录公开即可显示入口，正文可以继续保留草稿状态 |
 | `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」有点滑稽，建议给该页加 `ShowReadingTime = false` |
 | 深色模式 CSS | 仍在 `custom.css` 里，当前不生效（`defaultTheme: light`）。是给未来恢复留的 |
 

@@ -121,6 +121,7 @@ params:
   mainSections:
     - llm
     - incident-skill
+    - scan-skill
     - ai
     - craft
 
@@ -203,6 +204,13 @@ menu:
       params:
         kind: 连载
         description: 从排查困境到一个 Skill 的打磨过程
+    - name: 系统扫描 Skill 诞生记
+      parent: engineering
+      pageRef: /scan-skill
+      weight: 3
+      params:
+        kind: 连载
+        description: 把看懂一个系统变成可复核的流程
     - name: 归档
       url: /archives/
       weight: 4
