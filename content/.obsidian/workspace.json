@@ -11,10 +11,14 @@
             "id": "704c2a68d98f07f0",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "llm/手搓LLM笔记03-因果掩码与多头.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "手搓LLM笔记03-因果掩码与多头"
             }
           }
         ]
@@ -183,6 +187,9 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "llm/手搓LLm笔记02-第三章.md",
+    "llm/手搓LLM笔记03-因果掩码与多头.md",
+    "llm/手搓LLM笔记00-立项书.md",
     "scan-skill/introduction.md",
     "scan-skill/_index.md",
     "scan-skill/05-walkthrough.md",
@@ -202,8 +209,6 @@
     "incident-skill/00-origin.md",
     "incident-skill",
     "columns.md",
-    "llm/手搓LLM笔记03-因果掩码与多头.md",
-    "llm/手搓LLm笔记02-第三章.md",
     "llm/手搓LLM笔记01-第二章.md",
     "ai/与其蒸馏自己不如讲述自己.md",
     "ai/我的脑暴搭子不是人.md",
