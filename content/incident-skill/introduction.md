@@ -2,7 +2,7 @@
 title = "生产排查 Skill 深解：不教 AI 排查，只给它现场和纪律"
 slug = "introduction"
 date = 2026-10-15T18:30:00+08:00
-draft = true
+draft = false
 tags = ["AI", "生产排查", "Skill", "工程化"]
 summary = "这套 Skill 里没有一句话教 AI 怎么排查生产问题。本文直接读源码：11 个脚本如何把「环境就绪」做成门禁，白名单如何把「只读」做成结构，210 行输出规范如何把「不许糊弄」写成清单。"
 [cover]
