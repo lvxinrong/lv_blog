@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "incident-skill/introduction.md",
+                "file": "scan-skill/introduction.md",
                 "mode": "source",
                 "source": false
               },
@@ -187,6 +187,7 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "incident-skill/introduction.md",
     "craft/生产排查不该是老师傅的手艺.md",
     "llm/手搓LLM笔记05-预训练与生成.md",
     "llm/llm-05-a4-generate.jpg",
@@ -205,7 +206,6 @@
     "scan-skill/01-layers.md",
     "scan-skill/00-origin.md",
     "scan-skill",
-    "incident-skill/introduction.md",
     "incident-skill/_index.md",
     "incident-skill/05-walkthrough.md",
     "incident-skill/04-conclusions.md",
