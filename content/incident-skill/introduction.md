@@ -1,7 +1,7 @@
 +++
 title = "生产排查 Skill 深解：不教 AI 排查，只给它现场和纪律"
 slug = "introduction"
-date = 2026-10-15T19:00:00+08:00
+date = 2026-10-15T18:30:00+08:00
 draft = false
 tags = ["AI", "生产排查", "Skill", "工程化"]
 summary = "这套 Skill 里没有一句话教 AI 怎么排查生产问题。它只做三件事：准备可复现的现场、守住只读的边界、验收可审计的结论。"

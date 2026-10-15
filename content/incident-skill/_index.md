@@ -2,7 +2,7 @@
 title = "生产排查 Skill 诞生记"
 description = "从一次排查的困境出发，记录工具接入、证据约束和反复打磨的过程。"
 columnKind = "serial"
-status = "planning"
+status = "ongoing"
 featured = 2
 draft = false
 +++
@@ -17,7 +17,7 @@ draft = false
 
 ## 章节规划
 
-这个系列正在筹备中，先列出目前想写的六个主题。正文会陆续发布，章节也可能随着写作调整。
+导读已发布，后续六章陆续更新，章节也可能随着写作调整。
 
 - **00 · 起点**：我为什么开始做一个生产排查 Skill。
 - **01 · 证据**：先让 AI 拿得到日志、调用链、源码和数据。
