@@ -1,9 +1,9 @@
-{{- /* 覆盖主题的 baseof.html：唯一改动是 dir 属性。
+{{- /* 覆盖主题的 baseof.html：兼容的 dir 属性，以及首页独立样式类。
        主题用 .Language.LanguageDirection（0.158 起弃用），
        换成 .Language.Direction 又会在 0.147 上直接报错（字段不存在）。
        本站是单语言中文、永远是 LTR，所以直接写死 "auto" —— 与主题原本
        `| default "auto"` 的最终输出完全一致，且不依赖任何版本特有 API。
-       其余与主题完全一致，方便主题升级时 diff。 */ -}}
+       首页增加 home-page 类以隔离加宽布局；其余与主题一致，方便升级时 diff。 */ -}}
 {{- if lt hugo.Version "0.146.0" }}
 {{- errorf "=> hugo v0.146.0 or greater is required for hugo-PaperMod to build " }}
 {{- end -}}
@@ -23,7 +23,7 @@
 </head>
 
 {{- if (or (ne .Kind `page` ) (eq .Layout `archives`) (eq .Layout `search`)) }}
-<body class="list" id="top">
+<body class="list{{ if .IsHome }} home-page{{ end }}" id="top">
 {{- else }}
 <body id="top">
 {{- end }}
