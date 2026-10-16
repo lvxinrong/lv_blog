@@ -187,6 +187,9 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "ai/我想把家里的设备组成一个私人AI实验室.md",
+    "llm-backlog.md",
+    "llm/手搓LLM笔记06-分类微调.md",
     "incident-skill/introduction.md",
     "craft/生产排查不该是老师傅的手艺.md",
     "llm/手搓LLM笔记05-预训练与生成.md",
@@ -213,9 +216,6 @@
     "incident-skill/02-readiness.md",
     "incident-skill/01-evidence.md",
     "incident-skill/00-origin.md",
-    "incident-skill",
-    "columns.md",
-    "llm/手搓LLM笔记01-第二章.md",
-    "ai/与其蒸馏自己不如讲述自己.md"
+    "incident-skill"
   ]
 }
