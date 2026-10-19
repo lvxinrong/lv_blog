@@ -111,6 +111,7 @@ params:
 
   mainSections:
     - llm
+    - nanochat
     - incident-skill
     - scan-skill
     - ai
