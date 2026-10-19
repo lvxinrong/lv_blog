@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "scan-skill/introduction.md",
+                "file": "llm/手搓LLM笔记07-指令微调.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "introduction"
+              "title": "手搓LLM笔记07-指令微调"
             }
           }
         ]
@@ -187,6 +187,10 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "llm/手搓LLM笔记01-第二章.md",
+    "llm/手搓LLM笔记07-指令微调.md",
+    "llm/手搓LLM笔记00-立项书.md",
+    "scan-skill/introduction.md",
     "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm-backlog.md",
     "llm/手搓LLM笔记06-分类微调.md",
@@ -199,8 +203,6 @@
     "llm/手搓LLM笔记03-因果掩码与多头.md",
     "ai/学习计划不该是一张孤零零的清单.md",
     "llm/手搓LLm笔记02-第三章.md",
-    "llm/手搓LLM笔记00-立项书.md",
-    "scan-skill/introduction.md",
     "scan-skill/_index.md",
     "scan-skill/05-walkthrough.md",
     "scan-skill/04-collaboration.md",
@@ -214,8 +216,6 @@
     "incident-skill/04-conclusions.md",
     "incident-skill/03-autonomy.md",
     "incident-skill/02-readiness.md",
-    "incident-skill/01-evidence.md",
-    "incident-skill/00-origin.md",
     "incident-skill"
   ]
 }
