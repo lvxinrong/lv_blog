@@ -71,9 +71,11 @@
     --series-llm: #1f6fe0;
     --series-ai: #7c4ddb;
     --series-craft: #0e8f9c;
+    --series-nanochat: #d97706;
     --series-llm-soft: rgba(31, 111, 224, 0.12);
     --series-ai-soft: rgba(124, 77, 219, 0.12);
     --series-craft-soft: rgba(14, 143, 156, 0.12);
+    --series-nanochat-soft: rgba(217, 119, 6, 0.12);
 
     color-scheme: light;
 }
@@ -111,9 +113,11 @@
     --series-llm: #5ea4ff;
     --series-ai: #a78bfa;
     --series-craft: #3fc9d6;
+    --series-nanochat: #f59e0b;
     --series-llm-soft: rgba(94, 164, 255, 0.16);
     --series-ai-soft: rgba(167, 139, 250, 0.16);
     --series-craft-soft: rgba(63, 201, 214, 0.16);
+    --series-nanochat-soft: rgba(245, 158, 11, 0.16);
 
     color-scheme: dark;
 }

@@ -34,6 +34,7 @@ SERIES = {
     "llm":   ("手搓 LLM", "#1f6fe0", "#5ea4ff"),
     "ai":    ("AI 随想",  "#7c4ddb", "#a78bfa"),
     "craft": ("工程手记", "#0e8f9c", "#3fc9d6"),
+    "nanochat": ("nanochat", "#d97706", "#f59e0b"),
 }
 FONT = "PingFang SC, Hiragino Sans GB, Heiti SC, sans-serif"
 CLOSERS = "。，、；：？！」』）》〉…—·"   # 不让这些跑到行首
