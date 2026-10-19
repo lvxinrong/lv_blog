@@ -187,6 +187,10 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "nanochat/立项书.md",
+    "nanochat/_index.md",
+    "nanochat",
+    "llm/nanochat-立项书.md",
     "llm/手搓LLM笔记01-第二章.md",
     "llm/手搓LLM笔记07-指令微调.md",
     "llm/手搓LLM笔记00-立项书.md",
@@ -213,9 +217,6 @@
     "scan-skill",
     "incident-skill/_index.md",
     "incident-skill/05-walkthrough.md",
-    "incident-skill/04-conclusions.md",
-    "incident-skill/03-autonomy.md",
-    "incident-skill/02-readiness.md",
     "incident-skill"
   ]
 }

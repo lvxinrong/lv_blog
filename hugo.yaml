@@ -173,8 +173,22 @@ markup:
 menu:
   main:
     - name: 手搓 LLM
-      url: /llm/
+      identifier: llm-series
       weight: 1
+    - name: 从零构建大模型
+      parent: llm-series
+      pageRef: /llm
+      weight: 1
+      params:
+        kind: 连载
+        description: 读《从零构建大模型》，把每一层都拆开看
+    - name: nanochat
+      parent: llm-series
+      pageRef: /nanochat
+      weight: 2
+      params:
+        kind: 连载
+        description: 跟着 Karpathy 的 nanochat，把零件装成整车
     - name: AI 随想
       url: /ai/
       weight: 2
