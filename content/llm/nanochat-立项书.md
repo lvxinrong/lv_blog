@@ -1,7 +1,7 @@
 +++
 title = "nanochat 立项书：从零件到整车"
 slug = "nanochat-proposal"
-date = 2026-10-19T19:00:00+08:00
+date = 2026-10-19T18:40:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "立项", "学习笔记"]
 summary = "《从零构建大模型》收官，nanochat 立项。书给了我每一块积木，nanochat 要教我积木怎么拼成一辆能跑的车。"
