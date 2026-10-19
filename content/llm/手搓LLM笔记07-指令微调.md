@@ -1,6 +1,6 @@
 +++
 title = "手搓 LLM 笔记 07：指令微调，掩码、表面对齐与 AI 评委"
-date = 2026-10-19T18:30:00+08:00
+date = 2026-10-19T18:25:00+08:00
 draft = false
 slug = "llm-07-instruction-finetune"
 tags = ["LLM", "指令微调", "SFT", "LLM-as-judge", "学习笔记"]
