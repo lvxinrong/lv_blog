@@ -1307,6 +1307,12 @@ details.toc a:hover {
         padding-top: 16px;
     }
 
+    /* 脚本不可用时保留可换行的导航，窄屏也能找到全部入口。 */
+    .header:not(.has-mobile-menu) .header-nav { position: relative; }
+    .header:not(.has-mobile-menu) .menu { flex-wrap: wrap; white-space: normal; gap: 0; }
+    .header:not(.has-mobile-menu) .nav-dropdown { position: static; }
+    .header:not(.has-mobile-menu) .nav-submenu { left: 16px; right: 16px; width: auto; }
+
     .header.has-mobile-menu .header-nav {
         position: relative;
         flex-wrap: nowrap;
@@ -1462,8 +1468,8 @@ details.toc a:hover {
         padding: 10px 0;
     }
 
-    /* 阅读途中从顶栏打开同一份目录，关闭后保持原来的阅读位置。 */
-    details.toc.is-mobile-open {
+    /* 阅读途中从顶栏打开由正文目录生成的浮层，正文布局不变。 */
+    details.toc.mobile-toc-panel {
         position: fixed;
         z-index: 45;
         top: calc(var(--header-height) + 8px);
@@ -2385,12 +2391,12 @@ body.home-page {
 
 /* 手机的栏目入口默认只占一行，展开即可找到全部连载；桌面仍为侧栏。 */
 @media (max-width: 768px) {
-    .home-intro { padding: 4px 0 16px; margin-bottom: 12px; }
-    .home-intro h1 { font-size: 28px; margin-bottom: 6px; }
+    .home-intro { padding: 0 0 12px; margin-bottom: 0; }
+    .home-intro h1 { font-size: 26px; margin-bottom: 4px; }
     .home-intro-copy { font-size: 15px; line-height: 1.7; }
     /* 联系方式在页脚仍有完整文字入口，首屏优先展示内容。 */
     .home-intro .social-icons { display: none; }
-    .home-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "discover" "recent"; gap: 20px; padding-bottom: 24px; }
+    .home-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "discover" "recent"; gap: 12px; padding-bottom: 24px; }
     .home-layout-solo { grid-template-areas: "recent"; }
     .home-discover { border: 0; padding: 0; }
     .home-discover-panel { border-bottom: 1px solid var(--border); }
@@ -2415,7 +2421,8 @@ body.home-page {
     .home-directory { grid-column: 2; grid-row: 1 / 3; align-self: center; margin: 0; }
     .home-columns { margin-top: 12px; padding-top: 16px; }
     .home-discover-all { margin-top: 4px; }
-    .home-post { padding: 16px 0; }
+    .home-recent .home-section-heading { margin-bottom: 0; }
+    .home-post { padding: 14px 0; }
     .home-post h3 { font-size: 19px; line-height: 1.5; text-wrap: balance; }
     .home-post-summary { margin: 8px 0; font-size: 15px; line-height: 1.7; }
 }

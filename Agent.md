@@ -12,14 +12,15 @@
 |---|---|
 | 类型 | Hugo 静态博客 |
 | 主题 | PaperMod **已内置在仓库里**（不再是 submodule），上游 commit `d376885` |
-| Hugo | `v0.166.0+extended+withdeploy`（Homebrew / macOS arm64） |
+| Hugo | 本地与 Cloudflare 已统一为 `v0.167.0 extended`（2026-10-19 已从线上部署日志确认） |
 | 站点目录 | 仓库根目录（`hugo.yaml` 在根） |
 | 线上域名 | `blog.lvxinrong.com`（`hugo.yaml` 的 `baseURL`）—— 已上线，Cloudflare Pages 自动部署，见第 11 节 |
 | 语言 | 简体中文（`zh-CN`），单语言 |
 
-内容分三个栏目，分属两种性格（这是全站信息架构的地基，见第 4 节）：
+内容分六个栏目，分属两种性格（这是全站信息架构的地基，见第 4 节）：
 
 - `llm` 手搓 LLM —— **连载**（有顺序，00 → 01 → 02）
+- `nanochat`、`incident-skill`、`scan-skill` —— **连载**
 - `ai` AI 随想、`craft` 工程手记 —— **专栏**（主题抽屉，篇与篇独立）
 
 栏目之上只有一根检索轴：标签。分类（category）已砍掉。
@@ -598,7 +599,7 @@ cd /path/to/site
 
 | 文件 | 作用 |
 |---|---|
-| `home.html` | 首页 = 简短介绍 + 最近 8 篇文章主栏 + 连载/专栏侧栏。手机端文章在前、栏目入口在后；不显示草稿或占位稿 |
+| `home.html` | 首页 = 简短介绍 + 最近 8 篇文章主栏 + 连载/专栏侧栏。手机端栏目入口默认折叠，排在文章前面；不显示草稿或占位稿 |
 | `columns.html` | `/columns/` 全栏目总览。首页只放 `featured` 的栏目入口，这里是全量兜底 —— 栏目再多也不会没地方去 |
 | `_partials/series_card.html` | `/columns/` 栏目总览卡片，保留完整阅读入口；首页使用轻量目录入口 |
 | `_partials/post_nav_links.html` | 上一篇 / 下一篇限定当前栏目，**连载和专栏都按日期升序**算（旧→新）；连载末篇返回目录。避开主题默认的全站跨栏目跳转 |
@@ -661,7 +662,7 @@ hugo --destination /tmp/out && /tmp/hugo147/hugo --destination /tmp/out147
 | `defaultContentLanguage` | `zh-CN` | **原来的 `locale: zh-CN` 根本不是 Hugo 的键**，等于没写，所以中文站渲染出 `September 23, 2026` / `1 min` |
 | `hasCJKLanguage` | `true` | 不开的话 Hugo 按空格数「词」，3543 字的长文算成 1 个词、阅读时长恒为 1 分钟 |
 | `defaultTheme` + `disableThemeToggle` | `light` + `true` | **必须成对设置**：只设前者按钮还在；只设后者会退回「跟随系统」，系统深色时页面反而变暗 |
-| `mainSections` | `llm / incident-skill / scan-skill / ai / craft` | 同时驱动首页系列卡、归档页、系列配色 |
+| `mainSections` | `llm / nanochat / incident-skill / scan-skill / ai / craft` | 同时驱动首页系列卡、归档页、系列配色 |
 | `markup.tableOfContents.startLevel` | `1` | 文章用 `#` 当章节标题，从 2 开始抓会得到空目录 |
 | `params.DateFormat` | `2006年1月2日` | Go 时间布局写法 |
 | `params.label.text` | `写代码，也写自己` | **只覆盖顶栏那行字**，不影响 `<title>` / RSS / 页脚（那些用 `site.Title`） |
@@ -708,8 +709,22 @@ Content: |-
 
 ### 阅读首页（2026-10 重构）
 
+**2026-10-19 移动端调整**：≤768px 顶栏改为 56px 单行，搜索保留直接入口，菜单按钮展开同一份导航。
+无 JS 时显示原生导航作为回退。菜单支持外部点击、Esc、点击链接和焦点离开收起。
+首页的 `.home-discover-panel` 在手机上默认收起并排在文章前面，桌面默认展开为右侧栏；
+只在跨断点时同步 `open`，不覆盖用户手动展开状态。首页介绍在手机上收紧，联系方式统一保留在页脚。
+nanochat 设为 `featured = 4`，四个连载都能从首页栏目入口进入。
+
+长文顶栏有手机目录按钮，浮层通过克隆正文目录生成，并清除克隆内的重复 ID，避免维护两套目录数据。
+不要把正文目录直接改成 `position: fixed`：会移除原占位，触发滚动锚定跳动。
+目录浮层支持章节跳转、关闭、外部点击和 Esc；正文目录及桌面侧栏保持原有行为。
+
+`content/llm/_index.md` 顶部增加 `series_reading`，原来的路线、进度和更新记录由
+`series_details` shortcode 包裹，默认折叠。shortcode 内部用 `Page.RenderString` 渲染 Markdown，
+无需开启全局 raw HTML，也不覆盖主题的 `list.html`。
+
 首页使用 `body.home-page` 隔离样式：版心最大 1088px（含左右各 24px 内边距），文章页的 `--main-width: 740px` 保持不变。
-桌面为文章主栏 + 280px 栏目侧栏，≤960px 收紧间距，≤768px 变为单栏。
+桌面为文章主栏 + 280px 栏目侧栏，≤960px 收紧间距，≤768px 变为单栏并将栏目入口折叠到文章前面。
 介绍文案从 `homeInfoParams` 读取。最近 8 篇只显示标题、两行摘要、栏目和日期；不显示字数与阅读时长。
 连载入口只保留一处，不重复最新章节；专栏用文字链接，全部栏目由 `/columns/` 兜底。
 首页内容使用细线和留白；首页、栏目页与文章页共用浅灰蓝底色（`#f8f9fc`）、顶部淡蓝紫色雾和轻透导航。
@@ -869,7 +884,7 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:1313/llm/
 | 项 | 状态 |
 |---|---|
 | **部署** | ✅ 已上线 `https://blog.lvxinrong.com`。Cloudflare Pages，Git 连着 `main`，推上去自动构建。**不需要也不应该手动跑 `hugo` 再传产物** |
-| **Cloudflare 的 `HUGO_VERSION` 没 pin** | 本地 `0.166.0`，线上 `0.147.7`。这是全仓库最大的悬顶风险：Cloudflare 哪次升级默认版本就可能重演 §8 的两个构建失败。**修法**：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables → 加 `HUGO_VERSION = 0.147.7`（改完做一次重新部署验证） |
+| **Hugo 版本已统一** | ✅ Cloudflare 已设置 `HUGO_VERSION = 0.167.0`，与本地一致；2026-10-19 部署日志确认成功。上文涉及 `0.147.7` 的段落是历史兼容记录 |
 | 标签体系需要收敛 | 21 个标签里 15 个只用过 1 次（`Attention` `BPE` `Embedding` `书单` `伙伴` `多模型` `思考` `思考方式` `特别篇` `生产排查` `程序员` `立项` `系统扫描` `脑暴` `面试`）。另有近义重复 `思考` / `思考方式`。目标 8~12 个能横跨栏目的标签；单个标签只有 1 篇时它其实是关键词，不是标签 |
 | 导航按主题分组 | 顶栏保持 5 项，「工程实践」下拉收纳工程手记、生产排查与系统扫描两个 Skill 系列。使用原生 `details` 支持点击、触屏和键盘；移动端面板在导航下方铺开，避免被屏幕边缘裁切。系列目录公开即可显示入口，正文可以继续保留草稿状态 |
 | `/about/` 的阅读时长 | 显示「1 分钟 · 48 字」有点滑稽，建议给该页加 `ShowReadingTime = false` |

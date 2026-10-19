@@ -19,11 +19,20 @@
         var menu = document.getElementById('menu');
         var toc = document.querySelector('details.toc');
         var tocButton = document.querySelector('.mobile-toc-toggle');
-        var tocPlaceholder = null;
-        var tocInlineOpen = false;
+        var tocPanel = null;
         header.classList.add('has-mobile-menu');
         if (toc && tocButton) {
-            toc.id = 'article-toc';
+            /* 浮层从正文目录生成；正文布局保持原样，避免滚动锚定跳动。 */
+            tocPanel = toc.cloneNode(true);
+            tocPanel.id = 'article-toc';
+            tocPanel.classList.add('mobile-toc-panel');
+            tocPanel.querySelectorAll('[id]').forEach(function (item) { item.removeAttribute('id'); });
+            tocPanel.querySelector('summary').removeAttribute('accesskey');
+            tocPanel.querySelector('summary').removeAttribute('title');
+            tocPanel.querySelector('summary').textContent = '文章目录 · 关闭';
+            tocPanel.open = true;
+            tocPanel.hidden = true;
+            document.body.appendChild(tocPanel);
             header.classList.add('has-mobile-toc');
         }
 
@@ -34,11 +43,8 @@
             if (restoreFocus) menuButton.focus({ preventScroll: true });
         };
         var closeToc = function (restoreFocus) {
-            if (!toc || !toc.classList.contains('is-mobile-open')) return;
-            /* 先在浮层状态恢复折叠，再换回正文布局，避免滚动锚定跳动。 */
-            toc.open = tocInlineOpen;
-            toc.classList.remove('is-mobile-open');
-            if (tocPlaceholder) { tocPlaceholder.remove(); tocPlaceholder = null; }
+            if (!tocPanel || tocPanel.hidden) return;
+            tocPanel.hidden = true;
             tocButton.setAttribute('aria-expanded', 'false');
             tocButton.setAttribute('aria-label', '打开文章目录');
             if (restoreFocus) tocButton.focus({ preventScroll: true });
@@ -55,38 +61,33 @@
         menu.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () { if (mobile.matches) closeMenu(false); });
         });
-        if (toc && tocButton) {
+        if (tocPanel && tocButton) {
             tocButton.addEventListener('click', function () {
-                if (toc.classList.contains('is-mobile-open')) { closeToc(true); return; }
+                if (!tocPanel.hidden) { closeToc(true); return; }
                 closeMenu(false);
-                /* 给正文里的目录留出原位置，浮层打开时正文不会上下移动。 */
-                tocInlineOpen = toc.open;
-                tocPlaceholder = document.createElement('div');
-                tocPlaceholder.setAttribute('aria-hidden', 'true');
-                tocPlaceholder.style.height = toc.getBoundingClientRect().height + 'px';
-                tocPlaceholder.style.margin = window.getComputedStyle(toc).margin;
-                toc.parentNode.insertBefore(tocPlaceholder, toc);
-                toc.classList.add('is-mobile-open');
-                toc.open = true;
+                tocPanel.hidden = false;
                 tocButton.setAttribute('aria-expanded', 'true');
                 tocButton.setAttribute('aria-label', '关闭文章目录');
-                /* 面板复用正文目录，键盘焦点随打开动作进入目录。 */
-                toc.querySelector('summary').focus({ preventScroll: true });
+                tocPanel.querySelector('summary').focus({ preventScroll: true });
             });
-            toc.querySelectorAll('a').forEach(function (link) {
+            tocPanel.querySelectorAll('a').forEach(function (link) {
                 link.addEventListener('click', function () { closeToc(false); });
             });
-            toc.addEventListener('toggle', function () {
-                if (!toc.open) closeToc(false);
+            tocPanel.querySelector('summary').addEventListener('click', function (event) {
+                event.preventDefault();
+                closeToc(true);
+            });
+            tocPanel.addEventListener('focusout', function (event) {
+                if (event.relatedTarget && !tocPanel.contains(event.relatedTarget) && event.relatedTarget !== tocButton) closeToc(false);
             });
         }
         document.addEventListener('click', function (event) {
             if (!header.contains(event.target)) closeMenu(false);
-            if (toc && tocButton && !toc.contains(event.target) && !tocButton.contains(event.target)) closeToc(false);
+            if (tocPanel && !tocPanel.contains(event.target) && !tocButton.contains(event.target)) closeToc(false);
         });
         document.addEventListener('keydown', function (event) {
             if (event.key !== 'Escape') return;
-            if (toc && toc.classList.contains('is-mobile-open')) { closeToc(true); event.preventDefault(); }
+            if (tocPanel && !tocPanel.hidden) { closeToc(true); event.preventDefault(); }
             else if (header.classList.contains('is-menu-open')) { closeMenu(true); event.preventDefault(); }
         });
         header.addEventListener('focusout', function (event) {
