@@ -28,31 +28,11 @@
 {{- end }}
 
 <div class="home-layout{{ if not (or $serials $columns) }} home-layout-solo{{ end }}">
-  <section class="home-recent" aria-labelledby="home-recent-heading">
-    <h2 class="home-section-heading" id="home-recent-heading">最近文章</h2>
-    {{- /* 即使在草稿预览中，也只把真正已发布的内容作为首页阅读推荐。 */}}
-    {{- $articles := where (where (where site.RegularPages "Type" "in" $sectionKeys) "Params.placeholder" "ne" true) "Draft" false }}
-    {{- range first 8 ($articles.ByDate.Reverse) }}
-    <article class="home-post">
-      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-      {{- if ne (.Param "hideSummary") true }}
-      <p class="home-post-summary">{{ .Summary | plainify | htmlUnescape }}</p>
-      {{- end }}
-      {{- if not (.Param "hideMeta") }}
-      <div class="home-post-meta">
-        {{- with site.GetPage (printf "/%s" .Type) }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
-        {{- if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format (default "2006年1月2日" site.Params.DateFormat) }}</time>{{ end }}
-      </div>
-      {{- end }}
-    </article>
-    {{- else }}
-    <p class="home-empty">文章正在准备中。</p>
-    {{- end }}
-    <a class="home-more" href="{{ "archives/" | relLangURL }}">查看全部文章 <span aria-hidden="true">→</span></a>
-  </section>
-
   {{- if or $serials $columns }}
   <aside class="home-discover" aria-label="按连载和专栏阅读">
+    <details class="home-discover-panel" open>
+      <summary>连载与专栏 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></summary>
+      <div class="home-discover-content">
     {{- with $serials }}
     <section aria-labelledby="home-serials-heading">
       <h2 class="home-section-heading" id="home-serials-heading">连载</h2>
@@ -80,7 +60,34 @@
     </section>
     {{- end }}
     <a class="home-more home-discover-all" href="{{ "columns/" | relLangURL }}">浏览全部栏目 <span aria-hidden="true">→</span></a>
+      </div>
+    </details>
   </aside>
   {{- end }}
+
+  <section class="home-recent" aria-labelledby="home-recent-heading">
+    <h2 class="home-section-heading" id="home-recent-heading">最近文章</h2>
+    {{- /* 即使在草稿预览中，也只把真正已发布的内容作为首页阅读推荐。 */}}
+    {{- $articles := where (where (where site.RegularPages "Type" "in" $sectionKeys) "Params.placeholder" "ne" true) "Draft" false }}
+    {{- range first 8 ($articles.ByDate.Reverse) }}
+    <article class="home-post">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      {{- if ne (.Param "hideSummary") true }}
+      <p class="home-post-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+      {{- end }}
+      {{- if not (.Param "hideMeta") }}
+      <div class="home-post-meta">
+        {{- with site.GetPage (printf "/%s" .Type) }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
+        {{- if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format (default "2006年1月2日" site.Params.DateFormat) }}</time>{{ end }}
+      </div>
+      {{- end }}
+    </article>
+    {{- else }}
+    <p class="home-empty">文章正在准备中。</p>
+    {{- end }}
+    <a class="home-more" href="{{ "archives/" | relLangURL }}">查看全部文章 <span aria-hidden="true">→</span></a>
+  </section>
+
+
 </div>
 {{- end }}

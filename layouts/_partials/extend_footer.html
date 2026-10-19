@@ -10,12 +10,99 @@
   {{- end }}
 {{- end }}
 <script>
+    /* 同一份菜单在手机上收成可展开面板；无 JS 时仍显示原生导航。 */
+    (function () {
+        var header = document.querySelector('.header');
+        var menuButton = document.querySelector('.mobile-menu-toggle');
+        if (!header || !menuButton || !window.matchMedia) return;
+        var mobile = window.matchMedia('(max-width: 768px)');
+        var menu = document.getElementById('menu');
+        var toc = document.querySelector('details.toc');
+        var tocButton = document.querySelector('.mobile-toc-toggle');
+        var tocPlaceholder = null;
+        var tocInlineOpen = false;
+        header.classList.add('has-mobile-menu');
+        if (toc && tocButton) {
+            toc.id = 'article-toc';
+            header.classList.add('has-mobile-toc');
+        }
+
+        var closeMenu = function (restoreFocus) {
+            header.classList.remove('is-menu-open');
+            menuButton.setAttribute('aria-expanded', 'false');
+            menuButton.setAttribute('aria-label', '打开导航菜单');
+            if (restoreFocus) menuButton.focus({ preventScroll: true });
+        };
+        var closeToc = function (restoreFocus) {
+            if (!toc || !toc.classList.contains('is-mobile-open')) return;
+            /* 先在浮层状态恢复折叠，再换回正文布局，避免滚动锚定跳动。 */
+            toc.open = tocInlineOpen;
+            toc.classList.remove('is-mobile-open');
+            if (tocPlaceholder) { tocPlaceholder.remove(); tocPlaceholder = null; }
+            tocButton.setAttribute('aria-expanded', 'false');
+            tocButton.setAttribute('aria-label', '打开文章目录');
+            if (restoreFocus) tocButton.focus({ preventScroll: true });
+        };
+        menuButton.addEventListener('click', function () {
+            closeToc(false);
+            var open = !header.classList.contains('is-menu-open');
+            header.classList.toggle('is-menu-open', open);
+            menuButton.setAttribute('aria-expanded', String(open));
+            menuButton.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
+            /* 展开一级菜单时直接展示栏目，避免手机上再点一次分组。 */
+            menu.querySelectorAll('.nav-dropdown').forEach(function (item) { item.open = open; });
+        });
+        menu.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () { if (mobile.matches) closeMenu(false); });
+        });
+        if (toc && tocButton) {
+            tocButton.addEventListener('click', function () {
+                if (toc.classList.contains('is-mobile-open')) { closeToc(true); return; }
+                closeMenu(false);
+                /* 给正文里的目录留出原位置，浮层打开时正文不会上下移动。 */
+                tocInlineOpen = toc.open;
+                tocPlaceholder = document.createElement('div');
+                tocPlaceholder.setAttribute('aria-hidden', 'true');
+                tocPlaceholder.style.height = toc.getBoundingClientRect().height + 'px';
+                tocPlaceholder.style.margin = window.getComputedStyle(toc).margin;
+                toc.parentNode.insertBefore(tocPlaceholder, toc);
+                toc.classList.add('is-mobile-open');
+                toc.open = true;
+                tocButton.setAttribute('aria-expanded', 'true');
+                tocButton.setAttribute('aria-label', '关闭文章目录');
+                /* 面板复用正文目录，键盘焦点随打开动作进入目录。 */
+                toc.querySelector('summary').focus({ preventScroll: true });
+            });
+            toc.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () { closeToc(false); });
+            });
+            toc.addEventListener('toggle', function () {
+                if (!toc.open) closeToc(false);
+            });
+        }
+        document.addEventListener('click', function (event) {
+            if (!header.contains(event.target)) closeMenu(false);
+            if (toc && tocButton && !toc.contains(event.target) && !tocButton.contains(event.target)) closeToc(false);
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape') return;
+            if (toc && toc.classList.contains('is-mobile-open')) { closeToc(true); event.preventDefault(); }
+            else if (header.classList.contains('is-menu-open')) { closeMenu(true); event.preventDefault(); }
+        });
+        header.addEventListener('focusout', function (event) {
+            if (event.relatedTarget && !header.contains(event.relatedTarget)) closeMenu(false);
+        });
+        var reset = function () { closeMenu(false); closeToc(false); };
+        if (mobile.addEventListener) mobile.addEventListener('change', reset);
+        else mobile.addListener(reset);
+    })();
+
     /* 原生 details 支持触屏与键盘；补上外部点击、焦点离开和 Esc 收起。 */
     (function () {
         var dropdowns = document.querySelectorAll('.nav-dropdown');
         dropdowns.forEach(function (dropdown) {
             document.addEventListener('click', function (event) {
-                if (!dropdown.contains(event.target)) dropdown.open = false;
+                if (!dropdown.contains(event.target) && !event.target.closest('.mobile-menu-toggle')) dropdown.open = false;
             });
             dropdown.addEventListener('focusout', function (event) {
                 if (!dropdown.contains(event.relatedTarget)) dropdown.open = false;
@@ -31,6 +118,17 @@
                 link.addEventListener('click', function () { dropdown.open = false; });
             });
         });
+    })();
+
+    /* 首页手机入口收起、桌面侧栏展开；只在断点变化时同步。 */
+    (function () {
+        var panel = document.querySelector('.home-discover-panel');
+        if (!panel || !window.matchMedia) return;
+        var mobile = window.matchMedia('(max-width: 768px)');
+        var sync = function () { panel.open = !mobile.matches; };
+        sync();
+        if (mobile.addEventListener) mobile.addEventListener('change', sync);
+        else mobile.addListener(sync);
     })();
 
     /* 吸顶导航：滚动后才出现分隔线，静止时保持干净。 */

@@ -3,6 +3,7 @@ title = "nanochat"
 description = "跟着 Karpathy 的 nanochat，走一遍完整的大模型工程链路"
 columnKind = "serial"
 status = "ongoing"
+featured = 4
 +++
 
 {{< series_status >}}

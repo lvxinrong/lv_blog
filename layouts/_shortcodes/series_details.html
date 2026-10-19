@@ -1,0 +1,7 @@
+{{- /* 路线与更新记录保留完整正文，默认收起，让读者先找到文章。 */ -}}
+<details class="series-background">
+  <summary>{{ .Get "title" | default "了解这个系列" }}</summary>
+  <div class="series-background-content">
+    {{ .Inner | .Page.RenderString (dict "display" "block") }}
+  </div>
+</details>
