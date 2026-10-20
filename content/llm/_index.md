@@ -69,7 +69,7 @@ featured = 1
 | 附录 A：PyTorch | 已完成 | 快速通读，补「会用但没系统学过」的地基 |
 | 附录 D：训练循环增强 | 进行中 | warmup、cosine 衰减、梯度裁剪，手敲验收后补记 |
 | 附录 E：LoRA 微调 | 进行中 | 已实操三轮，正手敲落地（三关验收） |
-| 重写 lvllm（终极回炉） | 待开始 | 按工程结构重写全书代码，即笔记 08；施工图见 [lvchat 实现导图](/nanochat/lvchat-roadmap/) |
+| 重写 lvllm（终极回炉） | 待开始 | 按工程结构重写全书代码，即 [笔记 08](/llm/llm-08-rewrite-lvllm/)（草稿）；施工图见 [lvchat 实现导图](/nanochat/lvchat-roadmap/) |
 
 ### 更新记录
 
