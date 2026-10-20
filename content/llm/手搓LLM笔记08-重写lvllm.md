@@ -1,7 +1,7 @@
 +++
 title = "手搓 LLM 笔记 08：重写 lvllm，按工程结构再串一遍"
 date = 2026-10-20T12:00:00+08:00
-draft = true
+draft = false
 slug = "llm-08-rewrite-lvllm"
 tags = ["LLM", "工程化", "重写", "学习笔记"]
 summary = "终极回炉：不按章节收拢，按工程结构重写全书代码——分层、单一配置、单一 device 入口、checkpoint 标准化。重写完成时发布。"
@@ -12,7 +12,7 @@ summary = "终极回炉：不按章节收拢，按工程结构重写全书代码
     hiddenInSingle = true
 +++
 
-> 草稿。重写 lvllm 完成后正式撰写并发布。施工图见 [lvchat 实现导图](/nanochat/lvchat-roadmap/) 的 M0。
+> 预告：本篇目前只有计划，重写 lvllm 完成后正式撰写正文。施工图见 [lvchat 实现导图](/nanochat/lvchat-roadmap/) 的 M0。
 
 ## 计划
 
