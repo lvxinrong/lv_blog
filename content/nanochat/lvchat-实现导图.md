@@ -16,13 +16,15 @@ summary = "不照抄 nanochat，以它为标准答案，从书里的手搓代码
 
 ## 已持有资产（书给的）
 
-GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、SFT 数据管道（掩码、+1、-100）、`get_device()`。这些直接搬进新仓库当地基。
+GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、SFT 数据管道（掩码、+1、-100）、`get_device()`。
+
+**M0 升级说明（2026-10-20）**：原计划是把这些代码「收拢」成骨架，现升级为**按工程结构重写**——分层（tokenizer / model / data / train / generate / eval / checkpoints）、单一配置入口、单一 device 入口、checkpoint 标准化。重写过程不翻书优先，翻一次记一笔欠账注释，写完清单归零。这个过程本身即《手搓 LLM 笔记 08》。
 
 ## 里程碑
 
 | 阶段 | 内容 | 天数 | 验收 | nanochat 对照 |
 | --- | --- | --- | --- | --- |
-| M0 | 地基：书里代码收拢成仓库骨架 | 0.5 | 用旧代码跑通第七章 SFT 当回归测试 | — |
+| M0 | 重写 lvllm：不按章节收拢，按工程结构**重写**书里全部代码（终极回炉），写成读书笔记 08 | 3–5 | 三个回归测试（分类 / 指令微调 / 生成）与旧仓库结果一致；欠账注释清单归零 | — |
 | M1 | 自己训 BPE tokenizer（Python 实现，不用 tiktoken） | 2–3 | 编解码往返无损 + 压缩率可测 | `tokenizer.py` |
 | M2 | 预训练：token 流打包、dataloader、cosine LR、梯度累积、bpb 指标 | 3–5 | bpb 曲线真实下降 + 模型咿呀学语 + checkpoint 带 config | `base_train.py` `dataloader.py` |
 | M3 | 推理引擎：给 generate 装 KV cache | 2 | 输出与朴素版逐字一致，提速可测量 | `engine.py` |
