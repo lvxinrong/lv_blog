@@ -41,9 +41,9 @@ GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、S
 
 主风险在 M2：预训练是全图最贵也最陌生的部分，数据打包和训练稳定性都是新东西。对策：先用极小配置（d4、小语料）把全链路跑通，再放大到 d12。砍 depth 不砍链路，军规不变。
 
-## 配套教材：diy-llm（2026-10-24 增补）
+## 并列理论线：diy-llm（2026-10-24 增补）
 
-[diy-llm](https://github.com/datawhalechina/diy-llm)（DataWhale 出品，斯坦福 CS336 中文本土化课程，16 章 + 6 作业）正式列为 M1 起的配套教材。定位：lvchat 是作品主线，diy-llm 是理论配套——每个里程碑先读对应章节再动手，交付后可选做对应作业当加试题。不另开顺序通读的新主线。
+[diy-llm](https://github.com/datawhalechina/diy-llm)（DataWhale 出品，斯坦福 CS336 中文本土化课程，16 章 + 6 作业）与 nanochat 并列：作品线负责“做得出”，理论线负责“懂得深”。立项书见 [diy-llm 立项书](/diy-llm/diy-llm-proposal/)。用法：每个里程碑先读对应章节再动手，交付后可选做对应作业当加试题，不另开顺序通读的新主线。
 
 | 里程碑 | diy-llm 配套章节 |
 | --- | --- |

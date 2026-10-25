@@ -112,6 +112,7 @@ params:
   mainSections:
     - llm
     - nanochat
+    - diy-llm
     - incident-skill
     - scan-skill
     - ai
@@ -190,6 +191,13 @@ menu:
       params:
         kind: 连载
         description: 跟着 Karpathy 的 nanochat，把零件装成整车
+    - name: diy-llm
+      parent: llm-series
+      pageRef: /diy-llm
+      weight: 3
+      params:
+        kind: 连载
+        description: CS336 中文本土化课程，给作品线配一条理论线
     - name: AI 随想
       url: /ai/
       weight: 2
