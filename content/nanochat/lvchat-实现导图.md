@@ -12,7 +12,7 @@ summary = "不照抄 nanochat，以它为标准答案，从书里的手搓代码
     hiddenInList = true
 +++
 
-> 本图是 [nanochat 立项书](/nanochat/nanochat-proposal/) 的施工图。原则：nanochat 仓库当「标准答案」，不当教材；从《从零构建大模型》的手搓代码出发，自己长一个 nanochat-lite（暂名 lvchat）。里程碑按依赖排序——开工顺序就是这张表的行序。
+> 本图是 [nanochat 立项书](/nanochat/nanochat-proposal/) 的施工图。工程落地在 squid-llms 仓库：M0 重写底座，M1 起所有里程碑都在同一仓库内生长，不另起新工程（2026-10-26 定）。原则：nanochat 仓库当「标准答案」，不当教材；从《从零构建大模型》的手搓代码出发，自己长一个 nanochat-lite（暂名 lvchat）。里程碑按依赖排序——开工顺序就是这张表的行序。
 
 ## 已持有资产（书给的）
 
