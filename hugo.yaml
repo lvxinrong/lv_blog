@@ -57,11 +57,9 @@ languages:
 
 params:
   env: production
-  # 固定浅色，并移除导航栏上的明暗切换按钮。
-  # 这两项要一起设：只设 defaultTheme，按钮还在；
-  # 只设 disableThemeToggle，主题会退回「跟随系统」。
-  defaultTheme: light
-  disableThemeToggle: true
+  # 未手动选择时跟随系统；顶栏按钮允许覆盖并记住选择。
+  defaultTheme: auto
+  disableThemeToggle: false
   author: 吕炘嵘
   # 和上面 languages.zh-CN.params.description 保持一致（两处都会被模板读到）
   description: 写了 11 年代码的工程师。正在从零手搓一个大模型，每周一篇笔记；也写 AI 时代的思考与一线工程实践。
@@ -90,7 +88,8 @@ params:
     # 本站改过一次 URL，且还计划改栏目名 —— pathname 一变，已有评论就断了。
     # og:title 是文章标题（不含站名后缀），比 URL 稳定。
     mapping: og:title
-    theme: light        # 站点已固定浅色
+    # 首次加载跟随系统；随后由 extend_footer.html 与站点主题同步。
+    theme: preferred_dark
     lang: zh-CN
     title: 评论
 

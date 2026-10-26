@@ -1,14 +1,4 @@
 {{- /* 站点自定义的页脚扩展（PaperMod 提供的挂载点）。 */ -}}
-
-{{- /* 栏目 key → columnKind 的映射，交给下面的脚本用。放在这里而不是写死在 JS 里，
-       是为了新增栏目时不用改这个文件。 */ -}}
-{{- $kinds := dict }}
-{{- range site.Params.mainSections }}
-  {{- $key := . }}
-  {{- with site.GetPage (printf "/%s" $key) }}
-    {{- $kinds = merge $kinds (dict $key (.Param "columnKind" | default "column")) }}
-  {{- end }}
-{{- end }}
 <script>
     /* 同一份菜单在手机上收成可展开面板；无 JS 时仍显示原生导航。 */
     (function () {
@@ -121,17 +111,6 @@
         });
     })();
 
-    /* 首页手机入口收起、桌面侧栏展开；只在断点变化时同步。 */
-    (function () {
-        var panel = document.querySelector('.home-discover-panel');
-        if (!panel || !window.matchMedia) return;
-        var mobile = window.matchMedia('(max-width: 768px)');
-        var sync = function () { panel.open = !mobile.matches; };
-        sync();
-        if (mobile.addEventListener) mobile.addEventListener('change', sync);
-        else mobile.addListener(sync);
-    })();
-
     /* 吸顶导航：滚动后才出现分隔线，静止时保持干净。 */
     (function () {
         var header = document.querySelector('.header');
@@ -157,19 +136,46 @@
         else if (mq.addListener) mq.addListener(onChange);
     })();
 
-    /* 按 URL 第一段给 <html> 打上系列标记，让分区页 /llm/ /ai/ /craft/
-       也能用上各自的系列色。页面本身没有 section 类名可用，
-       所以这里读路径；系列列表由 Hugo 注入，自动跟 mainSections 同步。
-
-       data-kind 是给连载页的章序号用的（CSS counter 靠它区分 serial / column）。
-       同样由 Hugo 注入，新增栏目不用改这里。 */
+    /* 本站覆盖的 footer 未带入主题脚本，因此在扩展挂载点补回明暗切换。 */
     (function () {
-        var series = {{ site.Params.mainSections | jsonify | safeJS }};
-        var kinds = {{ $kinds | jsonify | safeJS }};
-        var seg = location.pathname.split('/').filter(Boolean)[0];
-        if (series.indexOf(seg) >= 0) {
-            document.documentElement.dataset.series = seg;
-            if (kinds[seg]) document.documentElement.dataset.kind = kinds[seg];
-        }
+        var toggle = document.getElementById('theme-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function () {
+            var root = document.documentElement;
+            var theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = theme;
+            localStorage.setItem('pref-theme', theme);
+        });
+    })();
+
+    /* 没有手动偏好时持续跟随系统；一旦使用顶栏切换，就尊重本地选择。 */
+    (function () {
+        if (!window.matchMedia || {{ ne (site.Params.defaultTheme | default "auto") "auto" }}) return;
+        var systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+        var follow = function (event) {
+            if (!localStorage.getItem('pref-theme')) {
+                document.documentElement.dataset.theme = event.matches ? 'dark' : 'light';
+            }
+        };
+        if (systemTheme.addEventListener) systemTheme.addEventListener('change', follow);
+        else systemTheme.addListener(follow);
+    })();
+
+    /* giscus 首次加载跟随系统，之后与站点的手动切换保持同步。 */
+    (function () {
+        var root = document.documentElement;
+        var sync = function () {
+            var frame = document.querySelector('iframe.giscus-frame');
+            if (!frame) return;
+            var theme = root.dataset.theme === 'dark' ? 'dark' : 'light';
+            frame.contentWindow.postMessage({ giscus: { setConfig: { theme: theme } } }, 'https://giscus.app');
+        };
+        new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+        var comments = document.getElementById('comments');
+        if (comments) new MutationObserver(sync).observe(comments, { childList: true, subtree: true });
+        document.addEventListener('load', function (event) {
+            if (event.target instanceof Element && event.target.matches('iframe.giscus-frame')) sync();
+        }, true);
+        sync();
     })();
 </script>

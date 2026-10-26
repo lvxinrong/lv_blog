@@ -66,16 +66,17 @@
     --glow-2: rgba(124, 92, 230, 0.11);
     --wash: rgba(255, 255, 255, 0.64);
 
-    /* 三个文章系列的专属色。同属冷色、但色相拉开，便于快速分辨。
-       用在首页系列卡、系列徽章、分区页标题上。 */
+    /* 与 scripts/mkcover.py 的封面配色保持一致，仅作栏目的视觉点缀。 */
     --series-llm: #1f6fe0;
     --series-ai: #7c4ddb;
     --series-craft: #0e8f9c;
     --series-nanochat: #d97706;
+    --series-diy: #059669;
     --series-llm-soft: rgba(31, 111, 224, 0.12);
     --series-ai-soft: rgba(124, 77, 219, 0.12);
     --series-craft-soft: rgba(14, 143, 156, 0.12);
     --series-nanochat-soft: rgba(217, 119, 6, 0.12);
+    --series-diy-soft: rgba(5, 150, 105, 0.11);
 
     color-scheme: light;
 }
@@ -105,19 +106,21 @@
     --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.09);
     --glass-line: rgba(255, 255, 255, 0.09);
 
-    --glow-1: rgba(72, 104, 255, 0.62);
-    --glow-2: rgba(140, 88, 255, 0.38);
-    --wash: rgba(18, 20, 25, 0.90);
+    --glow-1: rgba(72, 104, 255, 0.28);
+    --glow-2: rgba(140, 88, 255, 0.16);
+    --wash: rgba(18, 20, 25, 0.94);
 
     /* 深色下系列色要提亮，否则在深底上发闷 */
     --series-llm: #5ea4ff;
     --series-ai: #a78bfa;
     --series-craft: #3fc9d6;
     --series-nanochat: #f59e0b;
+    --series-diy: #34d399;
     --series-llm-soft: rgba(94, 164, 255, 0.16);
     --series-ai-soft: rgba(167, 139, 250, 0.16);
     --series-craft-soft: rgba(63, 201, 214, 0.16);
     --series-nanochat-soft: rgba(245, 158, 11, 0.16);
+    --series-diy-soft: rgba(52, 211, 153, 0.14);
 
     color-scheme: dark;
 }
@@ -248,6 +251,12 @@ a {
 }
 
 .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
     color: var(--secondary);
     background: none;
     border: 0;
@@ -915,8 +924,16 @@ pre:hover .copy-code,
 }
 
 .md-content img {
+    max-width: 100%;
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
+}
+
+/* 白底封面与插图在暗色下收一点亮度，避免成为页面里的高亮灯箱。 */
+[data-theme="dark"] .md-content img,
+[data-theme="dark"] .entry-cover img {
+    filter: brightness(0.86) contrast(0.94);
+    box-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -1862,7 +1879,8 @@ details.toc a:hover {
 
 /* 把 data-series 映射到对应的颜色变量，后面所有组件都只管用 var(--series) */
 [data-series="llm"]   { --series: var(--series-llm);   --series-soft: var(--series-llm-soft); }
-[data-series="nanochat"] { --series: var(--series-llm); --series-soft: var(--series-llm-soft); }
+[data-series="nanochat"] { --series: var(--series-nanochat); --series-soft: var(--series-nanochat-soft); }
+[data-series="diy-llm"] { --series: var(--series-diy); --series-soft: var(--series-diy-soft); }
 [data-series="ai"]    { --series: var(--series-ai);    --series-soft: var(--series-ai-soft); }
 [data-series="craft"] { --series: var(--series-craft); --series-soft: var(--series-craft-soft); }
 [data-series="incident-skill"] { --series: #2b7a5a; --series-soft: rgba(43, 122, 90, 0.10); }
@@ -2391,6 +2409,10 @@ body.home-page {
     --secondary: #626873;
 }
 
+[data-theme="dark"] body.home-page {
+    --secondary: #9aa1ac;
+}
+
 .home-page .main {
     max-width: 960px;
 }
@@ -2453,7 +2475,7 @@ body.home-page {
 
 .home-column[data-series="llm"] { --series: var(--series-llm); --series-soft: var(--series-llm-soft); }
 .home-column[data-series="nanochat"] { --series: var(--series-nanochat); --series-soft: var(--series-nanochat-soft); }
-.home-column[data-series="diy-llm"] { --series: #059669; --series-soft: rgba(5, 150, 105, 0.11); }
+.home-column[data-series="diy-llm"] { --series: var(--series-diy); --series-soft: var(--series-diy-soft); }
 .home-column[data-series="ai"] { --series: var(--series-ai); --series-soft: var(--series-ai-soft); }
 .home-column[data-series="craft"] { --series: var(--series-craft); --series-soft: var(--series-craft-soft); }
 .home-column[data-series="incident-skill"] { --series: #2b7a5a; --series-soft: rgba(43, 122, 90, 0.10); }
@@ -2686,5 +2708,66 @@ body.home-page {
 @media (prefers-reduced-motion: reduce) {
     .home-page a {
         transition: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   20. 栏目文章列表：编辑式条目，保留连载阅读所需的呼吸感。
+   不采用高密度表格，也不让每张通用卡片互相争夺注意力。
+   -------------------------------------------------------------------------- */
+:root[data-series] body.list .post-entry {
+    margin: 0;
+    padding: 28px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+}
+
+:root[data-series] body.list .post-entry:hover,
+:root[data-series] body.list .post-entry:focus-within {
+    background: transparent;
+    border-bottom-color: var(--border);
+    box-shadow: none;
+    transform: none;
+}
+
+:root[data-series] body.list .post-entry::before {
+    display: none;
+}
+
+:root[data-series] body.list .entry-header h2 {
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1.5;
+}
+
+:root[data-series] body.list .entry-content {
+    max-width: 650px;
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+:root[data-series] body.list .entry-footer {
+    margin-top: 12px;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    :root[data-series] body.list .post-entry {
+        padding: 22px 0;
+    }
+
+    :root[data-series] body.list .entry-header h2 {
+        font-size: 20px;
+        line-height: 1.55;
+    }
+
+    :root[data-series] body.list .entry-content {
+        font-size: 14.5px;
+        line-height: 1.75;
     }
 }
