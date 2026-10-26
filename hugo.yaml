@@ -53,7 +53,7 @@ languages:
       # 首页介绍保持简短，让首屏直接进入文章；完整经历放在「关于」。
       homeInfoParams:
         Title: 吕炘嵘
-        Content: 想学，就实现一个。写代码，也记录 AI 与工程实践中的思考。
+        Content: 11 年后端 / 架构，正在 gap 学大模型。写代码，也记录 AI 与工程实践中的思考。
 
 params:
   env: production

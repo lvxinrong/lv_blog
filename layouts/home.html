@@ -1,23 +1,13 @@
 {{- define "main" }}
-{{- /* 首页按阅读任务分工：主栏选文章，侧栏找连载和专栏。
-     不再在介绍、连载卡和文章列表里重复播报同一篇最新文章。 */ -}}
+{{- /* 首页是专栏门面：栏目本身先于全站时间线。
+     栏目顺序由 mainSections 维护；新增栏目无需再改首页模板。 */ -}}
 {{- $sectionKeys := site.Params.mainSections }}
-{{- $serials := slice }}
-{{- $columns := slice }}
+{{- $sections := slice }}
 {{- range $sectionKeys }}
   {{- with site.GetPage (printf "/%s" .) }}
-    {{- $p := . }}
-    {{- with .Param "featured" }}
-      {{- if eq ($p.Param "columnKind") "serial" }}
-        {{- $serials = $serials | append (dict "w" . "p" $p) }}
-      {{- else }}
-        {{- $columns = $columns | append (dict "w" . "p" $p) }}
-      {{- end }}
-    {{- end }}
+    {{- $sections = $sections | append . }}
   {{- end }}
 {{- end }}
-{{- $serials = first 4 (sort $serials "w") }}
-{{- $columns = first 4 (sort $columns "w") }}
 
 {{- with site.Params.homeInfoParams }}
 <header class="home-intro">
@@ -27,67 +17,47 @@
 </header>
 {{- end }}
 
-<div class="home-layout{{ if not (or $serials $columns) }} home-layout-solo{{ end }}">
-  {{- if or $serials $columns }}
-  <aside class="home-discover" aria-label="按连载和专栏阅读">
-    <details class="home-discover-panel" open>
-      <summary>连载与专栏 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></summary>
-      <div class="home-discover-content">
-    {{- with $serials }}
-    <section aria-labelledby="home-serials-heading">
-      <h2 class="home-section-heading" id="home-serials-heading">连载</h2>
-      {{- range . }}
-      {{- $p := .p }}
-      {{- $published := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false }}
-      {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
-      <article class="home-serial">
-        <h3>{{ $p.Title }}</h3>
-        {{- with $p.Description }}<p class="home-serial-description">{{ . }}</p>{{ end }}
-        <p class="home-serial-meta">{{ with $p.Param "status" }}<span>{{ index $labels . | default . }}</span>{{ end }}<span>{{ len $published }} 篇</span></p>
-        <a class="home-directory" href="{{ $p.RelPermalink }}" aria-label="查看{{ $p.Title }}目录">查看目录 <span aria-hidden="true">→</span></a>
-      </article>
-      {{- end }}
-    </section>
-    {{- end }}
-    {{- with $columns }}
-    <section class="home-columns" aria-labelledby="home-columns-heading">
-      <h2 class="home-section-heading" id="home-columns-heading">专栏</h2>
-      <ul>
-        {{- range . }}
-        <li><a href="{{ .p.RelPermalink }}">{{ .p.Title }}<span aria-hidden="true">→</span></a></li>
+<div class="home-sections">
+  {{- range $sections }}
+    {{- $p := . }}
+    {{- $kind := $p.Param "columnKind" | default "column" }}
+    {{- $published := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false }}
+    {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
+    <section class="home-column" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" aria-labelledby="home-column-{{ $p.Section }}">
+      <header class="home-column-header">
+        <div class="home-column-heading">
+          <p class="home-column-kind">
+            {{- if eq $kind "serial" }}连载{{ else }}专栏{{ end }}
+            {{- with $p.Param "status" }}<span>{{ index $labels . | default . }}</span>{{ end }}
+          </p>
+          <h2 id="home-column-{{ $p.Section }}"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h2>
+          {{- with $p.Description }}<p class="home-column-description">{{ . }}</p>{{ end }}
+        </div>
+        <a class="home-column-directory" href="{{ $p.RelPermalink }}" aria-label="查看{{ $p.Title }}全部文章">
+          {{ len $published }} 篇<span aria-hidden="true">→</span>
+        </a>
+      </header>
+
+      {{- with $published }}
+      <ol class="home-column-posts">
+        {{- range first 3 (.ByDate.Reverse) }}
+        <li>
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{- if not .Date.IsZero }}
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+          {{- end }}
+        </li>
         {{- end }}
-      </ul>
+      </ol>
+      {{- else }}
+      <p class="home-empty">文章正在准备中。</p>
+      {{- end }}
     </section>
-    {{- end }}
-    <a class="home-more home-discover-all" href="{{ "columns/" | relLangURL }}">浏览全部栏目 <span aria-hidden="true">→</span></a>
-      </div>
-    </details>
-  </aside>
   {{- end }}
-
-  <section class="home-recent" aria-labelledby="home-recent-heading">
-    <h2 class="home-section-heading" id="home-recent-heading">最近文章</h2>
-    {{- /* 即使在草稿预览中，也只把真正已发布的内容作为首页阅读推荐。 */}}
-    {{- $articles := where (where (where site.RegularPages "Type" "in" $sectionKeys) "Params.placeholder" "ne" true) "Draft" false }}
-    {{- range first 8 ($articles.ByDate.Reverse) }}
-    <article class="home-post">
-      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-      {{- if ne (.Param "hideSummary") true }}
-      <p class="home-post-summary">{{ .Summary | plainify | htmlUnescape }}</p>
-      {{- end }}
-      {{- if not (.Param "hideMeta") }}
-      <div class="home-post-meta">
-        {{- with site.GetPage (printf "/%s" .Type) }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}
-        {{- if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format (default "2006年1月2日" site.Params.DateFormat) }}</time>{{ end }}
-      </div>
-      {{- end }}
-    </article>
-    {{- else }}
-    <p class="home-empty">文章正在准备中。</p>
-    {{- end }}
-    <a class="home-more" href="{{ "archives/" | relLangURL }}">查看全部文章 <span aria-hidden="true">→</span></a>
-  </section>
-
-
 </div>
+
+<footer class="home-end">
+  <a class="home-all-posts" href="{{ "archives/" | relLangURL }}">浏览全部文章 <span aria-hidden="true">→</span></a>
+  <a class="home-all-columns" href="{{ "columns/" | relLangURL }}">栏目总览</a>
+</footer>
 {{- end }}
