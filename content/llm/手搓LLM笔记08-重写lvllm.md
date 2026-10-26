@@ -1,6 +1,6 @@
 +++
 title = "手搓 LLM 笔记 08：重写 lvllm，按工程结构再串一遍"
-date = 2026-10-20T12:00:00+08:00
+date = 2026-10-26T12:00:00+08:00
 draft = false
 slug = "llm-08-rewrite-lvllm"
 tags = ["LLM", "工程化", "重写", "学习笔记"]
