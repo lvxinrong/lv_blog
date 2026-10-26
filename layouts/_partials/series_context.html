@@ -1,0 +1,24 @@
+{{- /* 用栏目自身的数据串联文章；无需在 front matter 重复维护 series 字段。 */ -}}
+{{- if in site.Params.mainSections .Section -}}
+  {{- $current := . -}}
+  {{- $section := .CurrentSection -}}
+  {{- $pages := where $section.RegularPages "Draft" false -}}
+  {{- $position := -1 -}}
+  {{- range $index, $page := $pages.ByDate -}}
+    {{- if eq $page $current -}}{{ $position = $index }}{{- end -}}
+  {{- end -}}
+  {{- if ge $position 0 -}}
+    {{- $kind := $section.Param "columnKind" | default "column" -}}
+    <aside class="series-context" data-series="{{ $section.Section }}" data-kind="{{ $kind }}" aria-label="所属{{ if eq $kind "serial" }}系列{{ else }}专栏{{ end }}">
+      <div class="series-context-main">
+        <span class="series-context-label">{{ if eq $kind "serial" }}所属系列{{ else }}所属专栏{{ end }}</span>
+        <a class="series-context-name" href="{{ $section.RelPermalink }}">{{ $section.Title }}</a>
+        {{- with $section.Description }}<p>{{ . }}</p>{{ end }}
+      </div>
+      <div class="series-context-progress">
+        {{- if eq $kind "serial" }}第 {{ add $position 1 }} / {{ len $pages }} 篇{{ else }}共 {{ len $pages }} 篇{{ end -}}
+      </div>
+      <a class="series-context-directory" href="{{ $section.RelPermalink }}">查看目录 <span aria-hidden="true">→</span></a>
+    </aside>
+  {{- end -}}
+{{- end -}}

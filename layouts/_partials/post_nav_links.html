@@ -17,28 +17,25 @@
       {{- $position = $index -}}
     {{- end -}}
   {{- end -}}
-  {{- if and (ge $position 0) (or $isSerial (gt (len $pages) 1)) }}
+  {{- $hasPrev := gt $position 0 -}}
+  {{- $hasNext := and (ge $position 0) (lt $position (sub (len $pages) 1)) -}}
+  {{- if and (or $hasPrev $hasNext) (or $isSerial (gt (len $pages) 1)) }}
 <nav class="paginav" aria-label="同栏目文章导航">
-    {{- if gt $position 0 -}}
+    {{- if $hasPrev -}}
       {{- with index $pages (sub $position 1) }}
-  <a class="prev" href="{{ .Permalink }}">
+  <a class="prev" href="{{ .RelPermalink }}">
     <span class="title">« 上一篇</span>
     <span>{{ .Title }}</span>
   </a>
       {{- end -}}
     {{- end -}}
-    {{- if lt $position (sub (len $pages) 1) -}}
+    {{- if $hasNext -}}
       {{- with index $pages (add $position 1) }}
-  <a class="next" href="{{ .Permalink }}">
+  <a class="next" href="{{ .RelPermalink }}">
     <span class="title">下一篇 »</span>
     <span>{{ .Title }}</span>
   </a>
       {{- end -}}
-    {{- else if $isSerial }}
-  <a class="next" href="{{ $section.Permalink }}">
-    <span class="title">返回系列目录</span>
-    <span>{{ $section.Title }}</span>
-  </a>
     {{- end }}
 </nav>
   {{- end -}}

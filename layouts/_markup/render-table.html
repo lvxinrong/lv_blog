@@ -1,0 +1,27 @@
+{{- /* 宽表格只在自身容器内滚动；tabindex 让键盘也能操作滚动区域。
+     THead/TBody 是 Hugo 0.147 已支持的表格钩子上下文。 */ -}}
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+  <table
+    {{- range $k, $v := .Attributes }}
+      {{- if $v }}{{ printf " %s=%q" $k $v | safeHTMLAttr }}{{ end }}
+    {{- end }}>
+    <thead>
+      {{- range .THead }}
+      <tr>
+        {{- range . }}
+        <th{{- with .Alignment }}{{ printf " style=%q" (printf "text-align: %s" .) | safeHTMLAttr }}{{ end }}>{{ .Text }}</th>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </thead>
+    <tbody>
+      {{- range .TBody }}
+      <tr>
+        {{- range . }}
+        <td{{- with .Alignment }}{{ printf " style=%q" (printf "text-align: %s" .) | safeHTMLAttr }}{{ end }}>{{ .Text }}</td>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>

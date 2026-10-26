@@ -20,7 +20,7 @@
         Menlo, Consolas, "Liberation Mono", monospace;
 
     /* 版心与节奏 */
-    --main-width: 740px;
+    --main-width: 704px;
     --nav-width: 1040px;
     --gap: 24px;
     --content-gap: 26px;
@@ -643,10 +643,11 @@ a {
 
 /* 正文排版 */
 .post-content {
+    min-width: 0;
     margin: 26px 0 40px;
     color: var(--content);
-    font-size: 17px;
-    line-height: 1.85;
+    font-size: 17.5px;
+    line-height: 1.8;
     letter-spacing: 0.004em;
 }
 
@@ -758,7 +759,14 @@ a {
     color: var(--primary);
 }
 
-/* 代码块 */
+/* 代码块：滚动发生在 pre 内，长行不会改变正文版心。 */
+.post-single,
+.md-content .highlight,
+.md-content pre {
+    min-width: 0;
+    max-width: 100%;
+}
+
 .md-content .highlight:not(table),
 .md-content pre:not(.highlight pre) {
     margin-bottom: var(--content-gap);
@@ -768,8 +776,16 @@ a {
     overflow: hidden;
 }
 
+.md-content pre {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
 .md-content pre code {
     display: block;
+    width: max-content;
+    min-width: 100%;
     padding: 16px 18px;
     font-family: var(--font-mono);
     font-size: 14px;
@@ -779,7 +795,7 @@ a {
     border-radius: 0;
     color: rgb(214, 216, 222);
     word-break: normal;
-    overflow-x: auto;
+    overflow: visible;
 }
 
 .md-content .highlight pre {
@@ -816,8 +832,10 @@ a {
 
 /* 复制按钮（浮在代码块上的小浮层，所以也用玻璃） */
 .copy-code {
+    display: block;
     top: 10px;
     right: 10px;
+    min-height: 32px;
     padding: 4px 10px;
     font-size: 12px;
     line-height: 1.6;
@@ -833,7 +851,8 @@ a {
 }
 
 div.highlight:hover .copy-code,
-pre:hover .copy-code {
+pre:hover .copy-code,
+.copy-code:focus-visible {
     opacity: 1;
 }
 
@@ -842,7 +861,26 @@ pre:hover .copy-code {
     border-color: var(--accent-border);
 }
 
-/* 表格 */
+@media (hover: none), (max-width: 768px) {
+    .copy-code {
+        opacity: 1;
+    }
+}
+
+/* 表格由 render-table.html 加上独立滚动容器。 */
+.table-scroll {
+    max-width: 100%;
+    margin-bottom: var(--content-gap);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius);
+}
+
+.table-scroll:focus-visible {
+    outline-offset: 4px;
+}
+
 .md-content table {
     width: 100%;
     border-collapse: separate;
@@ -851,6 +889,12 @@ pre:hover .copy-code {
     border-radius: var(--radius);
     overflow: hidden;
     font-size: 15.5px;
+}
+
+.md-content .table-scroll table {
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
 }
 
 .md-content table th,
@@ -945,8 +989,88 @@ details.toc a:hover {
 }
 
 /* --------------------------------------------------------------------------
-   8. 文章尾部：标签 / 上下篇
+   8. 文章尾部：系列归属 / 标签 / 上下篇
    -------------------------------------------------------------------------- */
+
+.series-context {
+    --series: var(--accent);
+    --series-soft: var(--accent-soft);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 24px;
+    margin: 48px 0 32px;
+    padding: 22px 24px;
+    background: var(--series-soft);
+    border-left: 3px solid var(--series);
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.series-context-main {
+    min-width: 0;
+}
+
+.series-context-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--secondary);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+}
+
+.series-context-name {
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.series-context-name:hover {
+    color: var(--series);
+}
+
+.series-context-main p {
+    margin: 7px 0 0;
+    color: var(--secondary);
+    font-size: 13.5px;
+    line-height: 1.7;
+}
+
+.series-context-progress {
+    color: var(--series);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.series-context-directory {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 32px;
+    color: var(--series);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.series-context-directory:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 768px) {
+    .series-context {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        margin-top: 40px;
+        padding: 18px;
+    }
+
+    .series-context-progress {
+        grid-row: auto;
+    }
+}
 
 .post-footer {
     margin-top: 32px;
@@ -1621,8 +1745,8 @@ details.toc a:hover {
     details.toc {
         position: fixed;
         top: calc(var(--header-height) + 28px);
-        /* 正文宽 740 → 半宽 370，再留 30px 间距 */
-        left: calc(50% + 400px);
+        /* 正文宽 704 → 半宽 352，再留 30px 间距 */
+        left: calc(50% + 382px);
         width: 210px;
         max-height: calc(100vh - var(--header-height) - 56px);
         margin: 0;
