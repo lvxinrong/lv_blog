@@ -1,0 +1,53 @@
+{{- /* 全量文章时间线：调用方传入 pages；归档和标签页可同时显示栏目名。 */ -}}
+{{- $pages := .pages -}}
+{{- $showSection := .showSection | default false -}}
+<div class="article-timeline">
+  {{- range $pages.GroupByPublishDate "2006" }}
+    {{- if ne .Key "0001" }}
+    {{- $year := .Key }}
+    <section class="timeline-year" aria-labelledby="timeline-{{ $year }}">
+      <h2 class="timeline-year-header" id="timeline-{{ $year }}">
+        <a href="#timeline-{{ $year }}">{{ $year }}</a>
+        <sup class="timeline-count">{{ len .Pages }} 篇</sup>
+      </h2>
+      {{- range .Pages.GroupByPublishDate "2006-01" }}
+        {{- $month := replaceRE "^0" "" (index (split .Key "-") 1) }}
+        <section class="timeline-month" aria-labelledby="timeline-{{ $year }}-{{ $month }}">
+          <h3 class="timeline-month-header" id="timeline-{{ $year }}-{{ $month }}">
+            <a href="#timeline-{{ $year }}-{{ $month }}">{{ $month }} 月</a>
+            <sup class="timeline-count">{{ len .Pages }}</sup>
+          </h3>
+          <div class="timeline-entries">
+            {{- range .Pages }}
+              {{- if eq .Kind "page" }}
+              <article class="timeline-entry" data-series="{{ .Section }}">
+                <div class="timeline-entry-top">
+                  <time class="timeline-date" datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "01.02" }}</time>
+                  <h4 class="timeline-title">
+                    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    {{- if .Draft }}<span class="timeline-draft">草稿</span>{{ end }}
+                  </h4>
+                </div>
+                {{- if ne (.Param "hideSummary") true }}
+                <p class="timeline-summary">{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}…{{ end }}</p>
+                {{- end }}
+                <footer class="timeline-meta">
+                  {{- if .Param "ShowReadingTime" }}
+                  <span>{{ i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime) }}</span>
+                  {{- end }}
+                  {{- if and $showSection .Section }}
+                    {{- with site.GetPage (printf "/%s" .Section) }}
+                    <a class="timeline-section" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    {{- end }}
+                  {{- end }}
+                </footer>
+              </article>
+              {{- end }}
+            {{- end }}
+          </div>
+        </section>
+      {{- end }}
+    </section>
+    {{- end }}
+  {{- end }}
+</div>

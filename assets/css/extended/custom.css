@@ -2712,62 +2712,227 @@ body.home-page {
 }
 
 /* --------------------------------------------------------------------------
-   20. 栏目文章列表：编辑式条目，保留连载阅读所需的呼吸感。
-   不采用高密度表格，也不让每张通用卡片互相争夺注意力。
+   20. 全量文章时间线：年月分组、连续时间轴，不使用分页或高密度表格。
    -------------------------------------------------------------------------- */
-:root[data-series] body.list .post-entry {
+.article-timeline {
+    margin: 42px 0 64px;
+}
+
+.timeline-year + .timeline-year {
+    margin-top: 64px;
+    padding-top: 44px;
+    border-top: 1px solid var(--border);
+}
+
+.timeline-year-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
     margin: 0;
-    padding: 28px 0;
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-    box-shadow: none;
-    transform: none;
+    font-size: 28px;
+    font-weight: 720;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
 }
 
-:root[data-series] body.list .post-entry:hover,
-:root[data-series] body.list .post-entry:focus-within {
-    background: transparent;
-    border-bottom-color: var(--border);
-    box-shadow: none;
-    transform: none;
+.timeline-year-header a,
+.timeline-month-header a {
+    color: var(--primary);
 }
 
-:root[data-series] body.list .post-entry::before {
-    display: none;
+.timeline-year-header a:hover,
+.timeline-month-header a:hover {
+    color: var(--accent);
 }
 
-:root[data-series] body.list .entry-header h2 {
-    font-size: 22px;
+.timeline-count {
+    font-size: 11px;
+    font-weight: 550;
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--secondary);
+}
+
+.timeline-month {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 28px;
+    margin-top: 40px;
+}
+
+.timeline-month-header {
+    position: sticky;
+    top: 92px;
+    align-self: start;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    margin: 3px 0 0;
+    font-size: 15px;
     font-weight: 650;
     line-height: 1.5;
 }
 
-:root[data-series] body.list .entry-content {
-    max-width: 650px;
-    margin-top: 10px;
-    font-size: 15px;
-    line-height: 1.8;
+.timeline-entries {
+    min-width: 0;
+    padding-left: 30px;
+    border-left: 1px solid var(--border);
 }
 
-:root[data-series] body.list .entry-footer {
-    margin-top: 12px;
-    line-height: 1.7;
+.timeline-entry {
+    position: relative;
+    min-width: 0;
+    padding-bottom: 38px;
+}
+
+.timeline-entry:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-entry::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: -35px;
+    width: 7px;
+    height: 7px;
+    border: 2px solid var(--series, var(--accent));
+    border-radius: 50%;
+    background: var(--page-bg);
+    box-shadow: 0 0 0 4px var(--page-bg);
+}
+
+.timeline-entry-top {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.timeline-date {
+    flex: 0 0 42px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.timeline-title {
+    min-width: 0;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 650;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+}
+
+.timeline-title a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.timeline-title a:hover,
+.timeline-title a:focus-visible {
+    color: var(--series, var(--accent));
+}
+
+.timeline-draft {
+    margin-left: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--secondary);
+}
+
+.timeline-summary {
+    display: -webkit-box;
+    max-width: 620px;
+    margin: 9px 0 0 54px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--secondary);
+}
+
+.timeline-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 9px 0 0 54px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--secondary);
+}
+
+.timeline-section {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.timeline-section:hover {
+    color: var(--series, var(--accent));
 }
 
 @media (max-width: 768px) {
-    :root[data-series] body.list .post-entry {
-        padding: 22px 0;
+    .article-timeline {
+        margin-top: 32px;
     }
 
-    :root[data-series] body.list .entry-header h2 {
-        font-size: 20px;
+    .timeline-year + .timeline-year {
+        margin-top: 48px;
+        padding-top: 36px;
+    }
+
+    .timeline-year-header {
+        font-size: 25px;
+    }
+
+    .timeline-month {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+        margin-top: 32px;
+    }
+
+    .timeline-month-header {
+        position: static;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .timeline-entries {
+        padding-left: 22px;
+    }
+
+    .timeline-entry {
+        padding-bottom: 32px;
+    }
+
+    .timeline-entry::before {
+        left: -27px;
+    }
+
+    .timeline-entry-top {
+        display: block;
+    }
+
+    .timeline-date {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .timeline-title {
+        font-size: 19px;
         line-height: 1.55;
     }
 
-    :root[data-series] body.list .entry-content {
-        font-size: 14.5px;
+    .timeline-summary,
+    .timeline-meta {
+        margin-left: 0;
+    }
+
+    .timeline-summary {
+        font-size: 14px;
         line-height: 1.75;
     }
 }
