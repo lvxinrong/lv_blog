@@ -25,7 +25,7 @@ summary = "手搓 LLM 开启第二条分支：从零构建大模型（已完结�
 
 ## 一张图看懂分词器的位置
 
-![分词器全链路：编码、模型、解码、自回归循环](llm-09-tokenizer-loop.png)
+![分词器全链路：编码、模型、解码、自回归循环](/llm/llm-09-tokenizer-loop.png)
 
 这张图值得收藏，因为它把分词器放回了完整链路里，而不是孤立地讲算法：
 
@@ -41,7 +41,7 @@ summary = "手搓 LLM 开启第二条分支：从零构建大模型（已完结�
 
 ## token 数量：注意力的两笔账
 
-![token 数量与注意力计算复杂度、上下文窗口占用的关系](llm-09-token-count-attention.png)
+![token 数量与注意力计算复杂度、上下文窗口占用的关系](/llm/llm-09-token-count-attention.png)
 
 token 划分越碎（同样的文本 token 数越多），代价体现在两处：
 
@@ -52,7 +52,7 @@ token 划分越碎（同样的文本 token 数越多），代价体现在两处�
 
 ## 分词粒度：字符、字节、词、BPE
 
-![4 种分词器对比：粒度、词表大小、OOV、序列长度](llm-09-tokenizer-types.png)
+![4 种分词器对比：粒度、词表大小、OOV、序列长度](/llm/llm-09-tokenizer-types.png)
 
 最直观的是**字符分词**：把文本拆成最小字符单位（英文的字母、中文的单字）。
 
