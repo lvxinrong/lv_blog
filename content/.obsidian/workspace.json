@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/手搓LLM笔记07-3-LoRA剂量实验.md",
+                "file": "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "手搓LLM笔记07-3-LoRA剂量实验"
+              "title": "手搓LLM笔记11-diy_llm pytorch & 资源核算"
             }
           }
         ]
@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 441.21484375
   },
   "right": {
     "id": "b259208a98b9cff1",
@@ -187,6 +187,18 @@
   },
   "active": "704c2a68d98f07f0",
   "lastOpenFiles": [
+    "llm/llm-11-structured-sparsity.png",
+    "Pasted image 20261028104954.png",
+    "llm/手搓LLM笔记10-手写bpe分词器.md",
+    "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
+    "llm/手搓LLM番外2-Embedding形状问答.md",
+    "llm/手搓LLM笔记09-diy-llm分词器.md",
+    "llm/llm-09-tokenizer-types.png",
+    "llm/llm-09-token-count-attention.png",
+    "Pasted image 20261027104005.png",
+    "Pasted image 20261027103613.png",
+    "Pasted image 20261027101642.png",
+    "llm/手搓LLM笔记07-3-LoRA剂量实验.md",
     "llm/手搓LLM笔记07-指令微调.md",
     "nanochat/立项书.md",
     "nanochat/_index.md",
@@ -210,13 +222,7 @@
     "scan-skill/_index.md",
     "scan-skill/05-walkthrough.md",
     "scan-skill/04-collaboration.md",
-    "scan-skill/03-contracts.md",
-    "scan-skill/02-project-profiles.md",
-    "scan-skill/01-layers.md",
-    "scan-skill/00-origin.md",
     "scan-skill",
-    "incident-skill/_index.md",
-    "incident-skill/05-walkthrough.md",
     "incident-skill"
   ]
 }
