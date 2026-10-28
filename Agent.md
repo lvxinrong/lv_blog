@@ -238,6 +238,17 @@ Hugo 默认给三套分类机制（section / category / tag），本站**只留 
 - 只是横切的话题、用于检索 → **标签**（tag）
 
 
+### 数学公式（按文章启用）
+
+公式按 Hugo 官方方式配置：`hugo.yaml` 启用 Goldmark passthrough，保留公式原文；
+`layouts/baseof.html` 仅在文章 front matter 的 `math = true` 时加载
+`layouts/_partials/math.html`，由 MathJax 排版。块级公式使用 `$$ ... $$` 或
+`\[ ... \]`，行内公式使用 `\( ... \)`；块级公式前后各留空行。
+有意不启用单个 `$` 作为行内分隔符，避免金额被误认为公式。
+
+MathJax 使用 jsDelivr CDN，公式显示依赖读者能访问该资源；RSS 输出保留 LaTeX 原文，
+能否渲染取决于阅读器。手机上的长公式可以横向滚动。
+
 ### RSS 输出全文（已配置）
 
 `params.ShowFullTextinRSS: true` → 订阅者在阅读器里直接读全文，不用点回站内。

@@ -2,6 +2,7 @@
 title = "手搓 LLM 笔记 11：PyTorch 与资源核算"
 date = 2026-10-28T12:00:00+08:00
 draft = false
+math = true
 slug = "llm-11-pytorch-resource-accounting"
 tags = ["LLM", "diy-llm", "PyTorch", "资源核算", "学习笔记", "草稿"]
 summary = "训练成本不是黑盒：参数量、显存、FLOPs、时间的估算闭环；混合精度、算术强度、梯度累积与开工踩坑。"
@@ -34,6 +35,7 @@ FLOPs(Floating Point Operations, 浮点运算次数) 衡量计算复杂度的一
 软硬件开销系数 (通常按照 30% ~ 60% 利用率估算更现实)
 
 所以  **在 1024 张 H100 显卡上，训练一个 70B（700亿参数）的模型，数据量是 15T（15万亿 tokens），大概要多久？**
+
 $$
 \text{时间} = \frac{\text{总工作量}}{\text{总算力}} = \frac{6.3 \times 10^{24}}{5 \times 10^{17}} \approx 1.26 \times 10^7 \text{ 秒} \approx \mathbf{146} \text{ 天}
 $$
