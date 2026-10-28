@@ -112,10 +112,10 @@ params:
     - llm
     - nanochat
     - diy-llm
-    - incident-skill
-    - scan-skill
     - ai
     - craft
+    - incident-skill
+    - scan-skill
 
   # 阅读体验相关
   ShowReadingTime: true

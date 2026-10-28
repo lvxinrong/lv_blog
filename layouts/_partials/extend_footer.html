@@ -124,7 +124,8 @@
 
     /* 目录：≥1280px 时它被 CSS 挪到右侧栏，这时默认展开才有意义；
        窄屏回落到内联折叠块，保持原来的行为。
-       只在断点切换时同步，所以用户手动折叠的状态不会被反复覆盖。 */
+       只在断点切换时同步，所以用户手动折叠的状态不会被反复覆盖。
+       同时挂载滚动监听，高亮当前阅读章节。 */
     (function () {
         var toc = document.querySelector('details.toc');
         if (!toc || !window.matchMedia) return;
@@ -134,6 +135,53 @@
         var onChange = function (e) { sync(e.matches); };
         if (mq.addEventListener) mq.addEventListener('change', onChange);
         else if (mq.addListener) mq.addListener(onChange);
+
+        var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
+        var items = [];
+        links.forEach(function (link) {
+            var raw = link.getAttribute('href').slice(1);
+            if (!raw) return;
+            var id = raw;
+            try { id = decodeURIComponent(raw); } catch (e) {}
+            var target = document.getElementById(id);
+            if (target) items.push({ link: link, target: target, href: link.getAttribute('href') });
+        });
+        if (!items.length) return;
+
+        var mobilePanel = document.getElementById('article-toc');
+        var mobileLinks = mobilePanel ? Array.prototype.slice.call(mobilePanel.querySelectorAll('a[href^="#"]')) : [];
+        var activeHref = '';
+        var ticking = false;
+
+        var updateActive = function () {
+            ticking = false;
+            var threshold = 116;
+            var current = items[0];
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].target.getBoundingClientRect().top <= threshold) {
+                    current = items[i];
+                } else {
+                    break;
+                }
+            }
+            var nextHref = current ? current.href : '';
+            if (nextHref === activeHref) return;
+            activeHref = nextHref;
+            items.forEach(function (item) {
+                item.link.classList.toggle('is-active', item.href === activeHref);
+            });
+            mobileLinks.forEach(function (link) {
+                link.classList.toggle('is-active', link.getAttribute('href') === activeHref);
+            });
+        };
+
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(updateActive);
+            }
+        }, { passive: true });
+        updateActive();
     })();
 
     /* 本站覆盖的 footer 未带入主题脚本，因此在扩展挂载点补回明暗切换。 */

@@ -1,6 +1,7 @@
 {{- define "main" }}
 {{- /* 首页是专栏门面：栏目本身先于全站时间线。
-     栏目顺序由 mainSections 维护；新增栏目无需再改首页模板。 */ -}}
+     栏目顺序由 mainSections 维护；篇数充沛的栏目展开为左右分栏，
+     新开或筹备中的轻量连载自动组成双列矩阵，兼顾全局视野与首屏密度。 */ -}}
 {{- $sectionKeys := site.Params.mainSections }}
 {{- $sections := slice }}
 {{- range $sectionKeys }}
@@ -22,29 +23,50 @@
     {{- $p := . }}
     {{- $kind := $p.Param "columnKind" | default "column" }}
     {{- $published := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false }}
+    {{- $planned := where $p.RegularPages "Params.placeholder" true }}
+    {{- $isFeatured := ge (len $published) 3 }}
     {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
-    <section class="home-column" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" aria-labelledby="home-column-{{ $p.Section }}">
+    <section class="home-column {{ if $isFeatured }}home-column--featured{{ else }}home-column--compact{{ end }}" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" aria-labelledby="home-column-{{ $p.Section }}">
       <header class="home-column-header">
-        <div class="home-column-heading">
+        <div class="home-column-top">
           <p class="home-column-kind">
+            <span class="home-series-dot" aria-hidden="true"></span>
             {{- if eq $kind "serial" }}连载{{ else }}专栏{{ end }}
-            {{- with $p.Param "status" }}<span>{{ index $labels . | default . }}</span>{{ end }}
+            {{- with $p.Param "status" }}<span class="home-column-status">{{ index $labels . | default . }}</span>{{ end }}
           </p>
+          <a class="home-column-directory" href="{{ $p.RelPermalink }}" aria-label="查看{{ $p.Title }}全部文章">
+            {{- len $published }} 篇{{- if $planned }} · {{ len $planned }} 待写{{- end }}<span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <div class="home-column-heading">
           <h2 id="home-column-{{ $p.Section }}"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h2>
           {{- with $p.Description }}<p class="home-column-description">{{ . }}</p>{{ end }}
         </div>
-        <a class="home-column-directory" href="{{ $p.RelPermalink }}" aria-label="查看{{ $p.Title }}全部文章">
-          {{ len $published }} 篇<span aria-hidden="true">→</span>
-        </a>
+        {{- if and $isFeatured (eq $kind "serial") $published }}
+        <div class="home-column-actions">
+          {{- with index ($published.ByDate) 0 }}
+          <a class="home-column-start" href="{{ .RelPermalink }}">从第一篇读起 <span aria-hidden="true">→</span></a>
+          {{- end }}
+          <a class="home-column-all" href="{{ $p.RelPermalink }}">完整目录</a>
+        </div>
+        {{- end }}
       </header>
 
       {{- with $published }}
       <ol class="home-column-posts">
-        {{- range first 3 (.ByDate.Reverse) }}
+        {{- range $idx, $post := first 3 (.ByDate.Reverse) }}
         <li>
-          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-          {{- if not .Date.IsZero }}
-          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+          {{- if not $post.Date.IsZero }}
+          <time class="home-post-date" datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "01.02" }}</time>
+          {{- end }}
+          <h3>
+            <a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a>
+            {{- if and (eq $idx 0) (eq $kind "serial") }}<span class="home-post-latest">LATEST</span>{{ end }}
+          </h3>
+          {{- if $post.Date.IsZero }}
+          <span></span>
+          {{- else }}
+          <span class="home-post-year">{{ $post.Date.Format "2006" }}</span>
           {{- end }}
         </li>
         {{- end }}
@@ -57,7 +79,11 @@
 </div>
 
 <footer class="home-end">
-  <a class="home-all-posts" href="{{ "archives/" | relLangURL }}">浏览全部文章 <span aria-hidden="true">→</span></a>
-  <a class="home-all-columns" href="{{ "columns/" | relLangURL }}">栏目总览</a>
+  <a class="home-all-posts" href="{{ "archives/" | relLangURL }}">浏览全部文章时间线 <span aria-hidden="true">→</span></a>
+  <div class="home-end-links">
+    <a class="home-all-columns" href="{{ "columns/" | relLangURL }}">栏目总览</a>
+    <span class="home-end-sep" aria-hidden="true">·</span>
+    <a class="home-all-tags" href="{{ "tags/" | relLangURL }}">标签检索</a>
+  </div>
 </footer>
 {{- end }}

@@ -25,11 +25,14 @@
   {{- if .Description }}
   <div class="post-description">{{ .Description | markdownify }}</div>
   {{- end }}
+  {{- if and (eq .Kind "section") (in site.Params.mainSections .Section) }}
+  {{- partial "series_status.html" (dict "page" . "variant" "header") }}
+  {{- end }}
 </header>
 {{- end }}
 
 {{- if .Content }}
-<div class="post-content md-content">
+<div class="post-content md-content section-intro-content">
   {{- if not (.Param "disableAnchoredHeadings") }}
   {{- partial "anchored_headings.html" .Content -}}
   {{- else }}{{ .Content }}{{ end }}

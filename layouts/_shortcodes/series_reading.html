@@ -4,11 +4,43 @@
 {{- $planned := where $pages "Params.placeholder" true -}}
 <nav class="series-reading" aria-label="连载阅读入口">
   {{- if $published }}
-    {{- with index $published 0 }}<a class="series-start" href="{{ .RelPermalink }}">从头阅读 <span>从第一篇开始 →</span></a>{{ end }}
-    {{- with index ($published.ByDate.Reverse) 0 }}<a href="{{ .RelPermalink }}">阅读最新 <span>{{ .Title }} →</span></a>{{ end }}
+    {{- with index $published 0 }}
+    <a class="series-start" href="{{ .RelPermalink }}">
+      <span class="series-reading-head">
+        <span class="series-reading-label">从头阅读</span>
+        <span class="series-reading-tag">FIRST</span>
+      </span>
+      <span class="series-reading-title">{{ .Title }} →</span>
+    </a>
+    {{- end }}
+    {{- with index ($published.ByDate.Reverse) 0 }}
+    <a class="series-latest-entry" href="{{ .RelPermalink }}">
+      <span class="series-reading-head">
+        <span class="series-reading-label">阅读最新</span>
+        <span class="series-reading-tag">LATEST</span>
+      </span>
+      <span class="series-reading-title">{{ .Title }} →</span>
+    </a>
+    {{- end }}
   {{- else if $planned }}
-    {{- with index $planned 0 }}<a class="series-start" href="{{ .RelPermalink }}">预览首篇 <span>从第一篇开始 →</span></a>{{ end }}
-    {{- with index ($planned.ByDate.Reverse) 0 }}<a href="{{ .RelPermalink }}">预览末篇 <span>查看目前规划的最后一篇 →</span></a>{{ end }}
+    {{- with index $planned 0 }}
+    <a class="series-start" href="{{ .RelPermalink }}">
+      <span class="series-reading-head">
+        <span class="series-reading-label">预览首篇</span>
+        <span class="series-reading-tag">DRAFT</span>
+      </span>
+      <span class="series-reading-title">{{ .Title }} →</span>
+    </a>
+    {{- end }}
+    {{- with index ($planned.ByDate.Reverse) 0 }}
+    <a class="series-latest-entry" href="{{ .RelPermalink }}">
+      <span class="series-reading-head">
+        <span class="series-reading-label">预览末篇</span>
+        <span class="series-reading-tag">PLAN</span>
+      </span>
+      <span class="series-reading-title">{{ .Title }} →</span>
+    </a>
+    {{- end }}
   {{- else }}
   <p>章节正在准备中。</p>
   {{- end }}

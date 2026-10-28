@@ -1,51 +1,40 @@
-{{- /* 连载状态栏。用法：
-         partial "series_status.html" (dict "page" $栏目页 "variant" "hero"|"page")
+{{- /* 栏目状态栏。用法：
+         partial "series_status.html" (dict "page" $栏目页 "variant" "header"|"page"|"hero")
 
        刻意**不是**进度条：没有分母、没有百分比、没有任何时间承诺。
        只说从数据里推得出来的事实 —— 已发布多少篇、最近更新时间、预览中多少篇待写。
        这样读者知道「这东西是活的、已经有东西可看」，但作者不被任何周期绑住。
 
-       两种形态语义不同，所以标记是分支写的：
-         hero  首页 Hero 下方 —— 紧凑动态条，给名字、状态和事实，整块可点
-         page  栏目页头部下方 —— 读者已经在这里了，所以只说事实，不是链接
-
-       只有 columnKind = "serial" 的栏目会渲染。column 没有「连载状态」可言。 */ -}}
+       header 形态直接内嵌在栏目页 .page-header 底部，省去独立白框，释放首屏空间。 */ -}}
 {{- $p := .page -}}
 {{- $variant := .variant | default "page" -}}
-{{- if eq ($p.Param "columnKind") "serial" -}}
-  {{- $notes := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false -}}
-  {{- $planned := where $p.RegularPages "Params.placeholder" true -}}
-  {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" -}}
-  {{- $status := "" -}}
+{{- $kind := $p.Param "columnKind" | default "column" -}}
+{{- $notes := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false -}}
+{{- $planned := where $p.RegularPages "Params.placeholder" true -}}
+{{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" -}}
+{{- $status := "" -}}
+{{- if eq $kind "serial" -}}
   {{- with $p.Param "status" -}}{{- $status = index $labels . | default . -}}{{- end -}}
-  {{- $facts := printf "已发布 %d 篇" (len $notes) -}}
-  {{- if $planned -}}{{- $facts = printf "%s · %d 篇待写" $facts (len $planned) -}}{{- end -}}
-  {{- with $notes -}}
-    {{- $latest := index (.ByDate.Reverse) 0 -}}
-    {{- $facts = printf "%s · 最近更新 %s" $facts ($latest.Date.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
-  {{- end -}}
+{{- else -}}
+  {{- $status = "专栏" -}}
+{{- end -}}
+{{- $facts := printf "已发布 %d 篇" (len $notes) -}}
+{{- if $planned -}}{{- $facts = printf "%s · %d 篇待写" $facts (len $planned) -}}{{- end -}}
+{{- with $notes -}}
+  {{- $latest := index (.ByDate.Reverse) 0 -}}
+  {{- $facts = printf "%s · 最近更新 %s" $facts ($latest.Date.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
+{{- end -}}
 
-  {{- if eq $variant "hero" -}}
-  {{- /* data-series 必须显式写：首页 Hero 不在任何 [data-series] 容器里，
-         少了它 var(--series) 取不到值（CSS 里 [data-series] 只负责定义变量）。 */ -}}
-  <a class="pstat pstat-hero" data-series="{{ $p.Section }}" href="{{ $p.RelPermalink }}">
-    <span class="pstat-head">
-      {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
-      <span class="pstat-name">{{ $p.Title }}</span>
-    </span>
-    <span class="pstat-foot">
-      <span class="pstat-facts">{{ $facts }}</span>
-      <span class="pstat-go" aria-hidden="true">→</span>
-    </span>
-  </a>
-
-  {{- else -}}
-  {{- /* 不是链接、不说「看连载」—— 读者已经在连载页里了。 */ -}}
-  <div class="pstat pstat-page" data-series="{{ $p.Section }}">
-    <div class="pstat-head">
-      {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
-      <span class="pstat-facts">{{ $facts }}</span>
-    </div>
+{{- if eq $variant "header" -}}
+<div class="pstat pstat-header" data-series="{{ $p.Section }}" data-kind="{{ $kind }}">
+  {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
+  <span class="pstat-facts">{{ $facts }}</span>
+</div>
+{{- else if and (eq $variant "page") (eq $kind "serial") -}}
+<div class="pstat pstat-page" data-series="{{ $p.Section }}">
+  <div class="pstat-head">
+    {{- with $status }}<span class="pstat-badge">{{ . }}</span>{{ end }}
+    <span class="pstat-facts">{{ $facts }}</span>
   </div>
-  {{- end -}}
+</div>
 {{- end -}}
