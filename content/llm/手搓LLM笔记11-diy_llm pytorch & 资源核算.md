@@ -30,7 +30,7 @@ FLOPs(Floating Point Operations, 浮点运算次数) 衡量计算复杂度的一
 
 
 结构化稀疏: 一种模型压缩的方法，通常是对稠密模型按照50%的稀疏度进行剪纸
-![[Pasted image 20261028104954.png]]
+![结构化稀疏：对稠密模型按 50% 稀疏度剪枝](llm-11-structured-sparsity.png)
 
 软硬件开销系数 (通常按照 30% ~ 60% 利用率估算更现实)
 
