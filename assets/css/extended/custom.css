@@ -2389,6 +2389,166 @@ details.toc a.is-active {
     }
 }
 
+/* 系列目录以文章为主体：加宽列表页，正文页继续使用阅读版心。 */
+.series-page .page-header {
+    margin-top: 18px;
+    margin-bottom: 16px;
+}
+
+.series-page .section-intro-content {
+    margin: 0 0 20px;
+}
+
+.series-page .series-reading {
+    margin: 0 0 4px;
+}
+
+.series-page .series-reading a {
+    padding: 10px 16px;
+    box-shadow: none;
+    background: var(--entry);
+    transform: none;
+}
+
+.series-page .series-reading-tag {
+    display: none;
+}
+
+.series-page .series-reading-title {
+    margin-top: 3px;
+}
+
+.series-page .series-background {
+    margin-bottom: 0;
+    border-color: transparent;
+    background: transparent;
+}
+
+.series-page .series-background > summary {
+    min-height: 44px;
+    padding: 10px 0;
+}
+
+.series-page .article-timeline {
+    margin-top: 0;
+}
+
+.series-page .article-timeline::before {
+    display: none;
+}
+
+.series-page .timeline-year-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    text-shadow: none;
+}
+
+.series-page .timeline-year-header::after {
+    content: "文章目录";
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--secondary);
+    opacity: 1;
+}
+
+.series-page .timeline-month-header a::before {
+    content: none;
+}
+
+.series-page .timeline-entry {
+    background: var(--entry);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.series-page .timeline-entry:hover,
+.series-page .timeline-entry:focus-within {
+    transform: none;
+    border-color: var(--series);
+    box-shadow: var(--shadow-sm);
+}
+
+.series-page .timeline-entry::before {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--series);
+}
+
+.series-page .timeline-year:first-child .timeline-month:first-of-type .timeline-entry:first-child {
+    background: linear-gradient(110deg, var(--series-soft), transparent 75%), var(--entry);
+}
+
+.series-page .timeline-year:first-child .timeline-month:first-of-type .timeline-entry:first-child .timeline-meta::after {
+    content: "最新";
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0;
+}
+
+.series-page .timeline-title a:focus-visible,
+.series-page .series-reading a:focus-visible,
+.series-page .series-background > summary:focus-visible {
+    outline: 2px solid var(--series);
+    outline-offset: 4px;
+}
+
+@media screen and (min-width: 769px) {
+    .series-page .main {
+        max-width: 1040px;
+    }
+
+    .series-page .page-header {
+        padding-left: 20px;
+    }
+
+    .series-page .timeline-month {
+        grid-template-columns: 72px minmax(0, 1fr);
+        column-gap: 16px;
+    }
+
+    .series-page .timeline-month-header {
+        padding: 8px 0;
+        border: 0;
+        background: transparent;
+        font-size: 15px;
+    }
+
+    .series-page .timeline-entries {
+        padding-left: 24px;
+    }
+
+    .series-page .timeline-entry {
+        padding: 22px 24px;
+        margin-bottom: 18px;
+    }
+
+    .series-page .timeline-entry::before {
+        top: 29px;
+        left: -29px;
+    }
+
+    .series-page .timeline-entry::after {
+        top: 34px;
+        left: -20px;
+        width: 20px;
+    }
+
+    .series-page .timeline-title {
+        font-size: 20px;
+    }
+
+    .series-page .timeline-summary {
+        max-width: 72ch;
+        margin-top: 10px;
+        font-size: 15px;
+    }
+
+    .series-page .timeline-meta {
+        margin-top: 12px;
+        font-size: 12px;
+    }
+}
+
 /* --------------------------------------------------------------------------
    13. 移动端响应式微调（≤768px）
    -------------------------------------------------------------------------- */
