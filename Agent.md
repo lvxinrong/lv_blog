@@ -398,6 +398,27 @@ python3 scripts/mkcover.py --only <slug>       # 只处理一篇
 
 顺带：`layouts/home.html` 是自定义的，本来就没调用 `cover.html`；所以「列表不显示封面」这件事同时由「front matter 两个 hidden」和「home.html 不含 cover 组件」两条保证。
 
+### 正文插图（不是封面）的存放与链接
+
+**规则：插图放 `static/<栏目>/`，正文链接写根路径 `/栏目名/文件名.png`。**
+
+封面（`static/covers/`）是 OG 分享卡，正文插图是正文资源，两回事，别混。
+
+两种错误姿势都实际炸过（2026-10-28，llm-11 图片 404）：
+
+1. **图片放 `content/<栏目>/`** —— Hugo 不保证把它们发布到线上，访问会 404。静态资源永远放 `static/`。
+2. **链接写相对文件名 `xxx.png`** —— 浏览器会拼成 `/llm/<文章slug>/xxx.png`（带 slug），而图片实际在 `/llm/xxx.png`，又是 404。必须写 `/llm/xxx.png`（带前导斜杠）。
+
+正确的完整链路：
+
+```
+图片文件：static/llm/llm-11-structured-sparsity.png
+正文引用：![结构化稀疏](/llm/llm-11-structured-sparsity.png)
+线上访问：https://blog.lvxinrong.com/llm/llm-11-structured-sparsity.png
+```
+
+另外 Obsidian 的 `![[xxx.png]]` 语法 Hugo 不渲染，贴图必须写标准 markdown。
+
 ### 每篇都要写英文 `slug`（否则链接长到没法分享）
 
 中文标题直接做 URL 会变成百分号编码。实测本站 8 篇文章：**平均 127 字符，最长 169**，分享到手机上会折行、被截断。
