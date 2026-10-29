@@ -1,6 +1,6 @@
 +++
 title = "手搓 LLM 笔记 12：第一次看到自己手搓的 LLM 说人话"
-date = 2026-10-29T14:00:00+08:00
+date = 2026-10-29T12:00:00+08:00
 draft = false
 slug = "llm-12-kv-cache"
 tags = ["LLM", "KV cache", "推理优化", "学习笔记", "草稿"]
