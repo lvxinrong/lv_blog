@@ -21,18 +21,18 @@ GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、S
 
 **M0 升级说明（2026-10-20）**：原计划是把这些代码「收拢」成骨架，现升级为**按工程结构重写**——分层（tokenizer / model / data / train / generate / eval / checkpoints）、单一配置入口、单一 device 入口、checkpoint 标准化。重写过程不翻书优先，翻一次记一笔欠账注释，写完清单归零。这个过程本身即《手搓 LLM 笔记 08》。
 
-## 里程碑
+## 统一施工图（里程碑 = 实现 + 配套章节 + 工业级选修 + 验收）
 
-| 阶段 | 内容 | 天数 | 验收 | nanochat 对照 |
+| 阶段 | 实现内容 | diy-llm 配套 | 工业级选修（AI Infra） | 验收 |
 | --- | --- | --- | --- | --- |
-| M0 | 重写 lvllm：不按章节收拢，按工程结构**重写**书里全部代码（终极回炉），写成读书笔记 08 | 3–5 | 三个回归测试（分类 / 指令微调 / 生成）与旧仓库结果一致；欠账注释清单归零 | — |
-| M1 | 自己训 BPE tokenizer（Python 实现，不用 tiktoken） | 2–3 | 编解码往返无损 + 压缩率可测 | `tokenizer.py` |
-| M2 | 预训练：token 流打包、dataloader、cosine LR、梯度累积、bpb 指标 | 3–5 | bpb 曲线真实下降 + 模型咿呀学语 + checkpoint 带 config | `base_train.py` `dataloader.py` |
-| M3 | 推理引擎：给 generate 装 KV cache | 2 | 输出与朴素版逐字一致，提速可测量 | `engine.py` |
-| M4 | SFT：第七章管道移植，打开 completion-only | 2 | 套模板回答 + 评估集分数 | `chat_sft.py` |
-| M5 | 评估框架：基模选择题 + DeepSeek 评委 | 1–2 | 一键出 JSON 报告 | `core_eval.py` `chat_eval.py` |
-| M6 | 对话界面：CLI + 简单 Web 页 | 1–2 | 祁总打开浏览器能跟它聊上 | `chat_cli.py` |
-| M7 | 彩蛋（可选）：年终总结 + 有道云笔记做中间训练 | 待定 | 「吕炘嵘 GPT」第一次附体 | midtrain 思路 |
+| M0 | 按工程结构重写全书代码（分层、单一 config/device 入口、checkpoint 标准化） | — | — | 三个回归与旧仓库一致；笔记 08 |
+| M1 | 自训 BPE tokenizer（纯 Python，不用 tiktoken） | 第 2 章 分词器 + 作业 1 | 压缩率与甜点区实测、词表为语料服务 | 编解码往返无损 + 压缩率可测 |
+| M2 | 预训练：token 流打包、dataloader、cosine LR、梯度累积、bpb 指标 | 第 3 章（资源核算）+ 第 11 章（数据工程）+ 第 9 章（Scaling Laws） | 混合精度（bf16）、FLOPs/显存估算、训练稳定性 | bpb 曲线真实下降 + 咿呀学语 + checkpoint 带 config |
+| M3 | 推理引擎：给 generate 装 KV cache | 第 10 章 推理（KV Cache、投机解码、量化） | **RoPE**（替代 pos_emb，解决位置溢出）、量化（INT8/INT4）、投机解码、FlashAttention | 输出与朴素版逐字一致 + 提速可测（实测 3.6x） |
+| M4 | SFT：第七章管道移植，打开 completion-only | 第 13 章（Pre-training/SFT/DPO 全流程） | 指令数据工程、completion-only 掩码、LoRA 与全参对比 | 套模板回答 + 评估集分数 |
+| M5 | 评估框架：基模选择题 + DeepSeek 评委 | 第 12 章 评估与基准 + 作业 6 | 评委一致性校准、LLM-as-judge、报告自动化 | 一键出 JSON 报告 |
+| M6 | 对话界面：CLI + 简单 Web 页 | — | 流式输出、serving 基础、对话状态管理 | 祁总打开浏览器能聊上 |
+| M7 | 彩蛋：年终总结 + 有道云笔记做中间训练 | midtrain 思路 | 领域语料继续训练（midtrain） | 「吕炘嵘 GPT」第一次附体 |
 
 ## 明确砍掉
 
