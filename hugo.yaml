@@ -192,20 +192,6 @@ menu:
       params:
         kind: 连载
         description: 读《从零构建大模型》，把每一层都拆开看
-    - name: nanochat
-      parent: llm-series
-      pageRef: /nanochat
-      weight: 2
-      params:
-        kind: 连载
-        description: 跟着 Karpathy 的 nanochat，把零件装成整车
-    - name: diy-llm
-      parent: llm-series
-      pageRef: /diy-llm
-      weight: 3
-      params:
-        kind: 连载
-        description: CS336 中文本土化课程，给作品线配一条理论线
     - name: AI 随想
       url: /ai/
       weight: 2
