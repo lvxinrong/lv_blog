@@ -28,6 +28,8 @@ featured = 1
 #   在读什么书  ← 上面那个 description
 +++
 
+**置顶：[lvchat 实现导图（学习计划）](/llm/lvchat-roadmap/)**
+
 {{< series_status >}}
 
 {{< series_reading >}}
