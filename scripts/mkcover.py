@@ -31,11 +31,14 @@ COVER_DIR = ROOT / "static" / "covers"
 
 # 系列 -> (显示名, 主色, 辅色)。色值与 assets/css/extended/custom.css 的 --series-* 一致。
 SERIES = {
-    "llm":   ("手搓 LLM", "#1f6fe0", "#5ea4ff"),
-    "ai":    ("AI 随想",  "#7c4ddb", "#a78bfa"),
-    "craft": ("工程手记", "#0e8f9c", "#3fc9d6"),
-    "nanochat": ("nanochat", "#d97706", "#f59e0b"),
-    "diy-llm": ("diy-llm", "#059669", "#34d399"),
+    "llm":            ("手搓 LLM", "#1f6fe0", "#5ea4ff"),
+    "nanochat":       ("nanochat", "#1f6fe0", "#5ea4ff"),
+    "diy-llm":        ("diy-llm", "#1f6fe0", "#5ea4ff"),
+    "ai":             ("AI 随想",  "#7c4ddb", "#a78bfa"),
+    "craft":          ("工程手记", "#0e8f9c", "#3fc9d6"),
+    "incident-skill": ("生产排查 Skill", "#0e8f9c", "#3fc9d6"),
+    "scan-skill":     ("系统扫描 Skill", "#0e8f9c", "#3fc9d6"),
+    "reading":        ("读书笔记", "#d97706", "#f59e0b"),
 }
 FONT = "PingFang SC, Hiragino Sans GB, Heiti SC, sans-serif"
 CLOSERS = "。，、；：？！」』）》〉…—·"   # 不让这些跑到行首

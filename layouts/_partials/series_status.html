@@ -2,7 +2,7 @@
          partial "series_status.html" (dict "page" $栏目页 "variant" "header"|"page"|"hero")
 
        刻意**不是**进度条：没有分母、没有百分比、没有任何时间承诺。
-       只说从数据里推得出来的事实 —— 已发布多少篇、最近更新时间、预览中多少篇待写。
+       只说从数据里推得出来的事实 —— 已发布多少篇、最近更新时间（兼顾单篇持续追加的 lastmod）、预览中多少篇待写。
        这样读者知道「这东西是活的、已经有东西可看」，但作者不被任何周期绑住。
 
        header 形态直接内嵌在栏目页 .page-header 底部，省去独立白框，释放首屏空间。 */ -}}
@@ -21,8 +21,10 @@
 {{- $facts := printf "已发布 %d 篇" (len $notes) -}}
 {{- if $planned -}}{{- $facts = printf "%s · %d 篇待写" $facts (len $planned) -}}{{- end -}}
 {{- with $notes -}}
-  {{- $latest := index (.ByDate.Reverse) 0 -}}
-  {{- $facts = printf "%s · 最近更新 %s" $facts ($latest.Date.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
+  {{- $latestMod := index (.ByLastmod.Reverse) 0 -}}
+  {{- $modDate := $latestMod.Lastmod -}}
+  {{- if $modDate.IsZero -}}{{- $modDate = $latestMod.Date -}}{{- end -}}
+  {{- $facts = printf "%s · 最近更新 %s" $facts ($modDate.Format (default "2006年1月2日" site.Params.DateFormat)) -}}
 {{- end -}}
 
 {{- if eq $variant "header" -}}

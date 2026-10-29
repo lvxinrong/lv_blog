@@ -24,7 +24,7 @@
     {{- $kind := $p.Param "columnKind" | default "column" }}
     {{- $published := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false }}
     {{- $planned := where $p.RegularPages "Params.placeholder" true }}
-    {{- $isFeatured := ge (len $published) 3 }}
+    {{- $isFeatured := or (ge (len $published) 3) (eq $kind "column") }}
     {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
     <section class="home-column {{ if $isFeatured }}home-column--featured{{ else }}home-column--compact{{ end }}" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" aria-labelledby="home-column-{{ $p.Section }}">
       <header class="home-column-header">

@@ -66,14 +66,16 @@
     --glow-2: rgba(124, 92, 230, 0.11);
     --wash: rgba(255, 255, 255, 0.64);
 
-    /* 右上角三大导航系列的专属色：手搓 LLM（蓝）、AI 随想（紫）、工程实践（青） */
+    /* 右上角四大导航系列的专属色：手搓 LLM（蓝）、AI 随想（紫）、工程实践（青）、读书笔记（琥珀金） */
     --series-llm: #1f6fe0;
     --series-ai: #7c4ddb;
     --series-craft: #0e8f9c;
+    --series-reading: #d97706;
 
     --series-llm-soft: rgba(31, 111, 224, 0.13);
     --series-ai-soft: rgba(124, 77, 219, 0.13);
     --series-craft-soft: rgba(14, 143, 156, 0.13);
+    --series-reading-soft: rgba(217, 119, 6, 0.13);
 
     /* 默认回落到全站强调色；不要在子组件选择器里重置它，否则同优先级下会盖掉 [data-series] */
     --series: var(--accent);
@@ -111,14 +113,16 @@
     --glow-2: rgba(140, 88, 255, 0.15);
     --wash: rgba(18, 20, 25, 0.94);
 
-    /* 深色下三大系列专属色提亮，确保在深底上有充足对比度 */
+    /* 深色下四大系列专属色提亮，确保在深底上有充足对比度 */
     --series-llm: #5ea4ff;
     --series-ai: #a78bfa;
     --series-craft: #3fc9d6;
+    --series-reading: #f59e0b;
 
     --series-llm-soft: rgba(94, 164, 255, 0.17);
     --series-ai-soft: rgba(167, 139, 250, 0.17);
     --series-craft-soft: rgba(63, 201, 214, 0.17);
+    --series-reading-soft: rgba(245, 158, 11, 0.17);
 
     --series: var(--accent);
     --series-soft: var(--accent-soft);
@@ -126,10 +130,11 @@
     color-scheme: dark;
 }
 
-/* 按右上角三大导航分组统一映射颜色：
+/* 按右上角四大导航分组统一映射颜色：
    1. 手搓 LLM（llm / nanochat / diy-llm）            → 蓝 (--series-llm)
    2. AI 随想（ai）                                    → 紫 (--series-ai)
-   3. 工程实践（craft / incident-skill / scan-skill） → 青 (--series-craft) */
+   3. 工程实践（craft / incident-skill / scan-skill） → 青 (--series-craft)
+   4. 读书笔记（reading）                              → 琥珀金 (--series-reading) */
 [data-series="llm"],
 [data-series="nanochat"],
 [data-series="diy-llm"] {
@@ -147,6 +152,11 @@
 [data-series="scan-skill"] {
     --series: var(--series-craft);
     --series-soft: var(--series-craft-soft);
+}
+
+[data-series="reading"] {
+    --series: var(--series-reading);
+    --series-soft: var(--series-reading-soft);
 }
 
 /* --------------------------------------------------------------------------

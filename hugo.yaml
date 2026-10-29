@@ -114,6 +114,7 @@ params:
     - craft
     - incident-skill
     - scan-skill
+    - reading
 
   # 阅读体验相关
   ShowReadingTime: true
@@ -219,9 +220,12 @@ menu:
       params:
         kind: 连载
         description: 把看懂一个系统变成可复核的流程
+    - name: 读书笔记
+      url: /reading/
+      weight: 4
     - name: 归档
       url: /archives/
-      weight: 4
+      weight: 5
     - name: 关于
       url: /about/
-      weight: 5
+      weight: 6
