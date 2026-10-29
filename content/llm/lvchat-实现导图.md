@@ -50,7 +50,7 @@ GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、S
 ### M4：SFT
 - **实现**：第七章管道移植，打开 completion-only
 - **配套**：第 13 章（Pre-training/SFT/DPO 全流程）
-- **选修**：指令数据工程、completion-only 掩码、LoRA 与全参对比
+- **选修**：指令数据工程、completion-only 掩码、LoRA 与全参对比、**思维链（CoT）数据**（推理步骤+答案）、RLVR/GRPO（强化学习方向，后置了解）
 - **验收**：套模板回答 + 评估集分数
 
 ### M5：评估框架
