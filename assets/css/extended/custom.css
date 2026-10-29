@@ -2973,3 +2973,15 @@ details.toc a.is-active {
         opacity: 0;
     }
 }
+
+/* ---------- 宽表格防横向拖拽（统一施工图等） ---------- */
+.post-content table {
+    table-layout: fixed;
+    width: 100%;
+}
+.post-content table td,
+.post-content table th {
+    white-space: normal;
+    word-break: break-word;
+    vertical-align: top;
+}
