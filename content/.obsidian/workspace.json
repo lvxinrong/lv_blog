@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "feada32135c8051b",
+        "id": "3b8c8c25d596aa21",
         "type": "tabs",
         "children": [
           {
-            "id": "704c2a68d98f07f0",
+            "id": "2a2a9ad601b9769c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "手搓LLM笔记11-diy_llm pytorch & 资源核算"
+              "title": "新标签页"
             }
           }
         ]
@@ -83,7 +79,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 297.19140625
   },
   "right": {
     "id": "b259208a98b9cff1",
@@ -185,12 +181,27 @@
       "bases:新建数据库": false
     }
   },
-  "active": "704c2a68d98f07f0",
+  "active": "9dbe826771160c38",
   "lastOpenFiles": [
+    "llm/手搓LLM番外-默写GPTModel.md",
+    "llm/手搓LLM笔记12-KVCache.md",
+    "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
+    "llm/手搓LLM笔记10-手写bpe分词器.md",
+    "llm/手搓LLM笔记03-因果掩码与多头.md",
+    "llm/手搓LLM笔记01-第二章.md",
+    "llm/手搓LLM笔记00-立项书.md",
+    "incident-skill/01-evidence.md",
+    "incident-skill/00-origin.md",
+    "未命名",
+    "llm/手搓LLM笔记07-3-LoRA剂量实验.md",
+    "llm/手搓LLM笔记07-2-换底座.md",
+    "llm/手搓LLM笔记05-预训练与生成.md",
+    "llm/手搓LLM笔记04-GPT架构拼装.md",
+    "llm/llm-05-a4-generate.jpg",
+    "llm/llm-05-a4-calc-loss-batch.jpg",
+    "llm/手搓LLM番外-GPT细节问答.md",
     "llm/llm-11-structured-sparsity.png",
     "Pasted image 20261028104954.png",
-    "llm/手搓LLM笔记10-手写bpe分词器.md",
-    "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
     "llm/手搓LLM番外2-Embedding形状问答.md",
     "llm/手搓LLM笔记09-diy-llm分词器.md",
     "llm/llm-09-tokenizer-types.png",
@@ -198,30 +209,17 @@
     "Pasted image 20261027104005.png",
     "Pasted image 20261027103613.png",
     "Pasted image 20261027101642.png",
-    "llm/手搓LLM笔记07-3-LoRA剂量实验.md",
     "llm/手搓LLM笔记07-指令微调.md",
     "nanochat/立项书.md",
     "nanochat/_index.md",
     "nanochat",
     "llm/nanochat-立项书.md",
-    "llm/手搓LLM笔记01-第二章.md",
-    "llm/手搓LLM笔记00-立项书.md",
     "scan-skill/introduction.md",
     "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm-backlog.md",
     "llm/手搓LLM笔记06-分类微调.md",
     "incident-skill/introduction.md",
     "craft/生产排查不该是老师傅的手艺.md",
-    "llm/手搓LLM笔记05-预训练与生成.md",
-    "llm/llm-05-a4-generate.jpg",
-    "llm/llm-05-a4-calc-loss-batch.jpg",
-    "llm/手搓LLM笔记04-GPT架构拼装.md",
-    "llm/手搓LLM笔记03-因果掩码与多头.md",
-    "ai/学习计划不该是一张孤零零的清单.md",
-    "llm/手搓LLm笔记02-第三章.md",
-    "scan-skill/_index.md",
-    "scan-skill/05-walkthrough.md",
-    "scan-skill/04-collaboration.md",
     "scan-skill",
     "incident-skill"
   ]

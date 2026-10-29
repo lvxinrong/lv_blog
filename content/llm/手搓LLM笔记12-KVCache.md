@@ -12,8 +12,6 @@ summary = "KV cache 是推理优化：历史 K/V 存下来复用，每步只算�
     hiddenInSingle = true
 +++
 
-> 草稿，待验收。
-
 ## KV cache 是什么
 
 **纯粹的推理优化，训练用不上。** 训练时整段序列一次喂入，每个 token 的 K/V 本来就只算一次；推理时是一个一个 token 往外蹦，每生成一个新 token，都要把之前所有 token 的 K/V 重新算一遍——越到后面越慢。KV cache 把历史 K/V 存下来复用，**每步只算新 token 的 K/V，历史部分直接复用**。
