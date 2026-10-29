@@ -1,6 +1,6 @@
 +++
 title = "手搓 LLM 番外：四张 A4 纸，默写 GPTModel"
-date = 2026-10-29T12:00:00+08:00
+date = 2026-10-29T08:00:00+08:00
 draft = false
 slug = "llm-handwriting-gptmodel"
 tags = ["LLM", "GPT", "学习方法", "默写", "学习笔记"]
