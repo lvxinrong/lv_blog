@@ -110,8 +110,6 @@ params:
 
   mainSections:
     - llm
-    - nanochat
-    - diy-llm
     - ai
     - craft
     - incident-skill

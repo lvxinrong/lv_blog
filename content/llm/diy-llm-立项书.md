@@ -1,6 +1,7 @@
 +++
 title = "diy-llm 立项书：给作品线配一条理论线"
 slug = "diy-llm-proposal"
+aliases = ["/diy-llm/diy-llm-proposal/"]
 date = 2026-10-24T12:00:00+08:00
 draft = false
 tags = ["LLM", "diy-llm", "CS336", "立项", "学习笔记"]
