@@ -1,7 +1,7 @@
 +++
-title = "手搓 LLM 笔记 12：给 generate 装 KV cache"
+title = "手搓 LLM 笔记 12：第一次看到自己手搓的 LLM 说人话"
 date = 2026-10-29T14:00:00+08:00
-draft = true
+draft = false
 slug = "llm-12-kv-cache"
 tags = ["LLM", "KV cache", "推理优化", "学习笔记", "草稿"]
 summary = "KV cache 是推理优化：历史 K/V 存下来复用，每步只算新 token。三层分工、首轮全量后续单步、位置偏移与位置溢出三个坑，验收输出一致且提速 40%。"
@@ -55,3 +55,16 @@ pos_embeds = self.pos_emb(
 - **位置溢出处理**：滑动窗口（截掉最老历史 + 对应 cache，保持窗口不超 context_length），或者以后换 RoPE（无表位置编码，天然无上限）
 - `test_m2_pretrain` 手撸（31 号）
 - `i` 已从 generate 的循环里移除，改由 global_step 做连续 micro-batch 计数
+
+
+## 历史性的一刻：它说人话了
+
+512 个 token 的生成测试里，最终结果是这样的：
+
+- **提速 3.6x**：cache 版 10.00s，朴素版 36.10s
+- **输出连贯有逻辑**：从“人类与 AI 的未来”一路写到机器智能的哲学讨论，不再是复读机
+- **中英文对照**：DeepSeek 翻译也顺畅，直接可以发圈
+
+看到模型输出通顺英文的那一刻，我真实地起了鸡皮疙瘩。从“我可能真的写不出来”到“我造的模型说出的东西是通顺的”，中间每一步都是自己敲的：分词器、注意力、训练循环、KV cache。**它不是我用来的，是我造出来的。**
+
+![KV cache 验收：输出一致 + 提速 3.6x](/llm/llm-12-kv-cache-run.png)
