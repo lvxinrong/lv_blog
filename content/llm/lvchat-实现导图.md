@@ -23,16 +23,53 @@ GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、S
 
 ## 统一施工图（里程碑 = 实现 + 配套章节 + 工业级选修 + 验收）
 
-| 阶段 | 实现内容 | diy-llm 配套 | 工业级选修（AI Infra） | 验收 |
-| --- | --- | --- | --- | --- |
-| M0 | 按工程结构重写全书代码（分层、单一 config/device 入口、checkpoint 标准化） | — | — | 三个回归与旧仓库一致；笔记 08 |
-| M1 | 自训 BPE tokenizer（纯 Python，不用 tiktoken） | 第 2 章 分词器 + 作业 1 | 压缩率与甜点区实测、词表为语料服务 | 编解码往返无损 + 压缩率可测 |
-| M2 | 预训练：token 流打包、dataloader、cosine LR、梯度累积、bpb 指标 | 第 3 章（资源核算）+ 第 11 章（数据工程）+ 第 9 章（Scaling Laws） | 混合精度（bf16）、FLOPs/显存估算、训练稳定性 | bpb 曲线真实下降 + 咿呀学语 + checkpoint 带 config |
-| M3 | 推理引擎：给 generate 装 KV cache | 第 10 章 推理（KV Cache、投机解码、量化） | **RoPE**（替代 pos_emb，解决位置溢出）、量化（INT8/INT4）、投机解码、FlashAttention | 输出与朴素版逐字一致 + 提速可测（实测 3.6x） |
-| M4 | SFT：第七章管道移植，打开 completion-only | 第 13 章（Pre-training/SFT/DPO 全流程） | 指令数据工程、completion-only 掩码、LoRA 与全参对比 | 套模板回答 + 评估集分数 |
-| M5 | 评估框架：基模选择题 + DeepSeek 评委 | 第 12 章 评估与基准 + 作业 6 | 评委一致性校准、LLM-as-judge、报告自动化 | 一键出 JSON 报告 |
-| M6 | 对话界面：CLI + 简单 Web 页 | — | 流式输出、serving 基础、对话状态管理 | 祁总打开浏览器能聊上 |
-| M7 | 彩蛋：年终总结 + 有道云笔记做中间训练 | midtrain 思路 | 领域语料继续训练（midtrain） | 「吕炘嵘 GPT」第一次附体 |
+### M0：重写全书代码
+- **实现**：按工程结构重写全书代码（分层、单一 config/device 入口、checkpoint 标准化）
+- **配套**：—
+- **选修**：—
+- **验收**：三个回归与旧仓库一致；笔记 08
+
+### M1：自训 BPE tokenizer
+- **实现**：纯 Python 手写 BPE 训练与编解码，不用 tiktoken
+- **配套**：第 2 章 分词器 + 作业 1
+- **选修**：压缩率与甜点区实测、词表为语料服务
+- **验收**：编解码往返无损 + 压缩率可测
+
+### M2：预训练
+- **实现**：token 流打包、dataloader、cosine LR、梯度累积、bpb 指标
+- **配套**：第 3 章（资源核算）+ 第 11 章（数据工程）+ 第 9 章（Scaling Laws）
+- **选修**：混合精度（bf16）、FLOPs/显存估算、训练稳定性
+- **验收**：bpb 曲线真实下降 + 咿呀学语 + checkpoint 带 config
+
+### M3：推理引擎（KV cache）
+- **实现**：给 generate 装 KV cache
+- **配套**：第 10 章 推理（KV Cache、投机解码、量化）
+- **选修**：**RoPE**（替代 pos_emb，解决位置溢出）、量化（INT8/INT4）、投机解码、FlashAttention
+- **验收**：输出与朴素版逐字一致 + 提速可测（实测 3.6x）
+
+### M4：SFT
+- **实现**：第七章管道移植，打开 completion-only
+- **配套**：第 13 章（Pre-training/SFT/DPO 全流程）
+- **选修**：指令数据工程、completion-only 掩码、LoRA 与全参对比
+- **验收**：套模板回答 + 评估集分数
+
+### M5：评估框架
+- **实现**：基模选择题 + DeepSeek 评委
+- **配套**：第 12 章 评估与基准 + 作业 6
+- **选修**：评委一致性校准、LLM-as-judge、报告自动化
+- **验收**：一键出 JSON 报告
+
+### M6：对话界面
+- **实现**：CLI + 简单 Web 页
+- **配套**：—
+- **选修**：流式输出、serving 基础、对话状态管理
+- **验收**：祁总打开浏览器能聊上
+
+### M7：彩蛋（可选）
+- **实现**：年终总结 + 有道云笔记做中间训练
+- **配套**：midtrain 思路
+- **选修**：领域语料继续训练（midtrain）
+- **验收**：「吕炘嵘 GPT」第一次附体
 
 ## 明确砍掉
 
