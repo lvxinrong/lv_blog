@@ -1,6 +1,6 @@
 +++
 title = "手搓 LLM 笔记 13：SFT，从续写机到指令跟随"
-date = 2026-10-30T15:00:00+08:00
+date = 2026-10-30T14:00:00+08:00
 draft = true
 slug = "llm-13-sft-instruction-following"
 tags = ["LLM", "SFT", "指令微调", "学习笔记", "草稿"]
