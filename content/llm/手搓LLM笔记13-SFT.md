@@ -1,7 +1,7 @@
 +++
 title = "手搓 LLM 笔记 13：SFT，从续写机到指令跟随"
 date = 2026-10-30T14:00:00+08:00
-draft = true
+draft = false
 slug = "llm-13-sft-instruction-following"
 tags = ["LLM", "SFT", "指令微调", "学习笔记", "草稿"]
 summary = "355M 全参 SFT 冒烟与 base/SFT 行为对照：base 全是 0 分，SFT 开始按模板回答。从续写机到指令跟随，M4 的核心证据。"
