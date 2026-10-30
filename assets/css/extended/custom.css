@@ -3382,3 +3382,154 @@ details.toc a.is-active {
         padding: 15px 15px 14px;
     }
 }
+
+/* 多阶段（Phase / 季度）头部铭牌与三欄工程准则 */
+.roadmap-console.is-phase-planning {
+    border-style: dashed;
+    background:
+        linear-gradient(125deg, color-mix(in srgb, var(--border) 45%, transparent) 0%, transparent 60%),
+        var(--entry);
+    opacity: 0.92;
+}
+
+.roadmap-phase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.roadmap-phase-title-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.roadmap-season-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--series, var(--accent));
+    color: #ffffff;
+}
+
+.roadmap-console.is-phase-planning .roadmap-season-tag {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--secondary);
+}
+
+.md-content .roadmap-phase-title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 19px;
+    font-weight: 720;
+    line-height: 1.35;
+    color: var(--primary);
+}
+
+.roadmap-phase-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.roadmap-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--secondary);
+}
+
+.roadmap-meta-chip code {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.md-content a.roadmap-meta-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--series-soft, var(--accent-soft));
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 28%, transparent);
+    color: var(--series, var(--accent));
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.md-content a.roadmap-meta-link:hover {
+    background: color-mix(in srgb, var(--series, var(--accent)) 20%, transparent);
+    transform: translateY(-1px);
+}
+
+/* 三条工程准则铭牌（替代页面顶部冗长的 blockquote 引言） */
+.roadmap-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.roadmap-spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+}
+
+.roadmap-spec-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--series, var(--accent));
+}
+
+.roadmap-console.is-phase-planning .roadmap-spec-label {
+    color: var(--secondary);
+}
+
+.roadmap-spec-val {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--content);
+}
+
+.roadmap-stepper {
+    grid-template-columns: repeat(var(--step-cols, 8), minmax(0, 1fr));
+}
+
+@media (max-width: 768px) {
+    .roadmap-spec-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .roadmap-stepper {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

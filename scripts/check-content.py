@@ -61,6 +61,7 @@ def check_quotes(lines):
                 start = i + 1
                 break
     in_fence = False
+    in_shortcode = False
     for ln, line in enumerate(lines, 1):
         if ln <= start:
             continue
@@ -68,6 +69,13 @@ def check_quotes(lines):
             in_fence = not in_fence
             continue
         if in_fence:
+            continue
+        if in_shortcode:
+            if ">}}" in line or "%}}" in line:
+                in_shortcode = False
+            continue
+        if ("{{<" in line or "{{%" in line) and not (">}}" in line or "%}}" in line):
+            in_shortcode = True
             continue
         text = re.sub(r"`[^`\n]*`|\{\{[<%].*?[>%]\}\}", "", line)
         for m in re.finditer(r"[\"']", text):

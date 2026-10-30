@@ -1,44 +1,107 @@
-{{- /* lvchat 施工图顶部总进度条与里程碑节点导航轨。
-       用法：{{< roadmap_progress done="4" total="7" current="M3 · KV Cache 推理引擎" next="M4 · SFT 指令微调" >}} */ -}}
-{{- $done := .Get "done" | default 4 | int -}}
+{{- /* 多阶段/多季度里程碑进度控制台（支持同一页面挂载多个不同阶段的进度条）。
+       参数：
+         season         阶段标识（如 "PHASE 01 · 第一阶段（Q1）"）
+         title          阶段名称（如 "从零件到整车：自造 lvchat（nanochat-lite）"）
+         phase_state    active（进行中）| done（已完结）| planning（规划中）
+         repo           落地仓库名（如 "squid-llms"）
+         proposal_title / proposal_url  立项书链接（可选）
+         theory_title   / theory_url    理论线链接（可选）
+         rules          用 "|" 分隔的工程军规，每条格式 "标签::说明"（取代冗长的引言段落）
+         done           已完成里程碑数
+         total          核心里程碑总数
+         current        当前通关节点描述
+         next           下一站节点描述
+         steps          用 "," 分隔的节点列表，格式 "锚点id:编号:简称:状态(done|next|todo|optional)"
+*/ -}}
+{{- $season := .Get "season" | default "PHASE 01 · 第一阶段" -}}
+{{- $title := .Get "title" | default "" -}}
+{{- $phaseState := .Get "phase_state" | default "active" -}}
+{{- $repo := .Get "repo" -}}
+{{- $propTitle := .Get "proposal_title" -}}
+{{- $propUrl := .Get "proposal_url" -}}
+{{- $theoryTitle := .Get "theory_title" -}}
+{{- $theoryUrl := .Get "theory_url" -}}
+{{- $rulesRaw := .Get "rules" -}}
+{{- $done := .Get "done" | default 0 | int -}}
 {{- $total := .Get "total" | default 7 | int -}}
-{{- $current := .Get "current" | default "M3 · KV Cache 推理引擎" -}}
-{{- $next := .Get "next" | default "M4 · SFT 指令微调" -}}
-{{- $pct := div (mul $done 100) $total -}}
-{{- $nodes := slice
-  (dict "id" "m0" "code" "M0" "name" "重写底座" "state" "done")
-  (dict "id" "m1" "code" "M1" "name" "手写 BPE" "state" "done")
-  (dict "id" "m2" "code" "M2" "name" "预训练" "state" "done")
-  (dict "id" "m3" "code" "M3" "name" "KV Cache" "state" "done")
-  (dict "id" "m4" "code" "M4" "name" "SFT 微调" "state" "next")
-  (dict "id" "m5" "code" "M5" "name" "评估框架" "state" "todo")
-  (dict "id" "m6" "code" "M6" "name" "对话界面" "state" "todo")
-  (dict "id" "m7" "code" "M7" "name" "彩蛋 midtrain" "state" "optional")
--}}
-<section class="roadmap-console" aria-label="lvchat 里程碑总进度">
+{{- $current := .Get "current" -}}
+{{- $next := .Get "next" -}}
+{{- $stepsRaw := .Get "steps" -}}
+{{- $pct := 0 -}}
+{{- if gt $total 0 -}}{{- $pct = div (mul $done 100) $total -}}{{- end -}}
+
+<section class="roadmap-console is-phase-{{ $phaseState }}" aria-label="{{ $season }} {{ $title }}">
+  {{- if or $season $title $repo $propUrl $theoryUrl }}
+  <header class="roadmap-phase-header">
+    <div class="roadmap-phase-title-group">
+      <span class="roadmap-season-tag">{{ $season }}</span>
+      {{- with $title }}<h2 class="roadmap-phase-title">{{ . }}</h2>{{ end }}
+    </div>
+    {{- if or $repo $propUrl $theoryUrl }}
+    <div class="roadmap-phase-meta">
+      {{- with $repo }}<span class="roadmap-meta-chip">仓库 <code>{{ . }}</code></span>{{ end }}
+      {{- if $propUrl }}<a class="roadmap-meta-link" href="{{ $propUrl }}">{{ $propTitle | default "立项书" }} ↗</a>{{ end }}
+      {{- if $theoryUrl }}<a class="roadmap-meta-link" href="{{ $theoryUrl }}">{{ $theoryTitle | default "理论线" }} ↗</a>{{ end }}
+    </div>
+    {{- end }}
+  </header>
+  {{- end }}
+
+  {{- if $rulesRaw }}
+  <div class="roadmap-spec-grid" aria-label="阶段工程准则">
+    {{- range (split $rulesRaw "|") }}
+      {{- $parts := split (trim . " ") "::" }}
+      <div class="roadmap-spec-item">
+        {{- if eq (len $parts) 2 }}
+        <span class="roadmap-spec-label">{{ trim (index $parts 0) " " }}</span>
+        <span class="roadmap-spec-val">{{ trim (index $parts 1) " " }}</span>
+        {{- else }}
+        <span class="roadmap-spec-val">{{ trim . " " }}</span>
+        {{- end }}
+      </div>
+    {{- end }}
+  </div>
+  {{- end }}
+
   <div class="roadmap-console-head">
     <div class="roadmap-console-status">
-      <span class="roadmap-badge-done">已通关至 {{ $current }}</span>
-      <span class="roadmap-badge-next">下一站 → {{ $next }}</span>
+      {{- if $current }}<span class="roadmap-badge-done">已通关至 {{ $current }}</span>{{ end }}
+      {{- if $next }}<span class="roadmap-badge-next">下一站 → {{ $next }}</span>{{ end }}
     </div>
     <div class="roadmap-console-stat">
       <strong>{{ $done }} / {{ $total }}</strong> 核心里程碑已验收 <span>({{ $pct }}%)</span>
     </div>
   </div>
 
-  <div class="roadmap-bar-track" role="progressbar" aria-valuenow="{{ $done }}" aria-valuemin="0" aria-valuemax="{{ $total }}" aria-label="主线完成度 {{ $pct }}%">
+  <div class="roadmap-bar-track" role="progressbar" aria-valuenow="{{ $done }}" aria-valuemin="0" aria-valuemax="{{ $total }}" aria-label="{{ $season }} 完成度 {{ $pct }}%">
     <div class="roadmap-bar-fill" style="width: {{ $pct }}%;"></div>
   </div>
 
-  <nav class="roadmap-stepper" aria-label="里程碑快速跳转">
-    {{- range $nodes }}
-    <a class="roadmap-step is-{{ .state }}" href="#{{ .id }}">
-      <span class="roadmap-step-dot" aria-hidden="true">
-        {{- if eq .state "done" }}✓{{- else if eq .state "next" }}◎{{- else if eq .state "optional" }}◌{{- else }}·{{- end -}}
-      </span>
-      <span class="roadmap-step-code">{{ .code }}</span>
-      <span class="roadmap-step-name">{{ .name }}</span>
-    </a>
+  {{- if $stepsRaw }}
+  {{- $stepList := split $stepsRaw "," }}
+  <nav class="roadmap-stepper" style="--step-cols: {{ len $stepList }};" aria-label="{{ $season }} 里程碑跳转">
+    {{- range $stepList }}
+      {{- $item := split (trim . " ") ":" }}
+      {{- if ge (len $item) 4 }}
+        {{- $id := trim (index $item 0) " " }}
+        {{- $code := trim (index $item 1) " " }}
+        {{- $name := trim (index $item 2) " " }}
+        {{- $st := trim (index $item 3) " " }}
+        {{- if hasPrefix $id "#" }}
+        <a class="roadmap-step is-{{ $st }}" href="{{ $id }}">
+        {{- else if eq $id "-" }}
+        <span class="roadmap-step is-{{ $st }}">
+        {{- else }}
+        <a class="roadmap-step is-{{ $st }}" href="#{{ $id }}">
+        {{- end }}
+          <span class="roadmap-step-dot" aria-hidden="true">
+            {{- if eq $st "done" }}✓{{- else if eq $st "next" }}◎{{- else if eq $st "optional" }}◌{{- else }}·{{- end -}}
+          </span>
+          <span class="roadmap-step-code">{{ $code }}</span>
+          <span class="roadmap-step-name">{{ $name }}</span>
+        {{- if eq $id "-" }}</span>{{- else }}</a>{{- end }}
+      {{- end }}
     {{- end }}
   </nav>
+  {{- end }}
 </section>
