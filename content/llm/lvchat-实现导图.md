@@ -18,14 +18,6 @@ summary = "不照抄 nanochat，以它为标准答案，从书里的手搓代码
 
 {{< roadmap_progress done="4" total="7" current="M3 · KV Cache 推理引擎" next="M4 · SFT 指令微调" >}}
 
-## 已持有资产（书给的）
-
-GPT 模型本体、训练循环、loss、`generate`（temperature / top-k）、SFT 数据管道（掩码、+1、-100）、`get_device()`。
-
-**M0 升级说明（2026-10-20）**：原计划是把这些代码“收拢”成骨架，后升级为**按工程结构重写**——分层（`tokenizer` / `model` / `data` / `train` / `generate` / `eval` / `checkpoints`）、单一配置入口、单一 device 入口、checkpoint 标准化。重写过程不翻书优先，翻一次记一笔欠账注释，写完清单归零。
-
----
-
 ## 统一施工流水线（M0 → M7）
 
 {{< milestone id="m0" code="M0" title="重写全书代码（底座重构）" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
