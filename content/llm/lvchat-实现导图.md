@@ -6,7 +6,7 @@ date = 2026-10-19T19:10:00+08:00
 lastmod = 2026-10-30T10:38:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（已通关至 M3）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
+summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（已通关至 M4）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
