@@ -26,9 +26,9 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     rules="基准原则::nanochat 当“标准答案”不当教材，从手搓代码长出整车 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::开工顺序即依赖顺序，先跑通 v1 全链路，进阶装备统一收归第二季"
     done="4"
     total="7"
-    current="M3 · KV Cache 推理引擎"
-    next="M4 · SFT 指令微调"
-    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:next, m5:M5:评估框架:todo, m6:M6:对话界面:todo, m7:M7:彩蛋 midtrain:optional"
+    current="M4 · SFT 指令微调"
+    next="M5 · 评估框架"
+    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:todo, m6:M6:对话界面:todo, m7:M7:彩蛋 midtrain:optional"
 >}}
 
 ## 第一季施工流水线：跑通 `lvchat v1` 全链路（M0 → M7）
@@ -59,11 +59,10 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **验收实绩**：贪心采样下输出与朴素版**逐字一致**；512 tokens 生成从 **36.10s 降至 10.00s（实测提速 3.6x）**，第一次看到自己手搓的模型流畅说人话
 {{< /milestone >}}
 
-{{< milestone id="m4" code="M4" title="指令微调（SFT）" status="done" >}}
+{{< milestone id="m4" code="M4" title="指令微调（SFT）" status="done" date="2026-10-30" note1_title="笔记 13：SFT，从续写机到指令跟随" note1_url="/llm/llm-13-sft-instruction-following/" >}}
 - **核心实现**：将第七章 SFT 数据与训练管道移植至自训底座，打开 completion-only 掩码（只对 response 答卷位置计分）
 - **理论配套**：[diy-llm 教程](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 13 章（后训练与 SFT 流程）
 - **验收实绩**：套指令模板稳定作答；base 全 0 分 vs SFT 均分 31.2（110 条 test，接近旧仓库全参 33.5 基线）；cache 与朴素版输出一致，提速 1.6x
-- **实录笔记**：[笔记 13：SFT，从续写机到指令跟随](/llm/llm-13-sft-instruction-following/)
 {{< /milestone >}}
 
 {{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="todo" >}}
