@@ -12,11 +12,194 @@ summary = "355M 全参 SFT 冒烟与 base/SFT 行为对照：base 全是 0 分�
     hiddenInSingle = true
 +++
 
-> 草稿，待验收。
-
 ## M4 在做什么
 
 **把模型从“会续写”变成“听得懂指令”**——用现成的 1100 条指令数据（85% 训练 / 10% 测试 / 5% 验证）对 355M base 模型做全参 SFT，然后用 base/SFT 对照看“指令跟随能力”的变化。
+
+### base模型的测试数据
+```
+[  
+    {  
+        "instruction": "Rewrite the sentence using a simile.",  
+        "input": "The car is very fast.",  
+        "output": "The car is as fast as lightning.",  
+        "model_response": "The car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is very fast.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nThe car is very fast.\n\n\n\nThe car is",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 255,  
+                "completion_tokens": 1,  
+                "total_tokens": 256  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "What type of cloud is typically associated with thunderstorms?",  
+        "input": "",  
+        "output": "The type of cloud typically associated with thunderstorms is cumulonimbus.",  
+        "model_response": "What is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?\n\n\n\nWhat is the cloud type?",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 229,  
+                "completion_tokens": 1,  
+                "total_tokens": 230  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "Name the author of 'Pride and Prejudice'.",  
+        "input": "",  
+        "output": "Jane Austen.",  
+        "model_response": "### Name:\n\n### Title:\n\n### Author:\n\n### Title:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:\n\n### Author:",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 232,  
+                "completion_tokens": 1,  
+                "total_tokens": 233  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "What is the periodic symbol for chlorine?",  
+        "input": "",  
+        "output": "The periodic symbol for chlorine is Cl.",  
+        "model_response": "The periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:\n\nWhat is the periodic symbol for chlorine?\n\n\n\nThe periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:\n\nWhat is the periodic symbol for chlorine?\n\n\n\nThe periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:\n\nWhat is the periodic symbol for chlorine?\n\n\n\nThe periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:\n\nWhat is the periodic symbol for chlorine?\n\n\n\nThe periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:\n\nWhat is the periodic symbol for chlorine?\n\n\n\nThe periodic symbol for chlorine is a circle with a white circle on the top and a black circle on the bottom.\n\n### Instruction:",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 282,  
+                "completion_tokens": 1,  
+                "total_tokens": 283  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "Correct the punctuation in the sentence.",  
+        "input": "Its time to go home.",  
+        "output": "The corrected sentence should be: 'It's time to go home.'",  
+        "model_response": "I'm sorry, I'm not home.\n\n### Output:\n\nI'm home.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nIts time to go home.\n\n\n\nI'm sorry, I'm not home.\n\n### Output:\n\nI'm home.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nIts time to go home.\n\n\n\nI'm sorry, I'm not home.\n\n### Output:\n\nI'm home.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nIts time to go home.\n\n\n\nI'm sorry, I'm not home.\n\n### Output:\n\nI'm home.\n\n### Instruction:\n\nWrite a response that appropriately completes the request.\n\n### Input:\n\nIts time to go home.\n\n\n\nI'm sorry, I'm not home.\n\n### Output:\n\nI'm home.\n\n### Instruction:\n\nWrite a response that",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 267,  
+                "completion_tokens": 1,  
+                "total_tokens": 268  
+            }  
+        },  
+        "score": 0  
+    }  
+]
+```
+
+### 经过指令微调后的模型表现:
+```
+[  
+    {  
+        "instruction": "Rewrite the sentence using a simile.",  
+        "input": "The car is very fast.",  
+        "output": "The car is as fast as lightning.",  
+        "model_response": "The car is a fast car.",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 97,  
+                "completion_tokens": 1,  
+                "total_tokens": 98  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "What type of cloud is typically associated with thunderstorms?",  
+        "input": "",  
+        "output": "The type of cloud typically associated with thunderstorms is cumulonimbus.",  
+        "model_response": "A type of cloud is typically associated with thunderstorms.",  
+        "judge": {  
+            "content": "20",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 100,  
+                "completion_tokens": 1,  
+                "total_tokens": 101  
+            }  
+        },  
+        "score": 20  
+    },  
+    {  
+        "instruction": "Name the author of 'Pride and Prejudice'.",  
+        "input": "",  
+        "output": "Jane Austen.",  
+        "model_response": "The author of 'Pride and Prejudice' is Sir Thomas More.",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 95,  
+                "completion_tokens": 1,  
+                "total_tokens": 96  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "What is the periodic symbol for chlorine?",  
+        "input": "",  
+        "output": "The periodic symbol for chlorine is Cl.",  
+        "model_response": "The periodic symbol for chlorine is CH3.",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 91,  
+                "completion_tokens": 1,  
+                "total_tokens": 92  
+            }  
+        },  
+        "score": 0  
+    },  
+    {  
+        "instruction": "Correct the punctuation in the sentence.",  
+        "input": "Its time to go home.",  
+        "output": "The corrected sentence should be: 'It's time to go home.'",  
+        "model_response": "The punctuation in the sentence should be correct.",  
+        "judge": {  
+            "content": "0",  
+            "finish_reason": "stop",  
+            "model": "deepseek-flash",  
+            "usage": {  
+                "prompt_tokens": 105,  
+                "completion_tokens": 1,  
+                "total_tokens": 106  
+            }  
+        },  
+        "score": 0  
+    }
+]
+```
+
+通过对比，我们可以看到，一个只有预训练的模型再没有经过指令微调的情况下，对于遵循指令表现是很差的。
+经过指令训练数据 微调之后的模型，虽然在回答的质量上不尽人意(先天模型小 gpt2-335M的模型作为基础模型)，在指令遵循上是表现和基础模型是天差地别的
 
 ## 过程：先跑通，再对照
 
@@ -40,7 +223,6 @@ SFT 冒烟先把训练链路跑通：load 355M base → InstructDataset + instru
 
 ## 踩过的坑
 
-- **没有 `if __name__ == '__main__':` 入口**：函数写了但没被调用，脚本秒退无输出
 - **`cfg["n_epochs"]` 引用错**：n_epochs 在 train_cfg 不在 cfg，KeyError
 - **collate 签名照抄书里的**：我们的 instruct_collate 是 `(batch, pad_token_id, ignore_index)`，没有 device/allowed_max_length 参数（data/ 不碰 device）
 - **prompt 少了 `### Response:` 头**：SFT 直接只吐结束符——SFT 对模板格式是强依赖的

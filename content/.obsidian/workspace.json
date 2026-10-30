@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reading/图解大模型.md",
+                "file": "llm/手搓LLM笔记13-SFT.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "图解大模型"
+              "title": "手搓LLM笔记13-SFT"
             }
           }
         ]
@@ -187,6 +187,8 @@
   },
   "active": "2a2a9ad601b9769c",
   "lastOpenFiles": [
+    "reading/图解大模型.md",
+    "llm/手搓LLM笔记13-SFT.md",
     "llm/手搓LLM番外-默写GPTModel.md",
     "llm/手搓LLM笔记12-KVCache.md",
     "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
@@ -222,8 +224,6 @@
     "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm-backlog.md",
     "llm/手搓LLM笔记06-分类微调.md",
-    "incident-skill/introduction.md",
-    "craft/生产排查不该是老师傅的手艺.md",
     "scan-skill",
     "incident-skill"
   ]
