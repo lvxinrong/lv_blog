@@ -65,7 +65,7 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **验收实绩**：套指令模板稳定作答；base 全 0 分 vs SFT 均分 31.2（110 条 test，接近旧仓库全参 33.5 基线）；cache 与朴素版输出一致，提速 1.6x
 {{< /milestone >}}
 
-{{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="todo" >}}
+{{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="next" >}}
 - **核心实现**：基模选择题评测 + DeepSeek LLM-as-judge 自动打分流水线（生成与打分分离、支持断点续跑）
 - **理论配套**：[diy-llm 教程](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 12 章（评估与基准）+ 作业 6
 - **验收标准**：一键产出结构化 JSON 评估报告与分数分布统计
