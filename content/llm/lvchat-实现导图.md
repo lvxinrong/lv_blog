@@ -63,6 +63,7 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **核心实现**：将第七章 SFT 数据与训练管道移植至自训底座，打开 completion-only 掩码（只对 response 答卷位置计分）
 - **理论配套**：[diy-llm 教程](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 13 章（后训练与 SFT 流程）
 - **验收实绩**：套指令模板稳定作答；base 全 0 分 vs SFT 均分 31.2（110 条 test，接近旧仓库全参 33.5 基线）；cache 与朴素版输出一致，提速 1.6x
+- **实录笔记**：[笔记 13：SFT，从续写机到指令跟随](/llm/llm-13-sft-instruction-following/)
 {{< /milestone >}}
 
 {{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="todo" >}}
