@@ -2995,3 +2995,390 @@ details.toc a.is-active {
     word-break: break-word;
     vertical-align: top;
 }
+
+
+/* --------------------------------------------------------------------------
+   15. lvchat 实现导图：里程碑进度条控制台与依赖流水线卡片
+   -------------------------------------------------------------------------- */
+
+.roadmap-console {
+    margin: 24px 0 32px;
+    padding: 20px 22px;
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 28%, var(--border));
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(125deg, var(--series-soft, var(--accent-soft)) 0%, transparent 60%),
+        var(--entry);
+    box-shadow: var(--shadow-sm);
+}
+
+.roadmap-console-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-bottom: 14px;
+}
+
+.roadmap-console-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.roadmap-badge-done {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.13);
+    border: 1px solid rgba(16, 185, 129, 0.32);
+    color: #059669;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+[data-theme="dark"] .roadmap-badge-done {
+    background: rgba(52, 211, 153, 0.15);
+    border-color: rgba(52, 211, 153, 0.35);
+    color: #34d399;
+}
+
+.roadmap-badge-next {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--series-soft, var(--accent-soft));
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 32%, transparent);
+    color: var(--series, var(--accent));
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+.roadmap-console-stat {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.roadmap-console-stat strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.roadmap-console-stat span {
+    color: var(--series, var(--accent));
+    font-weight: 600;
+}
+
+.roadmap-bar-track {
+    position: relative;
+    height: 9px;
+    width: 100%;
+    border-radius: 999px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.roadmap-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #10b981 0%, var(--series, var(--accent)) 100%);
+    box-shadow: 0 0 12px var(--series-soft, var(--accent-soft));
+    transition: width 0.35s ease;
+}
+
+.roadmap-stepper {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.md-content .roadmap-stepper a.roadmap-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--page-bg);
+    text-decoration: none;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.md-content .roadmap-stepper a.roadmap-step:hover {
+    transform: translateY(-2px);
+    border-color: var(--series, var(--accent));
+    box-shadow: var(--shadow-sm);
+}
+
+.roadmap-step-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.roadmap-step.is-done {
+    border-color: rgba(16, 185, 129, 0.32) !important;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.10), transparent) !important;
+}
+
+.roadmap-step.is-done .roadmap-step-dot {
+    background: #10b981;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .roadmap-step.is-done .roadmap-step-dot {
+    background: #059669;
+    color: #e9ebef;
+}
+
+.roadmap-step.is-next {
+    border-color: var(--series, var(--accent)) !important;
+    background: var(--series-soft, var(--accent-soft)) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--series, var(--accent)) 18%, transparent);
+}
+
+.roadmap-step.is-next .roadmap-step-dot {
+    background: var(--series, var(--accent));
+    color: #ffffff;
+    animation: timeline-node-pulse 2.6s ease-in-out infinite;
+}
+
+.roadmap-step.is-todo .roadmap-step-dot {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--secondary);
+}
+
+.roadmap-step.is-optional {
+    border-style: dashed !important;
+    opacity: 0.82;
+}
+
+.roadmap-step.is-optional .roadmap-step-dot {
+    background: transparent;
+    border: 1px dashed var(--secondary);
+    color: var(--secondary);
+}
+
+.roadmap-step-code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.25;
+}
+
+.roadmap-step-name {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--secondary);
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* 里程碑流水线卡片 */
+.ms-card {
+    position: relative;
+    margin: 0 0 16px;
+    padding: 18px 20px 16px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border);
+    border-radius: 12px;
+    background: var(--entry);
+    box-shadow: var(--shadow-sm);
+    scroll-margin-top: calc(var(--header-height) + 18px);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ms-card.is-done {
+    border-left-color: #10b981;
+    background:
+        linear-gradient(120deg, rgba(16, 185, 129, 0.07) 0%, transparent 48%),
+        var(--entry);
+}
+
+[data-theme="dark"] .ms-card.is-done {
+    border-left-color: #34d399;
+    background:
+        linear-gradient(120deg, rgba(52, 211, 153, 0.10) 0%, transparent 48%),
+        var(--entry);
+}
+
+.ms-card.is-next {
+    border-color: color-mix(in srgb, var(--series, var(--accent)) 45%, var(--border));
+    border-left-color: var(--series, var(--accent));
+    background:
+        linear-gradient(120deg, var(--series-soft, var(--accent-soft)) 0%, transparent 55%),
+        var(--entry);
+    box-shadow: var(--shadow-md);
+}
+
+.ms-card.is-optional {
+    border-style: dashed;
+    border-left-style: solid;
+    border-left-color: var(--secondary);
+}
+
+.ms-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.ms-card-title-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    min-width: 0;
+}
+
+.ms-code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--primary);
+}
+
+.ms-card.is-done .ms-code {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.30);
+    color: #059669;
+}
+
+[data-theme="dark"] .ms-card.is-done .ms-code {
+    color: #34d399;
+}
+
+.ms-card.is-next .ms-code {
+    background: var(--series-soft, var(--accent-soft));
+    border-color: color-mix(in srgb, var(--series, var(--accent)) 35%, transparent);
+    color: var(--series, var(--accent));
+}
+
+.md-content .ms-title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 17.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--primary);
+}
+
+.ms-status {
+    font-size: 11px;
+    font-weight: 650;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--secondary);
+}
+
+.ms-card.is-done .ms-status {
+    background: rgba(16, 185, 129, 0.13);
+    color: #059669;
+}
+
+[data-theme="dark"] .ms-card.is-done .ms-status {
+    background: rgba(52, 211, 153, 0.15);
+    color: #34d399;
+}
+
+.ms-card.is-next .ms-status {
+    background: var(--series-soft, var(--accent-soft));
+    color: var(--series, var(--accent));
+}
+
+.ms-date {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--secondary);
+}
+
+.ms-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.md-content a.ms-note-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--series-soft, var(--accent-soft));
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 28%, transparent);
+    color: var(--series, var(--accent));
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.md-content a.ms-note-link:hover {
+    background: color-mix(in srgb, var(--series, var(--accent)) 20%, transparent);
+    transform: translateY(-1px);
+}
+
+.ms-card-body ul {
+    margin: 0;
+    padding-inline-start: 1.2rem;
+}
+
+.ms-card-body li {
+    margin-top: 0.35rem;
+    font-size: 15px;
+    line-height: 1.68;
+}
+
+.ms-card-body p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .roadmap-console {
+        padding: 16px;
+    }
+
+    .roadmap-stepper {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .ms-card {
+        padding: 15px 15px 14px;
+    }
+}

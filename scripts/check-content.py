@@ -69,7 +69,7 @@ def check_quotes(lines):
             continue
         if in_fence:
             continue
-        text = re.sub(r"`[^`\n]*`", "", line)
+        text = re.sub(r"`[^`\n]*`|\{\{[<%].*?[>%]\}\}", "", line)
         for m in re.finditer(r"[\"']", text):
             i = m.start()
             before = text[i - 1] if i else ""

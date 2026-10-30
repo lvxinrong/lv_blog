@@ -1,0 +1,39 @@
+{{- /* 单个里程碑卡片（按依赖顺序串联）。
+       参数：
+         id       锚点 id（如 m0）
+         code     编号（如 M0）
+         title    标题（如 重写全书代码）
+         status   done | next | todo | optional
+         date     完成或更新日期（可选）
+         note1_title / note1_url  关联笔记 1（可选）
+         note2_title / note2_url  关联笔记 2（可选）
+*/ -}}
+{{- $id := .Get "id" -}}
+{{- $code := .Get "code" -}}
+{{- $title := .Get "title" -}}
+{{- $status := .Get "status" | default "todo" -}}
+{{- $date := .Get "date" -}}
+{{- $n1Title := .Get "note1_title" -}}
+{{- $n1Url := .Get "note1_url" -}}
+{{- $n2Title := .Get "note2_title" -}}
+{{- $n2Url := .Get "note2_url" -}}
+{{- $statusLabel := dict "done" "✓ 已验收" "next" "◎ 下一站" "todo" "待开工" "optional" "可选支线" -}}
+<article class="ms-card is-{{ $status }}" id="{{ $id }}">
+  <header class="ms-card-head">
+    <div class="ms-card-title-wrap">
+      <span class="ms-code">{{ $code }}</span>
+      <h3 class="ms-title">{{ $title }}</h3>
+      <span class="ms-status">{{ index $statusLabel $status | default $status }}</span>
+      {{- with $date }}<time class="ms-date">{{ . }}</time>{{ end }}
+    </div>
+    {{- if or $n1Url $n2Url }}
+    <div class="ms-links">
+      {{- if $n1Url }}<a class="ms-note-link" href="{{ $n1Url }}">{{ $n1Title }} →</a>{{ end }}
+      {{- if $n2Url }}<a class="ms-note-link" href="{{ $n2Url }}">{{ $n2Title }} →</a>{{ end }}
+    </div>
+    {{- end }}
+  </header>
+  <div class="ms-card-body">
+    {{ .Inner | .Page.RenderString (dict "display" "block") }}
+  </div>
+</article>
