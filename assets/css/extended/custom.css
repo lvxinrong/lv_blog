@@ -3318,7 +3318,9 @@ details.toc a.is-active {
 
 .ms-card.is-next .ms-status {
     background: var(--series-soft, var(--accent-soft));
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 40%, transparent);
     color: var(--series, var(--accent));
+    animation: timeline-node-pulse 2.6s ease-in-out infinite;
 }
 
 .ms-date {

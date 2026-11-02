@@ -1,17 +1,18 @@
 {{- /* 多阶段/多季度里程碑进度控制台（支持同一页面挂载多个不同阶段的进度条）。
        参数：
-         season         阶段标识（如 "PHASE 01 · 第一阶段（Q1）"）
-         title          阶段名称（如 "从零件到整车：自造 lvchat（nanochat-lite）"）
+         season         阶段标识（如 "SEASON 01 · 第一季（整车闭环线）"）
+         title          阶段名称（如 "从零件到整车：自造 lvchat v1（nanochat-lite）"）
          phase_state    active（进行中）| done（已完结）| planning（规划中）
          repo           落地仓库名（如 "squid-llms"）
          proposal_title / proposal_url  立项书链接（可选）
          theory_title   / theory_url    理论线链接（可选）
          rules          用 "|" 分隔的工程军规，每条格式 "标签::说明"（取代冗长的引言段落）
-         done           已完成里程碑数
+         done           已完成里程碑数（若传了 steps，也会自动统计 steps 中 done 的数量取较大值）
          total          核心里程碑总数
          current        当前通关节点描述
          next           下一站节点描述
          steps          用 "," 分隔的节点列表，格式 "锚点id:编号:简称:状态(done|next|todo|optional)"
+                        若 phase_state="active" 且 steps 中忘了标 next，会自动将第一个 todo 提升为 next 闪烁状态
 */ -}}
 {{- $season := .Get "season" | default "PHASE 01 · 第一阶段" -}}
 {{- $title := .Get "title" | default "" -}}
@@ -27,6 +28,22 @@
 {{- $current := .Get "current" -}}
 {{- $next := .Get "next" -}}
 {{- $stepsRaw := .Get "steps" -}}
+
+{{- /* 自动从 steps 统计 done 数量，并检查是否显式指定了 next */ -}}
+{{- $autoDone := 0 -}}
+{{- $hasExplicitNext := false -}}
+{{- if $stepsRaw -}}
+  {{- range (split $stepsRaw ",") -}}
+    {{- $item := split (trim . " ") ":" -}}
+    {{- if ge (len $item) 4 -}}
+      {{- $st := trim (index $item 3) " " -}}
+      {{- if eq $st "done" -}}{{- $autoDone = add $autoDone 1 -}}{{- end -}}
+      {{- if eq $st "next" -}}{{- $hasExplicitNext = true -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if gt $autoDone $done -}}{{- $done = $autoDone -}}{{- end -}}
+{{- end -}}
+
 {{- $pct := 0 -}}
 {{- if gt $total 0 -}}{{- $pct = div (mul $done 100) $total -}}{{- end -}}
 
@@ -79,6 +96,7 @@
 
   {{- if $stepsRaw }}
   {{- $stepList := split $stepsRaw "," }}
+  {{- $promotedNext := false }}
   <nav class="roadmap-stepper" style="--step-cols: {{ len $stepList }};" aria-label="{{ $season }} 里程碑跳转">
     {{- range $stepList }}
       {{- $item := split (trim . " ") ":" }}
@@ -87,6 +105,10 @@
         {{- $code := trim (index $item 1) " " }}
         {{- $name := trim (index $item 2) " " }}
         {{- $st := trim (index $item 3) " " }}
+        {{- if and (eq $phaseState "active") (not $hasExplicitNext) (not $promotedNext) (eq $st "todo") }}
+          {{- $st = "next" }}
+          {{- $promotedNext = true }}
+        {{- end }}
         {{- if hasPrefix $id "#" }}
         <a class="roadmap-step is-{{ $st }}" href="{{ $id }}">
         {{- else if eq $id "-" }}

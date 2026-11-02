@@ -24,11 +24,11 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     theory_title="diy-llm 立项书"
     theory_url="/llm/diy-llm-proposal/"
     rules="基准原则::nanochat 当“标准答案”不当教材，从手搓代码长出整车 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::开工顺序即依赖顺序，先跑通 v1 全链路，进阶装备统一收归第二季"
-    done="4"
+    done="5"
     total="7"
     current="M4 · SFT 指令微调"
     next="M5 · 评估框架"
-    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:todo, m6:M6:对话界面:todo, m7:M7:彩蛋 midtrain:optional"
+    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:next, m6:M6:对话界面:todo, m7:M7:彩蛋 midtrain:optional"
 >}}
 
 ## 第一季施工流水线：跑通 `lvchat v1` 全链路（M0 → M7）
