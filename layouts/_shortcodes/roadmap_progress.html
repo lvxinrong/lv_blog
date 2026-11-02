@@ -1,5 +1,6 @@
 {{- /* 多阶段/多季度里程碑进度控制台（支持同一页面挂载多个不同阶段的进度条）。
        参数：
+         north_star     页面顶部“北极星指标”宣言（可选，仅在首季传入即可显示在最顶部）
          season         阶段标识（如 "SEASON 01 · 第一季（整车闭环线）"）
          title          阶段名称（如 "从零件到整车：自造 lvchat v1（nanochat-lite）"）
          phase_state    active（进行中）| done（已完结）| planning（规划中）
@@ -14,6 +15,7 @@
          steps          用 "," 分隔的节点列表，格式 "锚点id:编号:简称:状态(done|next|todo|optional)"
                         若 phase_state="active" 且 steps 中忘了标 next，会自动将第一个 todo 提升为 next 闪烁状态
 */ -}}
+{{- $northStar := .Get "north_star" -}}
 {{- $season := .Get "season" | default "PHASE 01 · 第一阶段" -}}
 {{- $title := .Get "title" | default "" -}}
 {{- $phaseState := .Get "phase_state" | default "active" -}}
@@ -46,6 +48,13 @@
 
 {{- $pct := 0 -}}
 {{- if gt $total 0 -}}{{- $pct = div (mul $done 100) $total -}}{{- end -}}
+
+{{- with $northStar }}
+<div class="roadmap-north-star" role="region" aria-label="北极星指标">
+  <span class="roadmap-north-star-badge"><span class="roadmap-north-star-dot" aria-hidden="true"></span>NORTH STAR · 北极星指标</span>
+  <p class="roadmap-north-star-text">{{ . }}</p>
+</div>
+{{- end }}
 
 <section class="roadmap-console is-phase-{{ $phaseState }}" aria-label="{{ $season }} {{ $title }}">
   {{- if or $season $title $repo $propUrl $theoryUrl }}

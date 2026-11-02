@@ -15,6 +15,7 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 +++
 
 {{< roadmap_progress
+    north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
     season="SEASON 01 · 第一季（整车闭环线）"
     title="从零件到整车：自造 lvchat v1（nanochat-lite）"
     phase_state="active"

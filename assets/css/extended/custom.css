@@ -3535,3 +3535,70 @@ details.toc a.is-active {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
+
+/* 导图首部：北极星指标横幅（3 秒抓全貌与交付标准） */
+.roadmap-north-star {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 20px 0 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 38%, var(--border));
+    border-left: 4px solid var(--series, var(--accent));
+    background:
+        linear-gradient(95deg, var(--series-soft, var(--accent-soft)) 0%, transparent 72%),
+        var(--entry);
+    box-shadow: var(--shadow-sm);
+}
+
+.roadmap-north-star + .roadmap-console {
+    margin-top: 0;
+}
+
+.roadmap-north-star-badge {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--series-soft, var(--accent-soft));
+    border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 32%, transparent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--series, var(--accent));
+    white-space: nowrap;
+}
+
+.roadmap-north-star-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--series, var(--accent));
+    box-shadow: 0 0 8px var(--series, var(--accent));
+}
+
+.md-content .roadmap-north-star-text {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 680;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .roadmap-north-star {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 13px 15px;
+    }
+
+    .md-content .roadmap-north-star-text {
+        font-size: 15px;
+    }
+}

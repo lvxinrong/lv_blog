@@ -187,6 +187,7 @@
   },
   "active": "2a2a9ad601b9769c",
   "lastOpenFiles": [
+    "ai/我的AI教我如何学AI.md",
     "reading/图解大模型.md",
     "llm/手搓LLM笔记13-SFT.md",
     "llm/手搓LLM番外-默写GPTModel.md",
@@ -223,7 +224,6 @@
     "scan-skill/introduction.md",
     "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm-backlog.md",
-    "llm/手搓LLM笔记06-分类微调.md",
     "scan-skill",
     "incident-skill"
   ]
