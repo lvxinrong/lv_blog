@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/手搓LLM笔记13-SFT.md",
-                "mode": "source",
+                "file": "reading/图解大模型.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "手搓LLM笔记13-SFT"
+              "title": "图解大模型"
             }
           }
         ]
@@ -187,9 +187,10 @@
   },
   "active": "2a2a9ad601b9769c",
   "lastOpenFiles": [
+    "llm/手搓LLM笔记14-M5评估框架.md",
+    "llm/手搓LLM笔记13-SFT.md",
     "ai/我的AI教我如何学AI.md",
     "reading/图解大模型.md",
-    "llm/手搓LLM笔记13-SFT.md",
     "llm/手搓LLM番外-默写GPTModel.md",
     "llm/手搓LLM笔记12-KVCache.md",
     "llm/手搓LLM笔记11-diy_llm pytorch & 资源核算.md",
@@ -223,7 +224,6 @@
     "llm/nanochat-立项书.md",
     "scan-skill/introduction.md",
     "ai/我想把家里的设备组成一个私人AI实验室.md",
-    "llm-backlog.md",
     "scan-skill",
     "incident-skill"
   ]
