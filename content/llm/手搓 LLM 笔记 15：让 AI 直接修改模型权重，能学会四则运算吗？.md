@@ -1,7 +1,7 @@
 +++
 title = "手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？"
 date = 2026-11-03T13:38:09+08:00
-draft = true
+draft = false
 slug = "llm-15-weight-space-arithmetic"
 tags = ["LLM", "Weight-Space Programming", "模型权重", "四则运算", "学习笔记"]
 summary = "三轮真实权重编辑实验：从局部干预无效，到把 0～20 四则运算完整写入权重，再到扩展范围且保留通用能力的联合目标失败。"

@@ -2,7 +2,7 @@
 title = "Weight-Space Programming：权重空间编程中文导读"
 slug = "weight-space-programming-guide"
 date = 2026-11-03T13:47:56+08:00
-draft = true
+draft = false
 tags = ["LLM", "读书笔记", "Weight-Space Programming", "模型权重"]
 summary = "根据原文整理的中文导读：大模型如何读取、编写和修复神经网络权重，以及为什么修复输出障碍不等于凭空增加能力。"
 [cover]
