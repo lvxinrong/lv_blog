@@ -3,10 +3,10 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "lvchat-roadmap"
 aliases = ["/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-10-30T10:38:00+08:00
+lastmod = 2026-11-04T11:10:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（已通关至 M4）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
+summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（已通关至 M5，冲刺 M6 对话界面）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -25,11 +25,11 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     theory_title="diy-llm 立项书"
     theory_url="/llm/diy-llm-proposal/"
     rules="基准原则::nanochat 当“标准答案”不当教材，从手搓代码长出整车 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::开工顺序即依赖顺序，先跑通 v1 全链路，进阶装备统一收归第二季"
-    done="5"
+    done="6"
     total="7"
-    current="M4 · SFT 指令微调"
-    next="M5 · 评估框架"
-    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:next, m6:M6:对话界面:todo, m7:M7:彩蛋 midtrain:optional"
+    current="M5 · 评估框架"
+    next="M6 · 对话界面（CLI + Web UI）"
+    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:next, m7:M7:彩蛋 midtrain:optional"
 >}}
 
 ## 第一季施工流水线：跑通 `lvchat v1` 全链路（M0 → M7）
@@ -66,13 +66,13 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **验收实绩**：套指令模板稳定作答；base 全 0 分 vs SFT 均分 31.2（110 条 test，接近旧仓库全参 33.5 基线）；cache 与朴素版输出一致，提速 1.6x
 {{< /milestone >}}
 
-{{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="next" >}}
-- **核心实现**：基模选择题评测 + DeepSeek LLM-as-judge 自动打分流水线（生成与打分分离、支持断点续跑）
+{{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="done" date="2026-11-04" note1_title="笔记 14：M5，让评估能够中断后继续" note1_url="/llm/llm-14-eval-resume/" >}}
+- **核心实现**：选择题评测（A/B/C/D 字母标签 vs 完整候选答案条件对数似然 `log P(answer|prompt)`）+ 自由生成与 DeepSeek LLM-as-judge 双端断点续跑流水线（`generate_response_resumable` 逐条落盘 + `save_score_report` 结构化报告）
 - **理论配套**：[diy-llm 教程](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 12 章（评估与基准）+ 作业 6
-- **验收标准**：一键产出结构化 JSON 评估报告与分数分布统计
+- **验收实绩**：识破字母评估“全蒙首项（30%）”的位置偏好陷阱，完整答案似然评测 SFT 达 **60% vs base 50%**；完成 110 条全量结构化 JSON 评估报告（`m5-report-sft-110.json`，均分 30.9）与 **17 项联合回归全绿**
 {{< /milestone >}}
 
-{{< milestone id="m6" code="M6" title="对话界面（CLI + Web UI）" status="todo" >}}
+{{< milestone id="m6" code="M6" title="对话界面（CLI + Web UI）" status="next" >}}
 - **核心实现**：命令行多轮对话 CLI + 轻量 Web 对话页，跑通从浏览器输入到自训模型生成的端到端闭环
 - **理论配套**：推理服务最小封装与多轮上下文拼接
 - **验收标准**：祁总打开浏览器能直接聊上（`lvchat v1` 正式整车交付）
@@ -104,8 +104,8 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 
 > 第一季解决“**有没有一辆自己造的车**”，第二季解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
-{{< milestone id="i0" code="I0" title="现代架构换装（RoPE + RMSNorm + SwiGLU + GQA）" status="todo" >}}
-- **进化部位**：承接 M3 选修与“位置溢出”欠账，改造 `squid/model/`
+{{< milestone id="i0" code="I0" title="现代架构换装（RoPE + RMSNorm + SwiGLU + GQA）" status="todo" note1_title="先行探路：笔记 14 RoPE 独立包闭环" note1_url="/llm/llm-14-eval-resume/" >}}
+- **进化部位**：承接 M3 选修与“位置溢出”欠账，改造 `squid/model/`（注：独立 `rope_gpt` 包与 KV Cache 对齐已在[笔记 14](/llm/llm-14-eval-resume/) 完成先行验证，误差 `2.38e-07`）
 - **装备升级**：
   1. 用 **RoPE（旋转位置编码）** 替代固定长度的 `pos_emb` 查表，彻底解决长文本位置越界，支持外推；
   2. 用 **RMSNorm** 替代 `LayerNorm`（省去均值中心化计算），FFN 换装 **SwiGLU** 门控线性单元；
@@ -178,5 +178,6 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 ## 日常节奏：复习线与输出线
 
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
+- **支线探索**：在 M5 评估框架就绪后，顺手做了一次三轮 Weight-Space Programming 实测，记录见[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)。
 - **nanochat 源码对照时机**：**第一季 M6 对话界面收官后、第二季 I0 启动前**，把 Karpathy 的 `nanochat` 源码从头到尾当“标准答案”通读对照一遍——这时手里已经有自己的 `lvchat v1` 完整实现，正好带着问题去查他怎么处理现代架构与工程细节，无缝导入第二季。
 - **博客与掘金专栏输出**：每个里程碑（M0～M7、I0～I6）产出一篇实录笔记；实验数据（容量扫描、BPB 曲线、KV Cache 3.6x 提速、后续 RoPE / 量化 / 投机解码对照）直接整理成可复现报告。
