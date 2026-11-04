@@ -11,6 +11,7 @@
          done           已完成里程碑数（若传了 steps，也会自动统计 steps 中 done 的数量取较大值）
          total          核心里程碑总数
          current        当前通关节点描述
+         delivered      阶段交付状态徽标（可选，如 "第一季核心链路已交付"）
          next           下一站节点描述
          steps          用 "," 分隔的节点列表，格式 "锚点id:编号:简称:状态(done|next|todo|optional)"
                         若 phase_state="active" 且 steps 中忘了标 next，会自动将第一个 todo 提升为 next 闪烁状态
@@ -28,6 +29,7 @@
 {{- $done := .Get "done" | default 0 | int -}}
 {{- $total := .Get "total" | default 7 | int -}}
 {{- $current := .Get "current" -}}
+{{- $delivered := .Get "delivered" -}}
 {{- $next := .Get "next" -}}
 {{- $stepsRaw := .Get "steps" -}}
 
@@ -92,6 +94,7 @@
   <div class="roadmap-console-head">
     <div class="roadmap-console-status">
       {{- if $current }}<span class="roadmap-badge-done">已通关至 {{ $current }}</span>{{ end }}
+      {{- if $delivered }}<span class="roadmap-badge-done">{{ $delivered }}</span>{{ end }}
       {{- if $next }}<span class="roadmap-badge-next">下一站 → {{ $next }}</span>{{ end }}
     </div>
     <div class="roadmap-console-stat">
