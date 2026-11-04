@@ -1,19 +1,21 @@
-{{- /* 多阶段/多季度里程碑进度控制台（支持同一页面挂载多个不同阶段的进度条）。
+{{- /* 多阶段里程碑进度与方向控制台（支持同一页面挂载多个不同阶段）。
        参数：
          id             阶段锚点 id（如 "phase-01"）
          north_star     页面顶部“北极星指标”宣言（可选）
-         season         阶段标识（如 "STAGE 01 · 第一阶段"）
-         title          阶段名称（如 "从零件到整车：自造 lvchat v1（M0 ～ M6）"）
-         phase_state    active（进行中）| done（已完成）| planning（未来规划）
-         start_date     阶段开始时间（如 "2026-10-13"）
-         end_date       阶段结束时间（如 "2026-11-04"，进行中可填 "进行中"）
-         duration       阶段历时说明（可选，如 "历时 23 天"）
-         repo           落地仓库名（如 "squid-llms"）
+         season         阶段标识（如 "第一阶段 · 已完成"）
+         title          阶段名称（如 "从零手搓 LLM"）
+         phase_state    active（当前阶段）| done（已完成）| planning（规划中/远期）
+         start_date     阶段开始时间（可选，仅已完成或已启动阶段填写，不承诺未来时间）
+         end_date       阶段结束时间（可选）
+         duration       阶段历时说明（可选）
+         repo           落地仓库名（可选）
          proposal_title / proposal_url  立项书链接（可选）
          theory_title   / theory_url    理论线链接（可选）
-         rules          用 "|" 分隔的工程军规，每条格式 "标签::说明"
-         done           已完成里程碑数
-         total          核心里程碑总数
+         rules          用 "|" 分隔的阶段定位与依赖说明，每条格式 "标签::说明"
+         hide_bar       设为 "true" 时不渲染进度条与计数（用于只保留方向的后续阶段）
+         done           已完成数量
+         total          总数
+         unit           计数单位文案（默认 "核心里程碑已验收"）
          current        当前通关节点描述
          delivered      阶段交付状态徽标（可选）
          next           下一站节点描述
@@ -21,7 +23,7 @@
 */ -}}
 {{- $phaseId := .Get "id" -}}
 {{- $northStar := .Get "north_star" -}}
-{{- $season := .Get "season" | default "PHASE 01 · 第一阶段" -}}
+{{- $season := .Get "season" | default "第一阶段" -}}
 {{- $title := .Get "title" | default "" -}}
 {{- $phaseState := .Get "phase_state" | default "active" -}}
 {{- $startDate := .Get "start_date" -}}
@@ -33,8 +35,10 @@
 {{- $theoryTitle := .Get "theory_title" -}}
 {{- $theoryUrl := .Get "theory_url" -}}
 {{- $rulesRaw := .Get "rules" -}}
+{{- $hideBar := eq (.Get "hide_bar") "true" -}}
 {{- $done := .Get "done" | default 0 | int -}}
 {{- $total := .Get "total" | default 7 | int -}}
+{{- $unit := .Get "unit" | default "核心里程碑已验收" -}}
 {{- $current := .Get "current" -}}
 {{- $delivered := .Get "delivered" -}}
 {{- $next := .Get "next" -}}
@@ -72,12 +76,12 @@
       <span class="roadmap-season-tag">{{ $season }}</span>
       {{- with $title }}<h2 class="roadmap-phase-title">{{ . }}</h2>{{ end }}
       {{- if or $startDate $endDate }}
-      <span class="roadmap-phase-dates" title="阶段起止时间">
+      <span class="roadmap-phase-dates" title="阶段时间记录">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
         {{- if and $startDate $endDate -}}
           {{ $startDate }} → {{ $endDate }}
         {{- else if $startDate -}}
-          {{ $startDate }} 启动
+          {{ $startDate }}
         {{- else -}}
           {{ $endDate }}
         {{- end -}}
@@ -89,14 +93,14 @@
     <div class="roadmap-phase-meta">
       {{- with $repo }}<span class="roadmap-meta-chip">仓库 <code>{{ . }}</code></span>{{ end }}
       {{- if $propUrl }}<a class="roadmap-meta-link" href="{{ $propUrl }}">{{ $propTitle | default "立项书" }} ↗</a>{{ end }}
-      {{- if $theoryUrl }}<a class="roadmap-meta-link" href="{{ $theoryUrl }}">{{ $theoryTitle | default "理论线" }} ↗</a>{{ end }}
+      {{- if $theoryUrl }}<a class="roadmap-meta-link" href="{{ $theoryUrl }}">{{ $theoryTitle | default "理论蓝本" }} ↗</a>{{ end }}
     </div>
     {{- end }}
   </header>
   {{- end }}
 
   {{- if $rulesRaw }}
-  <div class="roadmap-spec-grid" aria-label="阶段工程准则">
+  <div class="roadmap-spec-grid" aria-label="阶段定位与依赖">
     {{- range (split $rulesRaw "|") }}
       {{- $parts := split (trim . " ") "::" }}
       <div class="roadmap-spec-item">
@@ -111,6 +115,7 @@
   </div>
   {{- end }}
 
+  {{- if not $hideBar }}
   <div class="roadmap-console-head">
     <div class="roadmap-console-status">
       {{- if $current }}<span class="roadmap-badge-done">已通关至 {{ $current }}</span>{{ end }}
@@ -118,13 +123,14 @@
       {{- if $next }}<span class="roadmap-badge-next">下一站 → {{ $next }}</span>{{ end }}
     </div>
     <div class="roadmap-console-stat">
-      <strong>{{ $done }} / {{ $total }}</strong> 核心里程碑已验收 <span>({{ $pct }}%)</span>
+      <strong>{{ $done }} / {{ $total }}</strong> {{ $unit }} <span>({{ $pct }}%)</span>
     </div>
   </div>
 
   <div class="roadmap-bar-track" role="progressbar" aria-valuenow="{{ $done }}" aria-valuemin="0" aria-valuemax="{{ $total }}" aria-label="{{ $season }} 完成度 {{ $pct }}%">
     <div class="roadmap-bar-fill" style="width: {{ $pct }}%;"></div>
   </div>
+  {{- end }}
 
   {{- if $stepsRaw }}
   {{- $stepList := split $stepsRaw "," }}
