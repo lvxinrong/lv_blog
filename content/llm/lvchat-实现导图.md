@@ -3,10 +3,10 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "lvchat-roadmap"
 aliases = ["/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-04T11:10:00+08:00
+lastmod = 2026-11-04T15:56:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（已通关至 M5，冲刺 M6 对话界面）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
+summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序造出 lvchat v1 整车（M0～M6 核心闭环已 100% 通关）；第二季结合原选修模块与 DataWhale diy-llm 教程，启动 AI-Infra 装备升级线，让模型完成现代工业级进化。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -18,23 +18,21 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
     season="SEASON 01 · 第一季（整车闭环线）"
     title="从零件到整车：自造 lvchat v1（nanochat-lite）"
-    phase_state="active"
+    phase_state="done"
     repo="squid-llms"
     proposal_title="nanochat 立项书"
     proposal_url="/llm/nanochat-proposal/"
     theory_title="diy-llm 立项书"
     theory_url="/llm/diy-llm-proposal/"
     rules="基准原则::nanochat 当“标准答案”不当教材，从手搓代码长出整车 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::开工顺序即依赖顺序，先跑通 v1 全链路，进阶装备统一收归第二季"
-    done="6"
+    done="7"
     total="7"
-    current="M5 · 评估框架"
-    next="M6 · 对话界面（CLI + Web UI）"
-    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:next, m7:M7:彩蛋 midtrain:optional"
+    current="M6 · 对话界面（v1 整车核心闭环收官）"
+    next="M7 个人语料彩蛋 / 第二季 I0 现代架构换装"
+    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done, m7:M7:彩蛋 midtrain:optional"
 >}}
 
 ## 第一季施工流水线：跑通 `lvchat v1` 全链路（M0 → M7）
-
-> 第一季只干一件事：**砍掉花哨选修，把从分词器到 Web 对话界面的整车链路亲手跑通。** 原先散落在各里程碑里的工业级选修项（RoPE、量化、投机解码、FlashAttention、CoT / DPO / GRPO 等）全部剥离，集中编入下方**第二季：AI-Infra 装备升级线**。
 
 {{< milestone id="m0" code="M0" title="重写全书代码（底座重构）" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
 - **核心实现**：按工程结构重写《从零构建大模型》全书代码（`tokenizer` / `model` / `data` / `train` / `generate` / `eval` / `checkpoints` 七层解耦、单一 `config` 与 `device` 入口、checkpoint 三层标准化）
@@ -72,10 +70,10 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **验收实绩**：识破字母评估“全蒙首项（30%）”的位置偏好陷阱，完整答案似然评测 SFT 达 **60% vs base 50%**；完成 110 条全量结构化 JSON 评估报告（`m5-report-sft-110.json`，均分 30.9）与 **17 项联合回归全绿**
 {{< /milestone >}}
 
-{{< milestone id="m6" code="M6" title="对话界面（CLI + Web UI）" status="next" >}}
-- **核心实现**：命令行多轮对话 CLI + 轻量 Web 对话页，跑通从浏览器输入到自训模型生成的端到端闭环
-- **理论配套**：推理服务最小封装与多轮上下文拼接
-- **验收标准**：祁总打开浏览器能直接聊上（`lvchat v1` 正式整车交付）
+{{< milestone id="m6" code="M6" title="对话界面（CLI + Web UI）" status="done" date="2026-11-04" note1_title="笔记 16：给 355M 模型装上对话界面" note1_url="/llm/llm-16-chat-web-ui/" >}}
+- **核心实现**：四层递进闭环——`ChatSession`（原始问答与训练模板解耦 + 最近 5 轮滑动窗口）→ `chat_cli.py` 终端多轮交互 → 标准库 `http.server` 最小推理服务（`/health` 与 `/chat`）→ 纯 HTML/CSS/JS 对话页（`web/chat.html`）
+- **理论配套**：推理服务最小封装、多轮上下文拼接与 `<|endoftext|>` 截断清理
+- **验收实绩**：浏览器端到端对话闭环跑通（**`lvchat v1` 核心整车正式交付**）；同时实测复现并诚实记录了单轮 SFT 模型在多轮历史拼接下的旧答案复制边界（工程链路验收通过，多轮对话能力与流式/会话级 Cache 归入第二季升级）
 {{< /milestone >}}
 
 {{< milestone id="m7" code="M7" title="第一季彩蛋：个人语料中间训练（Midtrain）" status="optional" >}}
@@ -89,22 +87,23 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 {{< roadmap_progress
     season="SEASON 02 · 第二季（AI-Infra 装备进化线）"
     title="从能跑到能打：结合 diy-llm 升级 lvchat v2"
-    phase_state="planning"
+    phase_state="active"
     repo="squid-llms"
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
-    rules="装备来源::剥离自第一季 M1～M7 的全部工业级选修项 + 第一季遗留欠账 | 理论蓝本::紧扣 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业） | 进化目标::在 lvchat v1 整车底盘上逐件换装现代架构、算子加速、量化推理与强化对齐"
+    rules="装备来源::剥离自第一季 M1～M7 的全部工业级选修项 + 第一季实测暴露的工程与模型边界 | 理论蓝本::紧扣 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业） | 进化目标::在 lvchat v1 整车底盘上逐件换装现代架构、算子加速、量化推理与强化对齐"
     done="0"
     total="6"
-    next="待第一季 M6 整车交付并完成 nanochat 源码对照后开启"
-    steps="i0:I0:现代架构:todo, i1:I1:数据与流式IO:todo, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
+    current="第一季 v1 整车已就位（RoPE 独立包已先行验证）"
+    next="I0 · 现代架构换装（RoPE + RMSNorm + SwiGLU + GQA）"
+    steps="i0:I0:现代架构:next, i1:I1:数据与流式IO:todo, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
 ## 第二季施工流水线：AI-Infra 装备升级（I0 → I6）
 
 > 第一季解决“**有没有一辆自己造的车**”，第二季解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
-{{< milestone id="i0" code="I0" title="现代架构换装（RoPE + RMSNorm + SwiGLU + GQA）" status="todo" note1_title="先行探路：笔记 14 RoPE 独立包闭环" note1_url="/llm/llm-14-eval-resume/" >}}
+{{< milestone id="i0" code="I0" title="现代架构换装（RoPE + RMSNorm + SwiGLU + GQA）" status="next" note1_title="先行探路：笔记 14 RoPE 独立包闭环" note1_url="/llm/llm-14-eval-resume/" >}}
 - **进化部位**：承接 M3 选修与“位置溢出”欠账，改造 `squid/model/`（注：独立 `rope_gpt` 包与 KV Cache 对齐已在[笔记 14](/llm/llm-14-eval-resume/) 完成先行验证，误差 `2.38e-07`）
 - **装备升级**：
   1. 用 **RoPE（旋转位置编码）** 替代固定长度的 `pos_emb` 查表，彻底解决长文本位置越界，支持外推；
@@ -135,24 +134,24 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 {{< /milestone >}}
 
 {{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="todo" >}}
-- **进化部位**：承接 M3 / M6 选修，改造 `squid/generate/` 与对话服务层
+- **进化部位**：承接 M3 / M6 选修与 M6 遗留的服务层进阶项，改造 `squid/generate/` 与对话服务层
 - **装备升级**：
-  1. **滑动窗口 KV Cache** 与显存池预分配（消除动态 `torch.cat` 频繁内存拷贝）；
+  1. **滑动窗口 / 会话级 KV Cache** 与按 token 预算的 history 截断管理（消除动态 `torch.cat` 拷贝与粗粒度轮数截断）；
   2. **INT8 / INT4 权重量化推理**（W8A16 / W4A16），实测模型体积压缩比与困惑度损益；
   3. **投机解码（Speculative Decoding）**：用极小草稿模型（Draft Model）一次猜多个 token，主模型单次前向并行校验，打破自回归内存带宽墙；
-  4. **SSE 流式输出**与多会话状态隔离管理。
+  4. **SSE 流式输出**与多用户/多会话状态隔离管理。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 10 章（推理加速：KV Cache 进阶、量化、投机解码）
 - **进化验收**：在 M3 的 3.6x 提速基线上，测出量化与投机解码叠加后的首字延迟（TTFT）、解码吞吐（tokens/s）与显存降幅
 {{< /milestone >}}
 
-{{< milestone id="i4" code="I4" title="后训练深水区：CoT 思维链、DPO 与 GRPO 强化对齐" status="todo" >}}
-- **进化部位**：承接 M4 选修，升级 `squid/data/instruct.py` 与 `squid/train/`
+{{< milestone id="i4" code="I4" title="后训练深水区：多轮对话 SFT、CoT 思维链与 DPO / GRPO 对齐" status="todo" >}}
+- **进化部位**：承接 M4 选修与 M6 暴露的“多轮旧答案复制”缺陷，升级 `squid/data/instruct.py` 与 `squid/train/`
 - **装备升级**：
-  1. **指令数据工程 + 思维链（CoT）微调**：构造“推理步骤 `<think>` + 最终答案”格式数据，训练模型先推演再作答；
+  1. **真正的多轮对话 SFT + 思维链（CoT）微调**：引入多轮对话指令数据与按轮掩码（解决 M6 暴露的多轮历史复制问题），并构造“推理步骤 `<think>` + 最终答案”数据；
   2. **LoRA vs 全参微调**在现代底座上的系统对标；
   3. **偏好对齐与强化学习**：手写 **DPO（直接偏好优化）** 损失函数，并探索 **RLVR / GRPO**（群组相对策略优化）在数学/代码可验证任务上的最小闭环。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 13 章（Pre-training / SFT / DPO 全流程）+ 第 14 章（GRPO / RLVR 强化学习）
-- **进化验收**：同底座下 SFT vs CoT-SFT vs DPO 的评委胜率（Win Rate）与推理题准确率对比
+- **进化验收**：解决 Web UI 多轮对话复读/复制旧答案问题，并给出 SFT vs CoT-SFT vs DPO 的评委胜率（Win Rate）对比
 {{< /milestone >}}
 
 {{< milestone id="i5" code="I5" title="评估校准与回归基准自动化（Judge Calibration）" status="todo" >}}
@@ -179,5 +178,5 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
 - **支线探索**：在 M5 评估框架就绪后，顺手做了一次三轮 Weight-Space Programming 实测，记录见[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)。
-- **nanochat 源码对照时机**：**第一季 M6 对话界面收官后、第二季 I0 启动前**，把 Karpathy 的 `nanochat` 源码从头到尾当“标准答案”通读对照一遍——这时手里已经有自己的 `lvchat v1` 完整实现，正好带着问题去查他怎么处理现代架构与工程细节，无缝导入第二季。
+- **nanochat 源码对照时机**：**当前第一季 M6 对话界面已收官**，接下来把 Karpathy 的 `nanochat` 源码从头到尾当“标准答案”通读对照一遍——手里已经有了自己的 `lvchat v1` 完整实现，正好带着问题去查他怎么处理现代架构与多轮对话细节，无缝导入第二季 I0。
 - **博客与掘金专栏输出**：每个里程碑（M0～M7、I0～I6）产出一篇实录笔记；实验数据（容量扫描、BPB 曲线、KV Cache 3.6x 提速、后续 RoPE / 量化 / 投机解码对照）直接整理成可复现报告。

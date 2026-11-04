@@ -14,7 +14,7 @@ summary = "三轮真实权重编辑实验：从局部干预无效，到把 0～2
 
 > **一次从有限范围成功到联合目标失败的 Weight-Space Programming 实验。**
 
-> **导读**：如果这是你第一次接触 Weight-Space Programming，建议先读[《Weight-Space Programming：权重空间编程中文导读》](/reading/weight-space-programming-guide/)，了解原文的实验、Qwen 数学提升的真实原因，以及 Gemma 失败实验给出的能力边界。
+> **导读**：如果这是你第一次接触 Weight-Space Programming，建议先读[《Weight-Space Programming：权重空间编程中文导读》](/reading/weight-space-programming)，了解原文的实验、Qwen 数学提升的真实原因，以及 Gemma 失败实验给出的能力边界。
 
 ## 起因：如果权重也是一种语言呢？
 
