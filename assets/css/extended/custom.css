@@ -3863,3 +3863,469 @@ details.roadmap-phase-drawer[open] .roadmap-phase-drawer-hint::after {
         padding: 12px 12px 4px;
     }
 }
+
+/* --------------------------------------------------------------------------
+   16. 「关于」独立页（Bento 工程师名片与三大色系专栏导览）
+   -------------------------------------------------------------------------- */
+
+.about-page {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin: 22px 0 44px;
+}
+
+.about-hero {
+    position: relative;
+    padding: 28px 28px 26px;
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(125deg, var(--accent-soft) 0%, transparent 58%),
+        var(--entry);
+    box-shadow: var(--shadow-sm);
+}
+
+.about-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+}
+
+.about-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.about-hero-title {
+    margin: 14px 0 14px;
+    font-size: clamp(24px, 3.6vw, 31px);
+    font-weight: 750;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+}
+
+.about-journey-strip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+.about-journey-chip {
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    color: var(--secondary);
+}
+
+.about-journey-chip.is-current {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--accent);
+    font-weight: 650;
+}
+
+.about-journey-arrow {
+    color: var(--secondary);
+    opacity: 0.55;
+}
+
+.about-hero-lead {
+    margin: 0 0 18px;
+    font-size: 16.5px;
+    line-height: 1.78;
+    color: var(--content);
+}
+
+.about-hero-lead strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.about-creed-box {
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+}
+
+.about-creed-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.about-creed-pills span {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--accent);
+}
+
+.about-creed-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--secondary);
+}
+
+.about-creed-text strong {
+    color: var(--primary);
+    font-weight: 680;
+}
+
+/* 第二节：这个博客里有什么 */
+.about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.about-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+}
+
+.about-section-head h2 {
+    margin: 0;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    font-size: 20px;
+    font-weight: 720;
+    line-height: 1.35;
+    color: var(--primary);
+}
+
+.about-section-sub {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--secondary);
+}
+
+.about-columns-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.about-col-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
+    border: 1px solid color-mix(in srgb, var(--series) 24%, var(--border));
+    border-left: 4px solid var(--series);
+    border-radius: 12px;
+    background:
+        linear-gradient(120deg, var(--series-soft) 0%, transparent 55%),
+        var(--entry);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.about-col-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--series) 58%, var(--border));
+    box-shadow: var(--shadow-md);
+}
+
+.about-col-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.about-col-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--series);
+    box-shadow: 0 0 8px var(--series-soft);
+}
+
+.about-col-tag {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.about-col-card:hover .about-col-tag {
+    color: var(--series);
+}
+
+.about-col-arrow {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--series);
+    transition: transform 0.16s ease;
+}
+
+.about-col-card:hover .about-col-arrow {
+    transform: translateX(3px);
+}
+
+.about-col-desc {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.72;
+    color: var(--secondary);
+}
+
+.about-columns-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: var(--entry);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--secondary);
+}
+
+.about-columns-foot p {
+    margin: 0;
+}
+
+.about-columns-foot strong {
+    color: var(--primary);
+    font-weight: 650;
+}
+
+.about-columns-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.about-columns-link:hover {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+/* 第三 & 第四节：双栏 Bento（为什么是博客 + 这个博客怎么来的） */
+.about-bento-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.about-bento-card {
+    display: flex;
+    flex-direction: column;
+    padding: 22px 22px 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--entry);
+    box-shadow: var(--shadow-sm);
+}
+
+.about-card-kicker {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.about-bento-card h2 {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 720;
+    color: var(--primary);
+}
+
+.about-bento-card p {
+    margin: 0 0 14px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--content);
+}
+
+.about-motto {
+    margin: auto 0 0;
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: var(--accent-soft);
+    font-size: 14px;
+    line-height: 1.68;
+    color: var(--content);
+}
+
+.about-motto strong {
+    color: var(--primary);
+    font-weight: 680;
+}
+
+.about-stack-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.about-stack-tags span {
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--secondary);
+}
+
+/* 第五节：找到我 */
+.about-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.about-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.about-contact-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 15px 16px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--entry);
+    color: inherit;
+    text-align: left;
+    text-decoration: none;
+    font: inherit;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.about-contact-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-md);
+}
+
+.about-contact-card.is-copied {
+    border-color: rgba(16, 185, 129, 0.55);
+    background: linear-gradient(120deg, rgba(16, 185, 129, 0.08), transparent), var(--entry);
+}
+
+.about-contact-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--secondary);
+}
+
+.about-contact-card:hover .about-contact-label {
+    color: var(--accent);
+}
+
+.about-contact-val {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--primary);
+    word-break: break-all;
+}
+
+.about-contact-val code {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+}
+
+.about-copy-hint {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+.about-contact-card.is-copied .about-copy-hint {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+}
+
+.about-closing {
+    margin: 2px 0 0;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+    background: color-mix(in srgb, var(--entry) 70%, var(--page-bg));
+    font-size: 14.5px;
+    line-height: 1.72;
+    color: var(--secondary);
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 20px 18px;
+    }
+
+    .about-bento-pair,
+    .about-contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
