@@ -3606,7 +3606,7 @@ details.toc a.is-active {
 /* 多阶段全局演进鸟瞰轴（Macro Phase Stepper） */
 .roadmap-macro-bar {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--macro-cols, 4), minmax(0, 1fr));
     gap: 10px;
     margin: 0 0 22px;
 }
