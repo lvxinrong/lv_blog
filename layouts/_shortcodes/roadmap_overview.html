@@ -1,0 +1,40 @@
+{{- /* 导图顶部：北极星指标 + 多阶段（Phase 1～N）全局演进鸟瞰轴。
+       参数：
+         north_star  北极星指标宣言
+         phases      用 "|" 分隔的阶段概览，每项格式：
+                     "锚点id::阶段编号::阶段名称::状态(done|active|planning)::时间窗或进度说明"
+*/ -}}
+{{- $northStar := .Get "north_star" -}}
+{{- $phasesRaw := .Get "phases" -}}
+
+{{- with $northStar }}
+<div class="roadmap-north-star" role="region" aria-label="北极星指标">
+  <span class="roadmap-north-star-badge"><span class="roadmap-north-star-dot" aria-hidden="true"></span>NORTH STAR · 北极星指标</span>
+  <p class="roadmap-north-star-text">{{ . }}</p>
+</div>
+{{- end }}
+
+{{- if $phasesRaw }}
+{{- $phaseList := split $phasesRaw "|" }}
+<nav class="roadmap-macro-bar" style="--macro-cols: {{ len $phaseList }};" aria-label="多阶段全局演进导航">
+  {{- range $phaseList }}
+    {{- $p := split (trim . " ") "::" }}
+    {{- if ge (len $p) 5 }}
+      {{- $id := trim (index $p 0) " " }}
+      {{- $code := trim (index $p 1) " " }}
+      {{- $name := trim (index $p 2) " " }}
+      {{- $st := trim (index $p 3) " " }}
+      {{- $time := trim (index $p 4) " " }}
+      {{- $stateText := dict "done" "✓ 已完成" "active" "◎ 进行中" "planning" "◌ 规划中" }}
+      <a class="roadmap-macro-item is-{{ $st }}" href="#{{ $id }}">
+        <div class="roadmap-macro-top">
+          <span class="roadmap-macro-code">{{ $code }}</span>
+          <span class="roadmap-macro-state">{{ index $stateText $st | default $st }}</span>
+        </div>
+        <div class="roadmap-macro-name">{{ $name }}</div>
+        <div class="roadmap-macro-time">{{ $time }}</div>
+      </a>
+    {{- end }}
+  {{- end }}
+</nav>
+{{- end }}

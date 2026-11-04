@@ -1,25 +1,32 @@
 {{- /* 多阶段/多季度里程碑进度控制台（支持同一页面挂载多个不同阶段的进度条）。
        参数：
-         north_star     页面顶部“北极星指标”宣言（可选，仅在首季传入即可显示在最顶部）
-         season         阶段标识（如 "SEASON 01 · 第一季（整车闭环线）"）
-         title          阶段名称（如 "从零件到整车：自造 lvchat v1（nanochat-lite）"）
-         phase_state    active（进行中）| done（已完结）| planning（规划中）
+         id             阶段锚点 id（如 "phase-01"）
+         north_star     页面顶部“北极星指标”宣言（可选）
+         season         阶段标识（如 "STAGE 01 · 第一阶段"）
+         title          阶段名称（如 "从零件到整车：自造 lvchat v1（M0 ～ M6）"）
+         phase_state    active（进行中）| done（已完成）| planning（未来规划）
+         start_date     阶段开始时间（如 "2026-10-13"）
+         end_date       阶段结束时间（如 "2026-11-04"，进行中可填 "进行中"）
+         duration       阶段历时说明（可选，如 "历时 23 天"）
          repo           落地仓库名（如 "squid-llms"）
          proposal_title / proposal_url  立项书链接（可选）
          theory_title   / theory_url    理论线链接（可选）
-         rules          用 "|" 分隔的工程军规，每条格式 "标签::说明"（取代冗长的引言段落）
-         done           已完成里程碑数（若传了 steps，也会自动统计 steps 中 done 的数量取较大值）
+         rules          用 "|" 分隔的工程军规，每条格式 "标签::说明"
+         done           已完成里程碑数
          total          核心里程碑总数
          current        当前通关节点描述
-         delivered      阶段交付状态徽标（可选，如 "第一季核心链路已交付"）
+         delivered      阶段交付状态徽标（可选）
          next           下一站节点描述
          steps          用 "," 分隔的节点列表，格式 "锚点id:编号:简称:状态(done|next|todo|optional)"
-                        若 phase_state="active" 且 steps 中忘了标 next，会自动将第一个 todo 提升为 next 闪烁状态
 */ -}}
+{{- $phaseId := .Get "id" -}}
 {{- $northStar := .Get "north_star" -}}
 {{- $season := .Get "season" | default "PHASE 01 · 第一阶段" -}}
 {{- $title := .Get "title" | default "" -}}
 {{- $phaseState := .Get "phase_state" | default "active" -}}
+{{- $startDate := .Get "start_date" -}}
+{{- $endDate := .Get "end_date" -}}
+{{- $duration := .Get "duration" -}}
 {{- $repo := .Get "repo" -}}
 {{- $propTitle := .Get "proposal_title" -}}
 {{- $propUrl := .Get "proposal_url" -}}
@@ -58,12 +65,25 @@
 </div>
 {{- end }}
 
-<section class="roadmap-console is-phase-{{ $phaseState }}" aria-label="{{ $season }} {{ $title }}">
-  {{- if or $season $title $repo $propUrl $theoryUrl }}
+<section class="roadmap-console is-phase-{{ $phaseState }}"{{ with $phaseId }} id="{{ . }}"{{ end }} aria-label="{{ $season }} {{ $title }}">
+  {{- if or $season $title $startDate $endDate $repo $propUrl $theoryUrl }}
   <header class="roadmap-phase-header">
     <div class="roadmap-phase-title-group">
       <span class="roadmap-season-tag">{{ $season }}</span>
       {{- with $title }}<h2 class="roadmap-phase-title">{{ . }}</h2>{{ end }}
+      {{- if or $startDate $endDate }}
+      <span class="roadmap-phase-dates" title="阶段起止时间">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        {{- if and $startDate $endDate -}}
+          {{ $startDate }} → {{ $endDate }}
+        {{- else if $startDate -}}
+          {{ $startDate }} 启动
+        {{- else -}}
+          {{ $endDate }}
+        {{- end -}}
+        {{- with $duration }} · {{ . }}{{ end -}}
+      </span>
+      {{- end }}
     </div>
     {{- if or $repo $propUrl $theoryUrl }}
     <div class="roadmap-phase-meta">

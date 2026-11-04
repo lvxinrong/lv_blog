@@ -3,10 +3,10 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "lvchat-roadmap"
 aliases = ["/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-04T16:04:00+08:00
+lastmod = 2026-11-04T16:15:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "分两季推进：第一季从《从零构建大模型》手搓代码出发，按依赖顺序完成 M0～M6 整车核心链路交付（7/7 已验收）；第二季以 DataWhale diy-llm 为系统理论蓝本，启动 AI-Infra 装备升级线与个人中文语料 Midtrain 彩蛋。"
+summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 M0～M6 整车核心链路交付（7/7）；当前处于第二阶段，以 DataWhale diy-llm 为系统理论蓝本推进 AI-Infra 装备进化，并预留第三至第五阶段远期演进路线。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -14,11 +14,19 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     hiddenInList = true
 +++
 
-{{< roadmap_progress
+{{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    season="SEASON 01 · 第一季（整车闭环线 · 已交付）"
+    phases="phase-01::STAGE 01 · 第一阶段::从零件到整车 lvchat v1::done::2026.10.13 → 2026.11.04 (7/7 已交付) | phase-02::STAGE 02 · 第二阶段::AI-Infra 装备进化 lvchat v2::active::2026.11.04 启动 · 当前主战场 | phase-03::STAGE 03 · 第三阶段::多模态与推理强化深水区::planning::待 Stage 02 收官后开启 | phase-04::STAGE 04+ · 远期阶段::分布式训练与自主 Agent 沉淀::planning::远期规划池"
+>}}
+
+{{< roadmap_progress
+    id="phase-01"
+    season="STAGE 01 · 第一阶段（已完成）"
     title="从零件到整车：自造 lvchat v1（M0 ～ M6）"
     phase_state="done"
+    start_date="2026年10月13日"
+    end_date="2026年11月04日"
+    duration="历时 23 天"
     repo="squid-llms"
     proposal_title="nanochat 立项书"
     proposal_url="/llm/nanochat-proposal/"
@@ -31,7 +39,8 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
-## 第一季施工流水线：跑通 `lvchat v1` 全链路（M0 → M6）
+{{< phase_drawer summary="已归档 · 点击展开第一阶段 M0 ～ M6 全部 7 张验收卡片与实录笔记（点击上方 M0～M6 节点可直接跳转）" >}}
+
 
 {{< milestone id="m0" code="M0" title="重写全书代码（底座重构）" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
 - **核心实现**：按工程结构重写《从零构建大模型》全书代码（`tokenizer` / `model` / `data` / `train` / `generate` / `eval` / `checkpoints` 七层解耦、单一 `config` 与 `device` 入口、checkpoint 三层标准化）
@@ -81,12 +90,17 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
 - **能力边界**：当前 355M SFT 模型没有经过可靠的多轮对话训练，连续对话会复制旧回答，因此可靠多轮语义能力未通过。工程验收完成不等于模型多轮能力合格。
 {{< /milestone >}}
 
+{{< /phase_drawer >}}
+
 ---
 
 {{< roadmap_progress
-    season="SEASON 02 · 第二季（AI-Infra 装备进化线）"
+    id="phase-02"
+    season="STAGE 02 · 第二阶段（正在进行）"
     title="从能跑到能打：结合 diy-llm 升级 lvchat v2"
     phase_state="active"
+    start_date="2026年11月04日"
+    end_date="进行中"
     repo="squid-llms"
     proposal_title="diy-llm 立项书"
     proposal_url="/llm/diy-llm-proposal/"
@@ -100,7 +114,7 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
     steps="i0:I0:现代架构:next, i1:I1:数据与流式IO:todo, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional, m7:M7:中文语料Midtrain:optional"
 >}}
 
-## 第二季施工流水线：AI-Infra 装备升级与双彩蛋（I0 → I6 + M7）
+## 第二阶段施工流水线：AI-Infra 装备升级与双彩蛋（I0 → I6 + M7）
 
 > 第一季解决“**有没有一辆自己造的车**”，第二季以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
@@ -184,6 +198,40 @@ summary = "分两季推进：第一季从《从零构建大模型》手搓代码
   3. 再使用个人中文语料进行 midtrain。
 - **验收标准**：“吕炘嵘 GPT”第一次附体
 {{< /milestone >}}
+
+---
+
+## 远期阶段规划池（Stage 03 ～ Stage 05 预留）
+
+> 后续阶段只挂紧凑进度条预览，不提前堆砌空白卡片；待前一阶段收官后，再升格为“正在进行”并展开具体里程碑。
+
+{{< roadmap_progress
+    id="phase-03"
+    season="STAGE 03 · 第三阶段（未来规划）"
+    title="多模态感知与长程推理深水区"
+    phase_state="planning"
+    start_date="待 Stage 02 收官后开启"
+    repo="squid-llms"
+    rules="核心方向::视觉-语言跨模态投影接入（参考 diy-llm 第 15 章）与测试时计算扩展（Test-Time Compute） | 启动条件::第二阶段 I0～I5 核心装备换装验收完成后解锁"
+    done="0"
+    total="4"
+    next="待 Stage 02 收官后解锁"
+    steps="-:S3.1:视觉编码桥接:todo, -:S3.2:多模态指令微调:todo, -:S3.3:长上下文外推:todo, -:S3.4:推理搜索验证:todo"
+>}}
+
+{{< roadmap_progress
+    id="phase-04"
+    season="STAGE 04 ～ 05 · 远期阶段（未来规划）"
+    title="分布式系统工程与自主 Agent 沉淀"
+    phase_state="planning"
+    start_date="远期规划池"
+    repo="squid-llms"
+    rules="核心方向::多卡/多机并行系统实战、专用小模型分工协同与工具调用 Agent 闭环 | 演进方式::按阶段滚动拆解，完成一季归档一季"
+    done="0"
+    total="4"
+    next="远期阶段预留"
+    steps="-:S4.1:多卡并行实战:todo, -:S4.2:高吞吐推理引擎:todo, -:S5.1:工具调用与记忆:todo, -:S5.2:专用模型协同:todo"
+>}}
 
 ---
 

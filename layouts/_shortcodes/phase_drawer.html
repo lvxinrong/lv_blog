@@ -1,0 +1,19 @@
+{{- /* 已完成阶段的里程碑卡片折叠抽屉：
+       平时收起以把首屏让给“正在进行的阶段”，点击抽屉栏或上方进度条节点时自动展开。
+       注意：内部包裹的是 {{< milestone >}} shortcode（已各自完成 Markdown 渲染），
+       此处直接输出 .Inner，严禁再次过 RenderString / markdownify 导致 HTML 被 Goldmark 吞掉。
+       参数：
+         summary   折叠栏标题
+         open      默认是否展开（"true" | "false"，默认 false）
+*/ -}}
+{{- $summary := .Get "summary" | default "展开本阶段里程碑验收明细" -}}
+{{- $open := eq (.Get "open") "true" -}}
+<details class="roadmap-phase-drawer"{{ if $open }} open{{ end }}>
+  <summary class="roadmap-phase-drawer-summary">
+    <span class="roadmap-phase-drawer-label">{{ $summary }}</span>
+    <span class="roadmap-phase-drawer-hint" data-open-text="收起明细 ▴" data-close-text="展开明细 ▾"></span>
+  </summary>
+  <div class="roadmap-phase-drawer-body">
+    {{ .Inner }}
+  </div>
+</details>

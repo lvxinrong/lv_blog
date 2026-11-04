@@ -3602,3 +3602,264 @@ details.toc a.is-active {
         font-size: 15px;
     }
 }
+
+/* 多阶段全局演进鸟瞰轴（Macro Phase Stepper） */
+.roadmap-macro-bar {
+    display: grid;
+    grid-template-columns: repeat(var(--macro-cols, 4), minmax(0, 1fr));
+    gap: 10px;
+    margin: 0 0 22px;
+}
+
+.md-content .roadmap-macro-bar a.roadmap-macro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--entry);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.md-content .roadmap-macro-bar a.roadmap-macro-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.roadmap-macro-item.is-done {
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    border-top: 3px solid #10b981 !important;
+    background:
+        linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+        var(--entry) !important;
+}
+
+[data-theme="dark"] .roadmap-macro-item.is-done {
+    border-top-color: #34d399 !important;
+    background:
+        linear-gradient(180deg, rgba(52, 211, 153, 0.11) 0%, transparent 70%),
+        var(--entry) !important;
+}
+
+.roadmap-macro-item.is-active {
+    border-color: color-mix(in srgb, var(--series, var(--accent)) 55%, var(--border)) !important;
+    border-top: 3px solid var(--series, var(--accent)) !important;
+    background:
+        linear-gradient(180deg, var(--series-soft, var(--accent-soft)) 0%, transparent 75%),
+        var(--entry) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--series, var(--accent)) 14%, transparent), var(--shadow-sm) !important;
+}
+
+.roadmap-macro-item.is-planning {
+    border-style: dashed !important;
+    border-top: 3px solid var(--border) !important;
+    opacity: 0.84;
+}
+
+.roadmap-macro-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.roadmap-macro-code {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--secondary);
+}
+
+.roadmap-macro-state {
+    font-size: 10.5px;
+    font-weight: 680;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--secondary);
+    white-space: nowrap;
+}
+
+.roadmap-macro-item.is-done .roadmap-macro-state {
+    background: rgba(16, 185, 129, 0.14);
+    color: #059669;
+}
+
+[data-theme="dark"] .roadmap-macro-item.is-done .roadmap-macro-state {
+    color: #34d399;
+}
+
+.roadmap-macro-item.is-active .roadmap-macro-state {
+    background: var(--series-soft, var(--accent-soft));
+    color: var(--series, var(--accent));
+    animation: timeline-node-pulse 2.6s ease-in-out infinite;
+}
+
+.roadmap-macro-name {
+    font-size: 13.5px;
+    font-weight: 680;
+    line-height: 1.35;
+    color: var(--primary);
+    margin-top: 2px;
+}
+
+.roadmap-macro-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--secondary);
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+/* 阶段状态差异化：已完成（翠绿归档态）vs 正在进行（主视觉高亮态）vs 未来规划（紧凑虚线态） */
+.roadmap-console {
+    scroll-margin-top: calc(var(--header-height) + 18px);
+}
+
+.roadmap-console.is-phase-done {
+    border-color: rgba(16, 185, 129, 0.34);
+    border-left: 4px solid #10b981;
+    background:
+        linear-gradient(125deg, rgba(16, 185, 129, 0.08) 0%, transparent 55%),
+        var(--entry);
+}
+
+[data-theme="dark"] .roadmap-console.is-phase-done {
+    border-left-color: #34d399;
+    background:
+        linear-gradient(125deg, rgba(52, 211, 153, 0.11) 0%, transparent 55%),
+        var(--entry);
+}
+
+.roadmap-console.is-phase-done .roadmap-season-tag {
+    background: #059669;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .roadmap-console.is-phase-done .roadmap-season-tag {
+    background: #10b981;
+    color: #101216;
+}
+
+.roadmap-console.is-phase-active {
+    border-left: 4px solid var(--series, var(--accent));
+    box-shadow: var(--shadow-md);
+}
+
+/* 阶段起止时间胶囊 */
+.roadmap-phase-dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.roadmap-console.is-phase-done .roadmap-phase-dates {
+    border-color: rgba(16, 185, 129, 0.30);
+    color: #059669;
+    background: rgba(16, 185, 129, 0.07);
+}
+
+[data-theme="dark"] .roadmap-console.is-phase-done .roadmap-phase-dates {
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.10);
+}
+
+/* 已完成阶段的里程碑折叠抽屉（把首屏让给正在进行的阶段） */
+.roadmap-console.is-phase-done:has(+ .roadmap-phase-drawer) {
+    margin-bottom: 10px;
+}
+
+.md-content details.roadmap-phase-drawer {
+    margin: 0 0 32px;
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--entry) 75%, var(--code-bg));
+    overflow: hidden;
+}
+
+.roadmap-phase-drawer-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 16px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--primary);
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.roadmap-phase-drawer-summary::-webkit-details-marker {
+    display: none;
+}
+
+.roadmap-phase-drawer-summary:hover {
+    background: rgba(16, 185, 129, 0.07);
+    color: #059669;
+}
+
+[data-theme="dark"] .roadmap-phase-drawer-summary:hover {
+    color: #34d399;
+}
+
+.roadmap-phase-drawer-hint::after {
+    content: attr(data-close-text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: #059669;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .roadmap-phase-drawer-hint::after {
+    color: #34d399;
+}
+
+details.roadmap-phase-drawer[open] .roadmap-phase-drawer-hint::after {
+    content: attr(data-open-text);
+}
+
+.roadmap-phase-drawer-body {
+    padding: 16px 18px 6px;
+    border-top: 1px solid var(--border);
+    background: var(--page-bg);
+}
+
+.roadmap-phase-drawer-body > h2:first-child {
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .roadmap-macro-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .roadmap-phase-drawer-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 10px 14px;
+    }
+
+    .roadmap-phase-drawer-body {
+        padding: 12px 12px 4px;
+    }
+}
