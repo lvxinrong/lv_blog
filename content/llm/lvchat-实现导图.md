@@ -3,10 +3,10 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "lvchat-roadmap"
 aliases = ["/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-04T17:27:00+08:00
+lastmod = 2026-11-04T17:39:00+08:00
 draft = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 M0～M6 整车核心链路交付（7/7）；当前处于第二阶段，全量展开 I0～I6 + M7（现代架构 model_v3 与 Qwen 权重承接、AI-Infra 装备升级及个人中文语料 Midtrain），并预留后续 Skill 与 Agent 演进阶段。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段）全量展开 I0～I6 里程碑；第三至第六阶段（训练/推理基础设施与 MoE、后训练与领域能力形成、Skill 工程、Agent 协作）保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -16,13 +16,13 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM (M0～M6)::done::2026.10.13 → 2026.11.04 (7/7 已交付) | phase-02::STAGE 02 · 第二阶段::现代架构与 AI-Infra 装备进化 (I0～I6+M7)::active::2026.11.04 启动 · 当前主战场 | phase-03::STAGE 03 · 第三阶段::Skill 工程与工具生态::planning::远期规划 · 扫描/排查/MCP/开源规范 | phase-04::STAGE 04 · 第四阶段::Agent 与多模型协作::planning::远期规划 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 当前阶段 (I0～I6) | phase-03::STAGE 03 · 第三阶段::训练、推理基础设施与 MoE::planning::规划中 · 算子/量化/分布式/MoE | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
     id="phase-01"
     season="STAGE 01 · 第一阶段（已完成）"
-    title="从零件到整车：自造 lvchat v1（M0 ～ M6）"
+    title="从零手搓 LLM：自造 lvchat v1（M0 ～ M6）"
     phase_state="done"
     start_date="2026年10月13日"
     end_date="2026年11月04日"
@@ -30,7 +30,7 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
     repo="squid-llms"
     proposal_title="nanochat 立项书"
     proposal_url="/llm/nanochat-proposal/"
-    rules="基准原则::nanochat 当“标准答案”不当教材，从手搓代码长出整车 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::开工顺序即依赖顺序，M0～M6 核心链路已完整交付"
+    rules="核心交付::完成从 tokenizer、模型、预训练、KV cache、SFT、评估到 CLI/Web UI 的完整工程闭环 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::nanochat 当“标准答案”不当教材，开工顺序即依赖顺序"
     done="7"
     total="7"
     current="M6 · 对话界面"
@@ -41,32 +41,32 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
 
 {{< phase_drawer summary="已归档 · 点击展开第一阶段 M0 ～ M6 全部 7 张验收卡片与实录笔记（点击上方 M0～M6 节点可直接跳转）" >}}
 
-{{< milestone id="m0" code="M0" title="重写全书代码（底座重构）" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
+{{< milestone id="m0" code="M0" title="重写底座" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
 - **核心实现**：按工程结构重写《从零构建大模型》全书代码（`tokenizer` / `model` / `data` / `train` / `generate` / `eval` / `checkpoints` 七层解耦、单一 `config` 与 `device` 入口、checkpoint 三层标准化）
 - **验收实绩**：13 个单元测试全绿；355M LoRA 回归评测 **23.6 vs 旧仓库 23.9**（分布一致），欠账注释清单归零
 {{< /milestone >}}
 
-{{< milestone id="m1" code="M1" title="自训 BPE Tokenizer" status="done" date="2026-10-27" note1_title="笔记 09：分词器全景" note1_url="/llm/llm-09-diy-llm-tokenizer/" note2_title="笔记 10：手写 BPE 与甜点区" note2_url="/llm/llm-10-handwritten-bpe/" >}}
+{{< milestone id="m1" code="M1" title="手写 BPE" status="done" date="2026-10-27" note1_title="笔记 09：分词器全景" note1_url="/llm/llm-09-diy-llm-tokenizer/" note2_title="笔记 10：手写 BPE 与甜点区" note2_url="/llm/llm-10-handwritten-bpe/" >}}
 - **核心实现**：纯 Python 手写 `count_pairs` / `merge` / `train_bpe` 训练与编解码，封装为 `MyBPETokenizer`，不调 `tiktoken`
 - **验收实绩**：编解码往返一字不差（无损）；完成压缩率曲线与微型模型固定 500 步 BPB 扫描，锁定博客语料合并甜点区在 **4000 merges（BPB 3.315）**
 {{< /milestone >}}
 
-{{< milestone id="m2" code="M2" title="预训练闭环（Pretrain）" status="done" date="2026-10-28" note1_title="笔记 11：资源核算与预训练" note1_url="/llm/llm-11-pytorch-resource-accounting/" >}}
+{{< milestone id="m2" code="M2" title="预训练闭环" status="done" date="2026-10-28" note1_title="笔记 11：资源核算与预训练" note1_url="/llm/llm-11-pytorch-resource-accounting/" >}}
 - **核心实现**：token 流打包（`pack_tokens`）、流式 dataloader、梯度累积（小批立即 backward + 跨轮 `global_step`）、BPB 指标与带 `config` 的 checkpoint 存档
 - **验收实绩**：完成容量与深度扫描，定位小语料甜点 **emb_dim=256、n_layers=2（BPB 3.10）**，复现 512 维过拟合拐点，模型成功咿呀学语
 {{< /milestone >}}
 
-{{< milestone id="m3" code="M3" title="推理引擎（KV Cache）" status="done" date="2026-10-29" note1_title="笔记 12：KV Cache 与第一次说人话" note1_url="/llm/llm-12-kv-cache/" >}}
+{{< milestone id="m3" code="M3" title="KV Cache" status="done" date="2026-10-29" note1_title="笔记 12：KV Cache 与第一次说人话" note1_url="/llm/llm-12-kv-cache/" >}}
 - **核心实现**：给 `generate`、`GPTModel.forward`、`MHA.forward` 三层装上无状态 KV Cache 接力，处理增量步位置偏移 `arange(past_len, past_len + seq_len)` 与显式 `use_cache` 开关
 - **验收实绩**：贪心采样下输出与朴素版**逐字一致**；512 tokens 生成从 **36.10s 降至 10.00s（实测提速 3.6x）**，第一次看到自己手搓的模型流畅说人话
 {{< /milestone >}}
 
-{{< milestone id="m4" code="M4" title="指令微调（SFT）" status="done" date="2026-10-30" note1_title="笔记 13：SFT，从续写机到指令跟随" note1_url="/llm/llm-13-sft-instruction-following/" >}}
+{{< milestone id="m4" code="M4" title="SFT 微调" status="done" date="2026-10-30" note1_title="笔记 13：SFT，从续写机到指令跟随" note1_url="/llm/llm-13-sft-instruction-following/" >}}
 - **核心实现**：将第七章 SFT 数据与训练管道移植至自训底座，打开 completion-only 掩码（只对 response 答卷位置计分）
 - **验收实绩**：套指令模板稳定作答；base 全 0 分 vs SFT 均分 31.2（110 条 test，接近旧仓库全参 33.5 基线）；cache 与朴素版输出一致，提速 1.6x
 {{< /milestone >}}
 
-{{< milestone id="m5" code="M5" title="评估框架（Eval & Judge）" status="done" date="2026-11-04" note1_title="笔记 14：M5，让评估能够中断后继续" note1_url="/llm/llm-14-eval-resume/" >}}
+{{< milestone id="m5" code="M5" title="评估框架" status="done" date="2026-11-04" note1_title="笔记 14：M5，让评估能够中断后继续" note1_url="/llm/llm-14-eval-resume/" >}}
 - **核心实现**：选择题评测（字母 logits、完整答案条件似然与选项打乱对照）+ DeepSeek LLM-as-judge 自由生成自动打分与双端断点续跑流水线
 - **验收实绩**：
   - 完成选择题字母 logits、完整答案条件似然和选项打乱对照；
@@ -77,7 +77,7 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
   - 相关回归 `17 passed`。
 {{< /milestone >}}
 
-{{< milestone id="m6" code="M6" title="对话界面（CLI + Web UI）" status="done" date="2026-11-04" note1_title="笔记 16：给 355M 模型装上对话界面" note1_url="/llm/llm-16-chat-web-ui/" >}}
+{{< milestone id="m6" code="M6" title="对话界面" status="done" date="2026-11-04" note1_title="笔记 16：给 355M 模型装上对话界面" note1_url="/llm/llm-16-chat-web-ui/" >}}
 - **核心实现**：命令行多轮对话 CLI + Python 标准库 HTTP 推理服务 + 纯 HTML/CSS/JavaScript Web 对话页，打通从浏览器输入到本地自训 355M 模型回答的完整应用链路
 - **验收实绩**：
   - 完成 `ChatSession`、原始问答 history 和最近 5 轮滑动窗口；
@@ -95,8 +95,8 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
 
 {{< roadmap_progress
     id="phase-02"
-    season="STAGE 02 · 第二阶段（正在进行）"
-    title="从能跑到能打：现代架构承接与 AI-Infra 装备升级（I0 ～ I6 + M7）"
+    season="STAGE 02 · 第二阶段（当前阶段）"
+    title="现代架构与模型承接（全量展开 I0 ～ I6）"
     phase_state="active"
     start_date="2026年11月04日"
     end_date="进行中"
@@ -105,17 +105,17 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
     proposal_url="/llm/diy-llm-proposal/"
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
-    rules="装备来源::剥离自第一季的全部工业级选修项 + 第一季实测暴露的工程与模型边界 | 理论蓝本::第二阶段统一以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统学习蓝本 | 进化目标::在 lvchat v1 整车底盘上按 I0～I6 项目驱动逐件换装现代架构、算子加速、量化推理与强化对齐"
+    rules="装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 承接现代架构与 Qwen 权重，并按 I0～I6 逐件升级数据、训练、推理与后训练"
     done="0"
     total="6"
     current="I0 子项 RoPE 已提前落地"
     next="I0 · 现代架构与模型承接（model_v3 / RMSNorm / SwiGLU / GQA / Qwen 权重加载）"
-    steps="i0:I0:现代架构:next, i1:I1:数据与流式IO:todo, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional, m7:M7:中文语料Midtrain:optional"
+    steps="i0:I0:现代架构:next, i1:I1:数据与流式IO:todo, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
-## 第二阶段施工流水线：现代架构承接与 AI-Infra 装备全量蓝图（I0 → I6 + M7）
+## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
 
-> 第一季解决“**有没有一辆自己造的车**”，第二季以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
+> 第一阶段解决“**有没有一辆自己造的车**”，第二阶段以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
 {{< milestone id="i0" code="I0" title="现代架构与模型承接（model_v3：RoPE + RMSNorm + SwiGLU + GQA + Qwen 权重加载）" status="next" note1_title="RoPE 先行记录：笔记 14" note1_url="/llm/llm-14-eval-resume/" >}}
 - **版本演进策略**：
@@ -185,7 +185,7 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
 - **进化验收**：每次装备升级（I0～I4）均可一键跑出带置信区间与胜率矩阵的对比报告
 {{< /milestone >}}
 
-{{< milestone id="i6" code="I6" title="第二季独立彩蛋 A：MoE 稀疏专家与分布式并行沙盘" status="optional" >}}
+{{< milestone id="i6" code="I6" title="第二阶段独立彩蛋：MoE 稀疏专家与分布式并行沙盘" status="optional" >}}
 - **定位说明**：独立高阶架构彩蛋，不计入主线进度；与 GPU 和分布式一起学——先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销
 - **装备升级**：
   1. 把稠密 FFN 改造为迷你 **MoE（Mixture of Experts）** 层：实现 Top-K 门控路由与负载均衡辅助损失（Load Balancing Loss）；
@@ -194,45 +194,78 @@ summary = "多阶段推进：第一阶段（2026.10.13—2026.11.04）已完成 
 - **进化验收**：在总参数量放大但单 token 激活参数不变的前提下，验证 MoE 模型的收敛曲线与路由均衡度
 {{< /milestone >}}
 
-{{< milestone id="m7" code="M7" title="第二季独立彩蛋 B：个人中文语料中间训练（Midtrain）" status="optional" >}}
-- **新定位**：个人中文语料中间训练（Midtrain）——喂入个人年终总结、有道云笔记与博客全量中文语料做继续训练与个人风格注入（与 `I6` 彩蛋分开，不计入第一季或第二季主线进度）
-- **底座边界说明**：当前第一季 GPT-2 355M 底座偏英文，不适合直接承接全中文个人语料；`M7` 等到现代架构和 Qwen 权重加载能力完成后再启动
-- **前置依赖条件**：
-  1. 先完成 `I0` 现代架构改造；
-  2. 能正确加载并运行 Qwen 权重；
-  3. 再使用个人中文语料进行 midtrain。
-- **验收标准**：“吕炘嵘 GPT”第一次附体
-{{< /milestone >}}
-
 ---
 
-## 远期阶段规划池（第三至第四阶段 · 只列方向与依赖）
+## 后续演进阶段（第三至第六阶段 · 方向与依赖）
 
-> 后续阶段在手搓 LLM 与 AI-Infra 满配之后承接，只保留方向与前置依赖，不提前拆细任务清单，也不承诺时间。
+> 第三至第六阶段只保留演进方向与前置依赖，不提前拆细任务清单，也不承诺时间；**[DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html)** 作为第二至第四阶段的系统理论蓝本，按实际项目需要随时调用，无需无差别重读所有章节。
 
 {{< roadmap_progress
     id="phase-03"
-    season="STAGE 03 · 第三阶段（远期规划）"
-    title="Skill 工程与工具生态"
+    season="STAGE 03 · 第三阶段（规划中）"
+    title="训练、推理基础设施与 MoE"
     phase_state="planning"
     hide_bar="true"
-    rules="阶段定位::在扎实的模型、架构与后训练认知之上，沉淀面向真实工程现场的 Skill 工具链与标准规范 | 核心方向::系统扫描、生产排查、学习辅助、MCP / CLI 工具封装、权限边界控制、评估体系与开源文档（前期实践见《生产排查 Skill 深解》与《系统扫描 Skill 深解》）"
+    repo="squid-llms"
+    rules="前置依赖::第二阶段 I0 现代架构（model_v3）与 Qwen 权重承接完成后深化 | MoE 学习策略::与 GPU 和分布式一起学——先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销"
 >}}
+
+- **训练与算子优化**：GPU、混合精度、FlashAttention、CUDA / Triton 等训练与算子优化；
+- **推理与高性能服务**：量化、投机解码、流式推理和高性能服务；
+- **分布式与资源核算**：分布式训练、ZeRO / FSDP、资源核算；
+- **MoE 混合专家模型**：先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销。
 
 {{< roadmap_progress
     id="phase-04"
-    season="STAGE 04 · 第四阶段（远期规划）"
+    season="STAGE 04 · 第四阶段（规划中）"
+    title="后训练与领域能力形成"
+    phase_state="planning"
+    hide_bar="true"
+    repo="squid-llms"
+    rules="前置依赖::现代架构底座与训练/推理基础设施就绪后展开 | 探索衔接::承载推理强化、模型诊断与权重空间编程，以及下方 M7 个人中文语料 Midtrain 独立彩蛋"
+>}}
+
+- **推理强化与对齐**：CoT、DPO、GRPO、RLVR；
+- **数据与评测工程**：指令数据工程与评委校准；
+- **领域模型与权重诊断**：领域模型训练与评估、模型诊断和权重空间编程（探索记录见[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)）；
+- **个人中文语料 midtrain**：承载下方 `M7` 独立彩蛋。
+
+{{< milestone id="m7" code="M7" title="第四阶段独立彩蛋：个人中文语料中间训练（Midtrain）" status="optional" >}}
+- **定位说明**：从第一阶段移到第四阶段，作为独立彩蛋，不计入第一阶段完成度。
+- **底座边界说明**：当前 GPT-2 355M 底座偏英文，不适合直接承接全中文个人语料，因此不再把 `M7` 放在第一阶段硬做。
+- **前置依赖**：
+  1. 先完成现代架构改造（`I0`）并能正确加载 Qwen；
+  2. 再使用个人中文语料（个人年终总结、有道云笔记与博客全量中文语料）进行 midtrain。
+- **验收标准**：“吕炘嵘 GPT”第一次附体
+{{< /milestone >}}
+
+{{< roadmap_progress
+    id="phase-05"
+    season="STAGE 05 · 第五阶段（远期）"
+    title="Skill 工程与工具生态"
+    phase_state="planning"
+    hide_bar="true"
+    rules="阶段定位::在扎实的模型与后训练认知之上，沉淀面向真实工程现场的 Skill 工具链与标准规范"
+>}}
+
+- **核心方向**：系统扫描、生产排查、学习辅助、MCP / CLI、权限、评估、开源文档（前期实践见[《生产排查 Skill 深解》](/incident-skill/introduction/)与[《系统扫描 Skill 深解》](/scan-skill/introduction/)）。
+
+{{< roadmap_progress
+    id="phase-06"
+    season="STAGE 06 · 第六阶段（远期）"
     title="Agent 与多模型协作"
     phase_state="planning"
     hide_bar="true"
-    rules="阶段定位::将专用模型能力与 Skill 工具生态合流，构建可审计的多角色协作系统（多模态暂保留为未来选修） | 核心方向::规划、执行、测试、运维角色分工（思路见《企业级 AI 编程的终极形态：当模型开始分工》），以及记忆、上下文、权限、反馈闭环和多模型编排"
+    rules="阶段定位::将专用模型能力与 Skill 工具生态合流，构建可审计的多角色协作系统（多模态暂不作为主阶段，只保留未来选修）"
 >}}
+
+- **核心方向**：规划、执行、测试、运维分工（思路见[《企业级 AI 编程的终极形态：当模型开始分工》](/ai/enterprise-ai-model-division/)），以及记忆、上下文、权限、反馈闭环和多模型编排。
 
 ---
 
 ## 支线探索与日常节奏
 
-- **独立支线探索（不阻塞主线）**：三轮 Weight-Space Programming（权重空间编程）实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不作为 M5、M6 或后续阶段主线阻塞条件。
+- **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 源码对照时机**：**第一季 M0～M6 整车核心链路已交付**，接下来把 Karpathy 的 `nanochat` 源码从头到尾当“标准答案”通读对照一遍——手里已经有了自己的 `lvchat v1` 完整实现，正好带着问题去查他怎么处理现代架构与多轮对话细节，无缝推进第二季 I0。
+- **nanochat 源码对照时机**：**第一阶段 M0～M6 整车核心链路已交付**，接下来把 Karpathy 的 `nanochat` 源码从头到尾当“标准答案”通读对照一遍——手里已经有了自己的 `lvchat v1` 完整实现，正好带着问题去查他怎么处理现代架构与多轮对话细节，无缝推进第二阶段 I0。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I6、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
