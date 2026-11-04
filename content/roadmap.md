@@ -1,10 +1,14 @@
 +++
 title = "lvchat 实现导图：开工顺序即依赖顺序"
-slug = "lvchat-roadmap"
-aliases = ["/nanochat/lvchat-roadmap/"]
+slug = "roadmap"
+aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-04T17:39:00+08:00
+lastmod = 2026-11-04T18:12:00+08:00
 draft = false
+series = "llm"
+hiddenInRss = true
+ShowBreadCrumbs = false
+ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
 summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段）全量展开 I0～I6 里程碑；第三至第六阶段（训练/推理基础设施与 MoE、后训练与领域能力形成、Skill 工程、Agent 协作）保留演进方向与依赖。"
 [cover]

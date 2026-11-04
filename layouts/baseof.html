@@ -3,14 +3,14 @@
        换成 .Language.Direction 又会在 0.147 上直接报错（字段不存在）。
        本站是单语言中文、永远是 LTR，所以直接写死 "auto" —— 与主题原本
        `| default "auto"` 的最终输出完全一致，且不依赖任何版本特有 API。
-       首页增加 home-page 类以隔离加宽布局；其余与主题一致，方便升级时 diff。 */ -}}
+       首页增加 home-page 类以隔离加宽布局；独立页面可通过 front matter 的 series 指定系列色。 */ -}}
 {{- if lt hugo.Version "0.146.0" }}
 {{- errorf "=> hugo v0.146.0 or greater is required for hugo-PaperMod to build " }}
 {{- end -}}
 
 <!DOCTYPE html>
 {{- $theme := site.Params.defaultTheme | default "auto" }}
-{{- $series := "" }}
+{{- $series := .Param "series" | default "" }}
 {{- $kind := "" }}
 {{- if in site.Params.mainSections .Section }}
   {{- $series = .Section }}
@@ -19,11 +19,11 @@
   {{- end }}
 {{- end }}
 {{- if eq $theme "dark" }}
-<html lang="{{ site.Language }}" dir="auto" data-theme="dark"{{ with $series }} data-series="{{ . }}" data-kind="{{ $kind }}"{{ end }}>
+<html lang="{{ site.Language }}" dir="auto" data-theme="dark"{{ with $series }} data-series="{{ . }}"{{ end }}{{ with $kind }} data-kind="{{ . }}"{{ end }}>
 {{- else if eq $theme "light" }}
-<html lang="{{ site.Language }}" dir="auto" data-theme="light"{{ with $series }} data-series="{{ . }}" data-kind="{{ $kind }}"{{ end }}>
+<html lang="{{ site.Language }}" dir="auto" data-theme="light"{{ with $series }} data-series="{{ . }}"{{ end }}{{ with $kind }} data-kind="{{ . }}"{{ end }}>
 {{- else }}
-<html lang="{{ site.Language }}" dir="auto" data-theme="auto"{{ with $series }} data-series="{{ . }}" data-kind="{{ $kind }}"{{ end }}>
+<html lang="{{ site.Language }}" dir="auto" data-theme="auto"{{ with $series }} data-series="{{ . }}"{{ end }}{{ with $kind }} data-kind="{{ . }}"{{ end }}>
 {{- end }}
 
 <head>

@@ -183,9 +183,12 @@ markup:
 # 下拉子项用 pageRef 关联页面，未参与构建的草稿不会生成入口。
 menu:
   main:
+    - name: 实现导图
+      url: /roadmap/
+      weight: 1
     - name: 手搓 LLM
       identifier: llm-series
-      weight: 1
+      weight: 2
     - name: 从零构建大模型
       parent: llm-series
       pageRef: /llm
@@ -195,10 +198,10 @@ menu:
         description: 读《从零构建大模型》，把每一层都拆开看
     - name: AI 随想
       url: /ai/
-      weight: 2
+      weight: 3
     - name: 工程实践
       identifier: engineering
-      weight: 3
+      weight: 4
     - name: 工程手记
       parent: engineering
       pageRef: /craft
@@ -222,10 +225,10 @@ menu:
         description: 把看懂一个系统变成可复核的流程
     - name: 读书笔记
       url: /reading/
-      weight: 4
+      weight: 5
     - name: 归档
       url: /archives/
-      weight: 5
+      weight: 6
     - name: 关于
       url: /about/
-      weight: 6
+      weight: 7

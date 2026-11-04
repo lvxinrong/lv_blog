@@ -187,6 +187,7 @@
   },
   "active": "3ead6be47698c010",
   "lastOpenFiles": [
+    "roadmap.md",
     "reading/weight-space-programming.md",
     "llm/手搓LLM笔记16-M6对话界面.md",
     "llm/手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？.md",
@@ -217,7 +218,6 @@
     "llm/llm-11-structured-sparsity.png",
     "Pasted image 20261028104954.png",
     "llm/手搓LLM番外2-Embedding形状问答.md",
-    "llm/手搓LLM笔记09-diy-llm分词器.md",
     "llm/llm-09-tokenizer-types.png",
     "llm/llm-09-token-count-attention.png",
     "Pasted image 20261027104005.png",
