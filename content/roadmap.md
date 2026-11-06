@@ -225,8 +225,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0 ～ S6 全部 7 张里程碑卡片与总交付目标（点击上方 S0～S6 节点可直接跳转）" >}}
 
-### 一、第三阶段前置依赖与硬件边界
-
+{{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" >}}
 1. **先完成第二阶段 `I0～I3` 的相关基础**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 待完成）；
@@ -239,8 +238,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
    - **源码研读不依赖本机部署**；
    - **官方部署验证只作为具备匹配硬件后的选修**；
    - **不把普通 GPU 上无法运行 DeepInfer 写成学习失败**。
-
-### 二、第三阶段施工顺序与里程碑卡片（S0 → S6）
+{{< /milestone >}}
 
 {{< milestone id="s0" code="S0" title="GPU 系统基础与性能基线" status="planning" question="优化之前，能不能先建立一张可信的性能与资源账本？" >}}
 - **学习内容**：
@@ -391,8 +389,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不以“参考了 DeepInfer”冒充“已经达到 DeepInfer 的生产能力”。
 {{< /milestone >}}
 
-### 三、第三阶段总交付目标与“六不追求”边界
-
+{{< milestone id="s-goal" code="总目标" title="第三阶段总交付目标与“六不追求”边界" status="planning" question="第三阶段收官时应当能够回答什么问题？明确不追求哪些事情？" >}}
 - **阶段结束时应当能够回答的 6 个核心问题**：
   1. 一个模型的训练和推理性能瓶颈如何测量？
   2. 一个请求如何穿过推理引擎？
@@ -407,6 +404,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不追求只读源码不做最小实现；
   - 不追求只报告速度，不验证正确性；
   - 不追求为了 roadmap 好看而提前填写成果。
+{{< /milestone >}}
 
 {{< /phase_drawer >}}
 
