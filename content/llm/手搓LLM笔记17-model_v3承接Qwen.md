@@ -685,7 +685,7 @@ temperature、top-k 和随机采样都发生在 logits 已经算出之后，不�
 
 即使使用 greedy decoding，也只是去掉了随机采样，不能自动消除 SDPA 的数值差异。一旦某一步 argmax 因微小误差选择了不同 token，后续自回归生成还可能继续分叉。
 
-所以这项“零误差”的准确边界是：**固定 124-token 多轮 prompt 下，model_v3 与官方 eager 实现的完整前向 logits 完全一致。**它还不能自动覆盖 KV Cache 增量解码，因此随后单独增加了 cache 对照。
+所以这项“零误差”的准确边界是：**固定 124-token 多轮 prompt 下，model_v3 与官方 eager 实现的完整前向 logits 完全一致**。它还不能自动覆盖 KV Cache 增量解码，因此随后单独增加了 cache 对照。
 
 #### KV Cache 增量解码对照
 
