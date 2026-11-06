@@ -10,7 +10,7 @@ hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 1/6）已完成 I0 现代架构与 Qwen2.5 承接，下一站 I1；第三至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 1/6）已完成 I0 现代架构与 Qwen2.5 承接，下一站 I1；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 1/6 (I0 已完成，下一站 I1) | phase-03::STAGE 03 · 第三阶段::训练、推理基础设施与 MoE::planning::规划中 · 算子/量化/分布式/MoE | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 1/6 (I0 已完成，下一站 I1) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
@@ -203,24 +203,218 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 ---
 
-## 后续演进阶段（第三至第六阶段 · 方向与依赖）
+## 第三阶段规划蓝图：工业级训练、推理与分布式系统（S0 → S6 · 规划中）
 
-> 第三至第六阶段只保留演进方向与前置依赖，不提前拆细任务清单，也不承诺时间；**[DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html)** 作为第二至第四阶段的系统理论蓝本，按实际项目需要随时调用，无需无差别重读所有章节。
+> **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段当前处于“规划中”（尚未开始，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**
 
 {{< roadmap_progress
     id="phase-03"
     season="STAGE 03 · 第三阶段（规划中）"
-    title="训练、推理基础设施与 MoE"
+    title="工业级训练、推理与分布式系统（S0 ～ S6）"
     phase_state="planning"
-    hide_bar="true"
     repo="squid-llms"
-    rules="前置依赖::第二阶段 I0 现代架构（model_v3）与 Qwen 权重承接已就绪，随 I1～I3 推进深化 | MoE 学习策略::与 GPU 和分布式一起学——先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销"
+    theory_title="DeepSeek DeepInfer"
+    theory_url="https://github.com/deepseek-ai/DeepInfer"
+    rules="阶段定位::从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 DeepInfer 理解生产级系统设计 | 前置依赖::先完成第二阶段 I0～I3 相关基础，具备 Python / PyTorch / Transformer 与训练推理链路知识，准备 Linux GPU 实验环境 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    done="0"
+    total="7"
+    unit="规划里程碑（尚未启动）"
+    planning_note="规划中 · 待第二阶段 I0～I3 与 Linux GPU 实验环境就绪后按 S0 → S6 依赖顺序启动"
+    steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, s6:S6:稳定性验收:todo"
 >}}
 
-- **训练与算子优化**：GPU、混合精度、FlashAttention、CUDA / Triton 等训练与算子优化；
-- **推理与高性能服务**：量化、投机解码、流式推理和高性能服务；
-- **分布式与资源核算**：分布式训练、ZeRO / FSDP、资源核算；
-- **MoE 混合专家模型**：先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销。
+{{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0 ～ S6 全部 7 张里程碑卡片与总交付目标（点击上方 S0～S6 节点可直接跳转）" >}}
+
+### 一、第三阶段前置依赖与硬件边界
+
+1. **先完成第二阶段 `I0～I3` 的相关基础**：
+   - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
+   - 数据与流式 IO（`I1` 待完成）；
+   - 训练加速与资源核算（`I2` 待完成）；
+   - KV Cache、量化、投机解码和基础推理指标（`I3` 待完成）。
+2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
+3. **实验环境**：准备 Linux GPU 实验环境后再开展真实多卡与底层算子实验。
+4. **本地环境边界**：当前 Mac + MPS 环境不作为 [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 部署验收环境。
+5. **DeepInfer 硬件边界说明**：[DeepInfer](https://github.com/deepseek-ai/DeepInfer) 官方目前要求特定的 NVIDIA SM100 或 Ascend 950 环境，因此：
+   - **源码研读不依赖本机部署**；
+   - **官方部署验证只作为具备匹配硬件后的选修**；
+   - **不把普通 GPU 上无法运行 DeepInfer 写成学习失败**。
+
+### 二、第三阶段施工顺序与里程碑卡片（S0 → S6）
+
+{{< milestone id="s0" code="S0" title="GPU 系统基础与性能基线" status="planning" question="优化之前，能不能先建立一张可信的性能与资源账本？" >}}
+- **学习内容**：
+  - CPU / GPU、Host / Device、SM、Warp、HBM 与内存带宽；
+  - 算术强度、Roofline、计算瓶颈与带宽瓶颈；
+  - FP32 / FP16 / BF16 的精度与资源差异；
+  - `torch.profiler`，按需了解 Nsight 等工具；
+  - warmup、重复测量、均值、P50/P95、方差与可复现 benchmark；
+  - TTFT、TPOT、tokens/s、峰值显存、MFU 等指标。
+- **规划交付物**：
+  - 一套统一的训练与推理 benchmark 入口；
+  - 经典 GPT-2 与 `model_v3` 的固定输入性能基线；
+  - 每次实验记录设备、dtype、batch、上下文长度、warmup 和重复次数。
+- **规划验收标准**：
+  - 同一场景可重复测量；
+  - 结果包含资源与正确性数据，不只报告“变快了”；
+  - 性能测试与数值正确性测试分开，不用速度掩盖错误。
+{{< /milestone >}}
+
+{{< milestone id="s1" code="S1" title="DeepInfer 请求链路与源码地图" status="planning" question="一条请求从输入到输出，究竟穿过了哪些工业级推理组件？" note1_title="DeepInfer 源码仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" >}}
+- **阅读顺序**：
+  1. `examples/offline_inference.py`
+  2. `engine/llm_engine.py`
+  3. `worker`
+  4. `model_executor`
+  5. `models / layers / sampler`
+  6. `distributed`
+  7. `tests`
+- **重点理解**：
+  - entrypoint、engine、worker、model executor 的职责；
+  - prefill 与 decode 的调用关系；
+  - DP / CP / EP 参数出现在哪里；
+  - scheduler、模型执行和采样如何衔接；
+  - 日志、指标、断言与测试如何进入主链路；
+  - [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 与 vLLM、SGLang、TensorRT-LLM 的继承与借鉴关系。
+- **规划交付物**：
+  - 一张 DeepInfer 请求链路图；
+  - 一张源码目录与职责地图；
+  - 一条 prefill/decode 调用链；
+  - 一份“它已经解决什么、开源版没有包含什么”的边界说明。
+- **规划验收标准**：
+  - 能从一次 `llm.generate()` 讲到模型执行与输出；
+  - 不把底层算子、推理框架和完整生产集群混为一谈；
+  - 不虚构未实际阅读过的源码细节。
+{{< /milestone >}}
+
+{{< milestone id="s2" code="S2" title="自定义算子与 Kernel 优化" status="planning" question="同一个数学公式，为什么不同计算路径会有不同的性能与浮点结果？" >}}
+- **学习内容**：
+  - eager、SDPA、FlashAttention 与融合算子的关系；
+  - Triton 入门，按需了解 CUDA / TileLang；
+  - 中间张量生成、显存读写、算子融合与分块计算；
+  - 从 RMSNorm、RoPE 或简单 FFN 算子开始，再进入 attention；
+  - DeepGEMM、FlashMLA、TileKernels 等组件在系统中的位置。
+- **规划交付物**：
+  - 一个小型自定义算子或融合算子；
+  - eager / SDPA / 自定义实现的对照实验；
+  - 正确性、吞吐和显存报告。
+- **规划验收标准**：
+  - 使用固定输入与明确容差验证正确性；
+  - 报告性能提升时同时报告测试条件；
+  - 不把“数学公式相同”写成“所有后端逐 bit 相同”；
+  - 不在没有测量的情况下声称优化有效。
+{{< /milestone >}}
+
+{{< milestone id="s3" code="S3" title="分布式训练与参数分片" status="planning" question="模型和数据变大以后，计算、梯度、参数与 checkpoint 怎样分布到多个设备？" >}}
+- **学习顺序**：
+  1. 数据并行与 DDP；
+  2. Gradient All-Reduce 与通信开销；
+  3. FSDP / ZeRO 参数、梯度、优化器状态分片；
+  4. Tensor Parallelism；
+  5. Pipeline Parallelism；
+  6. Context Parallelism；
+  7. 分布式 checkpoint、保存、恢复与故障处理。
+- **规划交付物**：
+  - 一个最小分布式训练沙盘；
+  - 单进程与多进程的训练对照；
+  - 参数/梯度分片与通信示意；
+  - 可恢复的分布式 checkpoint 实验。
+- **规划验收标准**：
+  - 在相同数据与初始状态下，分布式结果与单进程保持合理一致；
+  - 能解释通信量、显存和吞吐的变化；
+  - checkpoint 能保存并恢复训练现场；
+  - 不以“启动了多个进程”冒充分布式训练已经掌握。
+{{< /milestone >}}
+
+{{< milestone id="s4" code="S4" title="MoE 与专家并行" status="planning" question="怎样增加模型容量，同时避免每个 token 都执行全部专家？" >}}
+- **学习内容**：
+  - Dense FFN → Sparse MoE；
+  - Router、Top-K、capacity factor；
+  - load balancing auxiliary loss；
+  - expert collapse 与路由稳定性；
+  - Expert Parallelism；
+  - DeepEP、EPLB 与专家负载均衡；
+  - MoE 的训练稳定性、通信成本与评估方法。
+- **规划交付物**：
+  - 一个小模型 Top-K MoE 层；
+  - 路由与负载均衡指标；
+  - Dense FFN 与 MoE 的同规模对照；
+  - 单机模拟与分布式专家并行示意。
+- **规划验收标准**：
+  - 能证明 token 被路由到正确专家；
+  - 能观察专家负载是否失衡；
+  - 同时报告模型质量、训练稳定性、通信与资源成本；
+  - 不把“参数量变大”直接写成“能力必然提升”。
+{{< /milestone >}}
+
+{{< milestone id="s5" code="S5" title="生产推理调度与服务化" status="planning" question="当一个请求变成成千上万个请求，推理系统怎样保持吞吐、延迟与隔离？" >}}
+- **学习内容**：
+  - continuous batching；
+  - 异步调度与 CPU/device 工作重叠；
+  - paged/bounded KV Cache 与内存管理；
+  - prefill/decode 分离；
+  - 多副本负载均衡；
+  - 流式输出、多 Session 隔离、背压与超时；
+  - DSpark、推测解码与置信度调度验证；
+  - SWA bounded replay 的适用边界。
+- **规划交付物**：
+  - 一个最小推理调度器或服务沙盘；
+  - 多请求并发与 Session 隔离实验；
+  - KV Cache 上限、背压和超时处理；
+  - 吞吐、TTFT、TPOT、P95 延迟与资源占用报告。
+- **规划验收标准**：
+  - 并发请求不会串 Session；
+  - 长请求不会无限制耗尽资源；
+  - 服务异常时有明确错误与恢复行为；
+  - 性能结论必须来自实测，不照抄官方数字。
+{{< /milestone >}}
+
+{{< milestone id="s6" code="S6" title="稳定性、确定性与综合验收" status="planning" question="系统不只要能跑，还要能证明它稳定、可复现、可诊断、可恢复。" >}}
+- **学习内容**：
+  - batch-invariant inference；
+  - deterministic sampling；
+  - structured outputs；
+  - 数值、行为、性能与分布式回归；
+  - 日志、指标、trace 与故障定位；
+  - 压测、故障注入、超时、重试与恢复；
+  - 官方参考实现对照与结论边界。
+- **规划交付物**：
+  - 第三阶段完整测试与评估报告；
+  - 一张训练/推理系统全景图；
+  - 一份 [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 对照学习总结；
+  - 一篇完整的第三阶段收官笔记。
+- **规划验收标准**：
+  - 固定条件下结果可复现；
+  - 不同 batch 组合与采样场景的差异有明确测试；
+  - 失败时能通过日志、指标和最小复现定位；
+  - 报告明确区分已实现、已测量、未覆盖和受硬件限制的部分；
+  - 不以“参考了 DeepInfer”冒充“已经达到 DeepInfer 的生产能力”。
+{{< /milestone >}}
+
+### 三、第三阶段总交付目标与“六不追求”边界
+
+- **阶段结束时应当能够回答的 6 个核心问题**：
+  1. 一个模型的训练和推理性能瓶颈如何测量？
+  2. 一个请求如何穿过推理引擎？
+  3. 一个算子为什么可能同时改变性能与浮点误差？
+  4. 多设备如何分担数据、参数、梯度和专家？
+  5. 多请求如何调度、隔离并控制 KV Cache？
+  6. 系统如何通过测试、指标和故障恢复证明自身可靠？
+- **第三阶段明确不追求的 6 件事**：
+  - 不追求从头训练一个超大模型；
+  - 不追求在当前 Mac 上强行部署 [DeepInfer](https://github.com/deepseek-ai/DeepInfer)；
+  - 不追求照搬全部生产功能；
+  - 不追求只读源码不做最小实现；
+  - 不追求只报告速度，不验证正确性；
+  - 不追求为了 roadmap 好看而提前填写成果。
+
+{{< /phase_drawer >}}
+
+---
+
+## 后续演进阶段（第四至第六阶段 · 方向与依赖）
+
+> 第四至第六阶段只保留演进方向与前置依赖，不提前拆细任务清单，也不承诺时间；**[DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html)** 作为第二至第四阶段的系统理论蓝本，按实际项目需要随时调用，无需无差别重读所有章节。
 
 {{< roadmap_progress
     id="phase-04"

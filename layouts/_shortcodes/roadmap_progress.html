@@ -42,6 +42,7 @@
 {{- $current := .Get "current" -}}
 {{- $delivered := .Get "delivered" -}}
 {{- $next := .Get "next" -}}
+{{- $planningNote := .Get "planning_note" -}}
 {{- $stepsRaw := .Get "steps" -}}
 
 {{- /* 自动从 steps 统计 done 数量，并检查是否显式指定了 next */ -}}
@@ -121,6 +122,7 @@
       {{- if $current }}<span class="roadmap-badge-done">已通关至 {{ $current }}</span>{{ end }}
       {{- if $delivered }}<span class="roadmap-badge-done">{{ $delivered }}</span>{{ end }}
       {{- if $next }}<span class="roadmap-badge-next">下一站 → {{ $next }}</span>{{ end }}
+      {{- if $planningNote }}<span class="roadmap-badge-planning">{{ $planningNote }}</span>{{ end }}
     </div>
     <div class="roadmap-console-stat">
       <strong>{{ $done }} / {{ $total }}</strong> {{ $unit }} <span>({{ $pct }}%)</span>

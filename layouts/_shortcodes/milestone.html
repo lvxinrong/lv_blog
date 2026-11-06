@@ -13,11 +13,12 @@
 {{- $title := .Get "title" -}}
 {{- $status := .Get "status" | default "todo" -}}
 {{- $date := .Get "date" -}}
+{{- $question := .Get "question" -}}
 {{- $n1Title := .Get "note1_title" -}}
 {{- $n1Url := .Get "note1_url" -}}
 {{- $n2Title := .Get "note2_title" -}}
 {{- $n2Url := .Get "note2_url" -}}
-{{- $statusLabel := dict "done" "✓ 已验收" "next" "◎ 下一站" "todo" "待开工" "optional" "可选支线" -}}
+{{- $statusLabel := dict "done" "✓ 已验收" "next" "◎ 下一站" "todo" "待开工" "planning" "规划中" "optional" "可选支线" -}}
 <article class="ms-card is-{{ $status }}" id="{{ $id }}">
   <header class="ms-card-head">
     <div class="ms-card-title-wrap">
@@ -33,6 +34,12 @@
     </div>
     {{- end }}
   </header>
+  {{- with $question }}
+  <div class="ms-question">
+    <span class="ms-question-label">核心问题</span>
+    <span class="ms-question-text">{{ . }}</span>
+  </div>
+  {{- end }}
   <div class="ms-card-body">
     {{ .Inner | .Page.RenderString (dict "display" "block") }}
   </div>

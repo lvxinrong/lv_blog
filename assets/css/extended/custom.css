@@ -3355,15 +3355,77 @@ details.toc a.is-active {
     transform: translateY(-1px);
 }
 
-.ms-card-body ul {
+.ms-card.is-planning {
+    border-style: dashed;
+    border-left-style: solid;
+    border-left-color: color-mix(in srgb, var(--secondary) 55%, var(--border));
+}
+
+.ms-card.is-planning .ms-status {
+    background: var(--page-bg);
+    border: 1px dashed var(--border);
+    color: var(--secondary);
+}
+
+.ms-question {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin: 0 0 12px;
+    padding: 9px 13px;
+    border-radius: 8px;
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid color-mix(in srgb, var(--series, var(--accent)) 60%, var(--border));
+    font-size: 14.5px;
+    line-height: 1.6;
+}
+
+.ms-question-label {
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--secondary);
+}
+
+.ms-question-text {
+    min-width: 0;
+    font-weight: 650;
+    color: var(--primary);
+    overflow-wrap: break-word;
+}
+
+.roadmap-badge-planning {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    border: 1px dashed var(--border);
+    color: var(--secondary);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ms-card-body ul,
+.ms-card-body ol {
     margin: 0;
-    padding-inline-start: 1.2rem;
+    padding-inline-start: 1.25rem;
 }
 
 .ms-card-body li {
     margin-top: 0.35rem;
     font-size: 15px;
     line-height: 1.68;
+    overflow-wrap: break-word;
 }
 
 .ms-card-body p:last-child {
@@ -3382,6 +3444,11 @@ details.toc a.is-active {
 
     .ms-card {
         padding: 15px 15px 14px;
+    }
+
+    .ms-question {
+        padding: 8px 11px;
+        font-size: 14px;
     }
 }
 
@@ -3778,8 +3845,9 @@ details.toc a.is-active {
     background: rgba(52, 211, 153, 0.10);
 }
 
-/* 已完成阶段的里程碑折叠抽屉（把首屏让给正在进行的阶段） */
-.roadmap-console.is-phase-done:has(+ .roadmap-phase-drawer) {
+/* 已完成阶段的里程碑折叠抽屉（把首屏让给正在进行的阶段）与规划阶段的折叠抽屉 */
+.roadmap-console.is-phase-done:has(+ .roadmap-phase-drawer),
+.roadmap-console.is-phase-planning:has(+ .roadmap-phase-drawer) {
     margin-bottom: 10px;
 }
 
@@ -3789,6 +3857,10 @@ details.toc a.is-active {
     border-radius: 11px;
     background: color-mix(in srgb, var(--entry) 75%, var(--code-bg));
     overflow: hidden;
+}
+
+.md-content details.roadmap-phase-drawer.is-planning {
+    border: 1px dashed var(--border);
 }
 
 .roadmap-phase-drawer-summary {
@@ -3819,6 +3891,11 @@ details.toc a.is-active {
     color: #34d399;
 }
 
+details.roadmap-phase-drawer.is-planning > .roadmap-phase-drawer-summary:hover {
+    background: var(--code-bg);
+    color: var(--series, var(--accent));
+}
+
 .roadmap-phase-drawer-hint::after {
     content: attr(data-close-text);
     font-family: var(--font-mono);
@@ -3830,6 +3907,10 @@ details.toc a.is-active {
 
 [data-theme="dark"] .roadmap-phase-drawer-hint::after {
     color: #34d399;
+}
+
+details.roadmap-phase-drawer.is-planning .roadmap-phase-drawer-hint::after {
+    color: var(--secondary);
 }
 
 details.roadmap-phase-drawer[open] .roadmap-phase-drawer-hint::after {

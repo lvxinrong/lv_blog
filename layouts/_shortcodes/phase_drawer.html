@@ -8,7 +8,8 @@
 */ -}}
 {{- $summary := .Get "summary" | default "展开本阶段里程碑验收明细" -}}
 {{- $open := eq (.Get "open") "true" -}}
-<details class="roadmap-phase-drawer"{{ if $open }} open{{ end }}>
+{{- $variant := .Get "variant" -}}
+<details class="roadmap-phase-drawer{{ with $variant }} is-{{ . }}{{ end }}"{{ if $open }} open{{ end }}>
   <summary class="roadmap-phase-drawer-summary">
     <span class="roadmap-phase-drawer-label">{{ $summary }}</span>
     <span class="roadmap-phase-drawer-hint" data-open-text="收起明细 ▴" data-close-text="展开明细 ▾"></span>
