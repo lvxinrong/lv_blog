@@ -1,10 +1,16 @@
 +++
 title = "手搓 LLM 笔记 17：让 model_v3 承接 Qwen2.5"
 date = 2026-11-05T16:34:29+08:00
+lastmod = 2026-11-06T13:13:15+08:00
 draft = false
 slug = "llm-17-model-v3-qwen"
 tags = ["LLM", "I0", "model_v3", "Qwen2.5", "学习笔记"]
-summary = "一天完成 RMSNorm、SwiGLU、GQA、RoPE 与 KV Cache 整合，承接 Qwen2.5 Base 和 Instruct；从多轮对话异常一路排查到官方参考实现对照，记录已验证的结论与尚未跨过的边界。"
+summary = "从 RMSNorm、SwiGLU、GQA、RoPE 与 KV Cache 整合，到 Qwen2.5 Base / Instruct、官方 logits 对齐和 46 项全量回归，完整记录 I0 的落地、排错与收官边界。"
+[cover]
+    image = "covers/llm-17-model-v3-qwen.jpg"
+    alt = "手搓 LLM 笔记 17：让 model_v3 承接 Qwen2.5"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 > 今天做的不只是“把 Qwen 跑起来”。更重要的是：每换一个组件，都要知道自己改变了什么；每次模型表现异常，都要先把问题边界缩小，再决定修哪里。
@@ -588,6 +594,146 @@ model_v3 接入 Qwen2.5-0.5B-Instruct 后，单轮回答和 `<|im_end|>` 停止�
 
 因此，原来的错误更符合“模糊提问触发了小模型的自我介绍”，而不是 Server 丢失 history，也不能据此宣称当前模型完全不具备多轮回忆能力。反向结论同样不能扩大：一次明确提问通过，不代表所有自由提问形式都已稳定，更不代表两个实现已经逐 token 等价。
 
+### I0 数值对齐补充（2026-11-06）
+
+昨天只比较了生成文本，今天继续把实验往前推进一步：**不调用 `generate()`，直接比较相同 input_ids 经过两套模型实现后得到的原始 logits。**
+
+测试固定使用 CPU、float32、本地缓存权重和相同 tokenizer，避免网络、设备和数据类型引入额外变量。基础回归断言为：
+
+```python
+torch.testing.assert_close(
+    our_logits,
+    official_logits,
+    rtol=0.0,
+    atol=1e-4,
+)
+```
+
+这里 `rtol=0` 表示不额外放大数据量带来的相对容差，只要求所有元素的绝对误差不超过 `1e-4`。
+
+#### 三组输入的完整前向对照
+
+在官方默认 attention 路径下，三组输入的 top-1 next token 都一致，绝对误差也都在 `1e-4` 内：
+
+| 输入类型 | token 数 | 最大绝对误差 | 平均绝对误差 |
+|---|---:|---:|---:|
+| 中文自我介绍 | 8 | `4.3869e-05` | `4.8585e-06` |
+| 英文常识开头 | 5 | `5.8174e-05` | `6.8113e-06` |
+| Python 代码片段 | 11 | `7.5340e-05` | `6.5186e-06` |
+
+最大值与平均值相差约一个数量级并不矛盾。平均值来自整段输入的全部 logits，最大值只取其中误差最大的一个元素。它说明大多数元素非常接近，少数元素误差稍大；是否严重仍要看最大误差的绝对量级，而不是只看两者的倍数。
+
+#### 124-token 多轮 prompt 暴露了 SDPA 数值差异
+
+完整 chat template 包含两轮历史，共 124 个 token。使用官方默认 attention 路径时，测试没有通过 `atol=1e-4`：
+
+```text
+logits 总数：18,840,064
+超出阈值的元素：45,350（约 0.2%）
+最大绝对误差：0.0003409385681152344
+```
+
+这次失败不能立刻解释成模型结构错误，也不应该通过随手放宽阈值来消除。下一步只改变一个变量：将官方模型显式指定为 eager attention。
+
+```python
+official_model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    dtype=torch.float32,
+    local_files_only=True,
+    attn_implementation="eager",
+)
+```
+
+改为 eager 后，同一组输入得到：
+
+```text
+max abs difference = 0.0
+mean abs difference = 0.0
+两边 next token = 20002（用户）
+```
+
+这说明此前的微小差异来自官方默认 SDPA 与手写 attention 的数值路径，而不是 tokenizer、权重映射或 model_v3 的结构错误。
+
+#### SDPA 与 eager 的区别
+
+SDPA 是 **Scaled Dot-Product Attention（缩放点积注意力）**，是 PyTorch 提供的统一、优化过的注意力计算接口。它与手写 attention 使用相同的数学过程：
+
+```text
+Q × Kᵀ → 缩放 → causal mask → softmax → × V
+```
+
+区别在于具体执行路径：
+
+```text
+eager：逐个执行 matmul、缩放、mask、softmax、matmul
+SDPA：交给 PyTorch 统一算子，由设备和后端选择优化实现
+```
+
+数学公式相同，不代表浮点计算顺序、融合方式和舍入结果一定相同。输入越长，微小差异也可能越明显。SDPA 也不等于 FlashAttention；后者只是某些环境下可能被选择的后端技术之一。
+
+因此，严格数值对齐时固定 `attn_implementation="eager"` 不是为了强行让测试变绿，而是为了让官方参考实现与自实现走同一条明确的计算路径。
+
+#### 为什么采样随机性不影响这次“零误差”
+
+当前 logits 测试没有调用 `generate()`、`generate_text()`、`sample_next()` 或 `torch.multinomial()`，只做：
+
+```text
+固定 input_ids → 模型前向计算 → 比较原始 logits
+```
+
+temperature、top-k 和随机采样都发生在 logits 已经算出之后，不会反过来改变这次前向结果。两边又都处于 `eval()`，Dropout 不生效，因此在输入、权重、CPU、float32 和 eager 计算路径全部一致时，得到 `0.0` 是合理的。
+
+即使使用 greedy decoding，也只是去掉了随机采样，不能自动消除 SDPA 的数值差异。一旦某一步 argmax 因微小误差选择了不同 token，后续自回归生成还可能继续分叉。
+
+所以这项“零误差”的准确边界是：**固定 124-token 多轮 prompt 下，model_v3 与官方 eager 实现的完整前向 logits 完全一致。**它还不能自动覆盖 KV Cache 增量解码，因此随后单独增加了 cache 对照。
+
+#### KV Cache 增量解码对照
+
+cache 测试先比较 prefill 后第 0 层和第 23 层的 K/V，再连续进行三次单 token decode。两边使用相同权重、CPU、float32 和 eager attention，每一步都从官方 logits 取确定性的 argmax，并把同一个 next token 喂给两个实现。
+
+结果为：
+
+```text
+prefill：max abs difference = 0.0
+cache decode step 1：max abs difference = 0.0，cache length = 8
+cache decode step 2：max abs difference = 0.0，cache length = 9
+cache decode step 3：max abs difference = 0.0，cache length = 10
+每一步两边 next token 均一致
+```
+
+这里必须区分直接证据与组合证据：
+
+- prefill 的 K/V 相同，只直接证明 `past_len=0` 时的 Value 投影、Key 投影与 Key 的 RoPE 一致，不能单独证明非零 `past_len`；
+- cache length 按 8 → 9 → 10 增长，直接证明每轮长度增加 1，不等于每一步的全部拼接内容都被单独比较；
+- 三个不同历史长度下，最终全量 logits 都与官方一致，为 `past_len → position_ids → Q/K RoPE → attention → logits` 提供强组合证据，但不是对每个内部变量的独立观测；
+- `q_len=1` 时只有历史和当前 token，没有未来 token，因此 `mask_bool=None` 在因果定义上成立；三次 decode 与官方一致提供了行为证据，但不是直接比较 attention weights。
+
+当前 cache 对照仍不覆盖 `q_len>1 且 past_len>0` 的分块追加，也不覆盖 temperature、top-k 随机采样或所有可能输入。**组合行为一致与每个组件被独立证明，是两件事。**
+
+#### 固定行为回归与全量收官
+
+随后补了两组真实 model_v3 行为回归：
+
+- 三轮对话后，模型能正确回答“用户叫吕炘嵘，用户喜欢写代码，正在学习大模型”，且不再出现角色错位和模板标记泄漏；
+- Python 偶数筛选代码的解释完整，包含 `find_even_numbers`、执行过程与最终输出 `偶数列表： [2, 4, 6]`；`max_new_tokens=512` 覆盖了此前的长回答截断场景。
+
+最终回归分组结果：
+
+```text
+Qwen 专项：7 passed
+基础与旧模型快速回归：24 passed
+本地模型评估：7 passed
+本地慢训练：4 passed
+DeepSeek 外部评估：4 passed
+合计：46 passed，0 failed
+```
+
+分类微调测试曾出现一次 `train_losses[-1] < train_losses[0]` 失败。代码审查发现测试没有固定随机种子，并且训练/验证共用带 shuffle 的 loader，每次只抽两个 batch 计算 loss，导致评估值不完全可比。
+
+修复只针对测试的可复现性：增加 `torch.manual_seed(123)`，并将 `eval_iter` 改为 `None` 以覆盖全部玩具样本。训练逻辑与 loss 下降断言均保留，修改后测试通过。没有通过删除断言或随意增加训练轮数来消除红灯。
+
+因此，I0 的“全量回归通过”指当前测试套件中的 46 个固定用例全部通过，不代表任意输入、任意设备和任意生成长度都已经得到数学意义上的完全证明。
+
 ## 十三、训练准备：只盘点语料，尚未开始 midtrain
 
 今天还盘点了后续中文 midtrain 可能使用的语料：
@@ -643,15 +789,101 @@ src/squid/model/v3_modern/
 - Instruct 结构核对、权重加载和单轮生成；
 - Qwen chat template 与多轮 history 组装；
 - Chat Server 的真实浏览器多轮调用，以及明确提问下的上下文回忆；
-- 自实现与官方参考实现的同输入对照。
+- 中文、英文、代码输入的官方 logits 容差对照，以及 124-token 多轮 prompt 在官方 eager 路径下的全量 logits 零误差对齐；
+- prefill 与连续三次单 token cache decode 的官方 eager 零误差对照；
+- 固定多轮回忆、代码解释回归和当前测试套件全量 `46 passed`；
+- 自实现与官方参考实现的同输入生成对照。
 
 不能写成已经完成：
 
-- 自实现与官方实现逐 token 或 logits 完全一致；
+- 任意输入与 KV Cache 增量生成全程的逐 token / logits 完全一致；
 - 当前 0.5B Instruct 在任意自然提问下都能稳定完成多轮回忆；
-- 全量慢回归全部通过；
+- 训练吞吐、KV 实际占用与 BPB 对照（已分别移交 I1 / I2 / I3）；
 - 中文 midtrain 已经开始或取得效果；
 - Qwen3、MoE 或其他尺寸模型的兼容。
+
+### 收官复盘：知道怎么做，更要知道做得对不对
+
+**写出 LLM 很重要，知道怎么测试和评估同样重要。前者让我知道怎么做，后者让我知道做得对不对、为什么对，以及结论的边界在哪里。**
+
+模型能运行，不代表实现正确；输出像话，不代表能力可靠；一次测试通过，也不代表任意场景都稳定。今天的测试不是为了得到好看的 `46 passed`，而是建立一条从数学计算到真实行为的证据链。
+
+#### 1. 先比较确定性 logits，再进入生成
+
+固定 tokenizer、input_ids、权重、CPU、float32 和 `eval()`，直接比较：
+
+```python
+our_logits = our_model(input_ids)
+official_logits = official_model(input_ids).logits
+```
+
+这一步隔离了 temperature、top-k 和随机采样。如果固定输入下的原始 logits 都有明显差异，就先检查模型结构、权重映射和计算顺序，而不是从最终文本里猜测原因。
+
+最小中文输入先建立基线，再扩展英文、代码和完整 chat template，是为了避免“某一个句子刚好通过”的偶然性。每组输入通过，也只代表该组输入得到覆盖，不代表所有文本。
+
+#### 2. 官方实现是参考对照组，不是标准答案
+
+官方实现可以帮助我们区分“自实现错误”和“模型能力问题”，但官方模型自己也可能答错。
+
+因此，对照实验必须固定输入、权重、dtype 和解码方式，只改变实现。官方默认 SDPA 与手写 attention 出现微小误差时，没有直接放宽阈值，而是只切换到 eager 路径，最终得到全量 logits 零误差。
+
+这个过程的价值不只是让测试通过，而是找到了差异来自哪条计算路径。
+
+#### 3. KV Cache 要单独覆盖增量路径
+
+完整前向覆盖 `q_len>1、past_len=0`，真实生成则大量使用 `q_len=1、past_len>0`。两者的 RoPE 位置、cache 拼接和 mask 逻辑不同，不能只测其中一个。
+
+cache 测试先比较 prefill 后两层的 K/V，再连续三次把相同的 argmax next token 喂给两边，比较每一步的全量 logits。这样既避免生成轨迹分叉，也覆盖了三个不同的历史长度。
+
+同时必须诚实地区分证据：
+
+- K/V 在 prefill 时相同，不能单独证明非零 `past_len`；
+- cache 长度每轮加 1，只直接证明长度变化；
+- 最终 logits 一致，为 `past_len → RoPE → cache → attention` 提供强组合证据，但不等于每个内部变量都被独立证明；
+- `q_len=1` 没有未来 token，`mask=None` 在因果定义上成立，但输出一致不等于直接比较了 attention weights。
+
+**测试通过和测试覆盖完整，是两件事。**
+
+#### 4. 数值一致之后，还要验证真实行为
+
+多轮行为回归经过完整的 `ChatSession → history → chat template → model_v3 → KV Cache → 回答清理`，检查姓名、爱好、学习内容、角色错位和模板标记泄漏。
+
+断言不要求整段回答逐字相同，而是检查必须包含的信息和已知错误。这样既验证真实目标，也避免把正常的措辞差异当成失败。
+
+代码解释回归则使用 `max_new_tokens=512`，覆盖此前暴露的长回答截断场景，并要求最终输出 `[2, 4, 6]` 真正出现。
+
+这些固定场景证明“当前代表性需求通过”，不证明任意自然提问或任意代码都已稳定。
+
+#### 5. 每个断言回答的问题不同
+
+- `shape`：输出结构是否一致，不检查数值内容；
+- `torch.isfinite()`：是否出现 NaN 或无穷，不证明结果正确；
+- `assert_close()`：数值是否在明确容差内；
+- `argmax` top-1：最终 next-token 选择是否一致；
+- `max / mean`：分别观察最严重误差与整体误差水平；
+- 行为断言：最终链路是否满足用户真正关心的要求。
+
+本次 `rtol=0、atol=1e-4` 表示只看绝对误差，不因参考 logit 较大而额外放宽标准。top-1 与全量 logits 断言互补，不能互相替代。
+
+#### 6. 回归测试还要控制自己的噪声
+
+分类测试第一次失败时，没有删除 loss 下降断言，也没有盲目增加训练轮数。代码审查发现无随机种子、shuffle loader 和随机两个 batch 评估让测量不完全可比。
+
+增加固定种子并使用全部玩具样本评估后，原断言保留且通过。修复的是实验的可复现性，不是把红灯藏起来。
+
+最终 `46 passed` 表示当前代码、权重、数据和环境下的 46 个固定用例全部通过，旧能力没有在这些用例上回归。它不表示所有可能的输入、设备、生成长度和模型能力都已被证明。
+
+以后每完成一个里程碑，除了问“功能实现了吗”，还应该继续问：
+
+```text
+我用什么证据证明它正确？
+这个测试直接观测了什么？
+哪些结论只是组合行为的间接证据？
+哪些重要场景没有覆盖？
+失败后能否通过控制变量缩小问题边界？
+```
+
+能写出模型，是把想法变成代码；能测试和评估模型，是把“我觉得它对”变成“我知道它在哪些条件下、以什么证据成立”。后者同样是从零构建大模型不可缺少的一部分。
 
 今天最值得留下的，不只是 Qwen 终于在自己的模型里说话了，而是这条更通用的工程方法：
 
