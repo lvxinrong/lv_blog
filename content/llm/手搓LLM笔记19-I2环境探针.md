@@ -714,5 +714,9 @@ compile 中位数相对 eager 基线约提升 **7.27%**，是当前第一个看�
 - 性能收益必须与正确性、内存和额外代价一起评估；
 - 当前结果只适用于已经列明的硬件、模型和测量配置。
 
-最终相关回归需要单独确认，不能因为这里每个实验运行成功，就提前写成“16 项收官回归已通过”。Windows + RTX 4070 Ti 的 CUDA 番外也仍是后续计划，尚未产生实测结果。
+最终相关回归已于 2026-11-10 执行：**16 passed in 33.02s**。覆盖 Qwen 专项、SDPA 对照、Activation Checkpointing 的 logits/梯度对照、Markdown 清洗、token store 与 memmap Dataset，不调用外部评估 API。它证明当前改动通过了已有相关回归，但不等于所有性能验收项都已完成。
+
+Windows + RTX 4070 Ti 的 CUDA 番外仍是后续计划，尚未产生实测结果。
+
+经确认，I2 主线于 2026-11-10 按当前 Mac/MPS 实验范围收官；MFU、峰值显存与经典 GPT-2 / model_v3 训练吞吐对照移至 Windows + RTX 4070 Ti 番外，不把未测指标写成已完成。
 
