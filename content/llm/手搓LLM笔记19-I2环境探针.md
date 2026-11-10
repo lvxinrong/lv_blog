@@ -1,7 +1,7 @@
 +++
 title = "手搓 LLM 笔记 19：I2，训练加速与显存压榨"
 date = 2026-11-10T14:55:19+08:00
-draft = true
+draft = false
 slug = "llm-19-i2-environment-probe"
 tags = ["LLM", "I2", "PyTorch", "AMP", "SDPA", "torch.compile", "Activation Checkpointing", "学习笔记"]
 summary = "从 Mac/MPS 环境探针，到 FP32/FP16/BF16、SDPA、torch.compile 与 Activation Checkpointing 的重复对照实验；同时记录正确性、吞吐、内存和结论边界。"
