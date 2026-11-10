@@ -5,6 +5,11 @@ draft = false
 slug = "llm-19-i2-environment-probe"
 tags = ["LLM", "I2", "PyTorch", "AMP", "SDPA", "torch.compile", "Activation Checkpointing", "学习笔记"]
 summary = "从 Mac/MPS 环境探针，到 FP32/FP16/BF16、SDPA、torch.compile 与 Activation Checkpointing 的重复对照实验；同时记录正确性、吞吐、内存和结论边界。"
+[cover]
+    image = "covers/llm-19-i2-environment-probe.jpg"
+    alt = "手搓 LLM 笔记 19：I2，训练加速与显存压榨"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 > I2 不直接从修改训练代码开始。优化之前先确认当前设备究竟支持什么，避免把 CUDA 教程里的能力直接套到 Mac/MPS 上。
@@ -49,7 +54,7 @@ def run_probe(function):
 
 它接收一个可调用对象，在内部真正执行，并统一整理成功或失败结果。
 
-这是一种**高阶函数（Higher-order Function）**的用法：函数接收另一个函数作为参数。也可以把它看成一个手写 wrapper（包装器），有点类似 Java/AOP 里的环绕通知，但这里不需要引入框架。
+这是一种**高阶函数**（Higher-order Function）的用法：函数接收另一个函数作为参数。也可以把它看成一个手写 wrapper（包装器），有点类似 Java/AOP 里的环绕通知，但这里不需要引入框架。
 
 它解决了两个问题：
 
@@ -189,7 +194,7 @@ run_probe(sdpa_probe()) # 先执行，再把结果传进去
 device=device
 ```
 
-这里没有显式给 `sdpa_probe()` 传 `device`，是因为内部函数可以读取外层函数作用域中的变量。这属于**闭包（closure）**的使用。
+这里没有显式给 `sdpa_probe()` 传 `device`，是因为内部函数可以读取外层函数作用域中的变量。这属于**闭包**（closure）的使用。
 
 它不是 Python 自动推断参数，也不是自动注入；只是函数沿作用域找到了外层已经定义的 `device`。
 

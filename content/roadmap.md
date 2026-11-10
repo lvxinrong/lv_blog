@@ -10,7 +10,7 @@ hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 3/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨，下一站 I3；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 3/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（Mac/MPS 主线），下一站为 I2 番外（Windows + RTX 4070 Ti CUDA 对照复测，随后推进 I3）；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 3/6 (I0、I1、I2 已完成，下一站 I3) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 3/6 (I0～I2 已完成，下一站 I2 番外) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
@@ -39,7 +39,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I2 · 训练加速与显存压榨（I0、I1 已完成）"
+    next="第二阶段 I2 番外 · Windows + RTX 4070 Ti CUDA 对照复测（I0～I2 主线已完成）"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -114,8 +114,8 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="6"
     current="I2 · 训练加速与显存压榨（2026-11-10 已完成）"
     delivered="I0 模型承接、I1 数据管线与 I2 训练优化已交付；I2 完成 AMP / SDPA / compile / checkpointing 对照与 16 项收官回归"
-    next="第二阶段 I3 · 高性能推理与服务引擎（量化 / 投机解码 / 流式 Serving）"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:next, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
+    next="第二阶段 I2 番外 · Windows + RTX 4070 Ti CUDA 对照复测（随后推进 I3）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i2-windows:I2 番外:RTX4070Ti复测:next, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
 ## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
@@ -165,7 +165,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **边界与后续对照**：当前结果仅适用于 Mac/MPS、小模型和已记录的测量配置；MFU、峰值显存与经典 GPT-2 / model_v3 训练吞吐对照经确认移至下方 Windows + RTX 4070 Ti 番外，不在 Mac 上虚构指标。
 {{< /milestone >}}
 
-{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="optional" status_label="计划 · 未开始（非主线阻塞）" sub="true" date="2026-11-11 计划" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
+{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="next" status_label="◎ 下一站 · 计划未开始（非主线阻塞）" sub="true" date="2026-11-11 计划" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
 - **复测范围**（使用同一代码版本、同一模型配置、同一份 token 数据，并保持相同 `batch size`、`context length`、`warmup` 和测量步数）：
   1. `FP32 / FP16 / BF16`（AMP）对照；
   2. `eager / SDPA` 对照；
@@ -249,7 +249,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 1. **先完成第二阶段 `I0～I3` 的相关基础**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
-   - 训练加速与资源核算（`I2` 待完成）；
+   - 训练加速与资源核算（`I2` Mac/MPS 主线已完成，见[笔记 19](/llm/llm-19-i2-environment-probe/)；RTX 4070 Ti 番外待复测）；
    - KV Cache、量化、投机解码和基础推理指标（`I3` 待完成）。
 2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
 3. **实验环境**：准备 Linux GPU 实验环境后再开展真实多卡与底层算子实验。
@@ -487,5 +487,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）已交付，后续推进 `I2～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证训练吞吐与推理服务。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨）已交付，下一站完成 `I2 番外`（Windows + RTX 4070 Ti CUDA 对照复测）后推进 `I3～I5`，继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I6、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
