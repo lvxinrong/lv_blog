@@ -114,7 +114,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="6"
     current="I1 · 工业数据工程与流式 IO（2026-11-10 已完成）"
     delivered="I0 模型承接与 I1 数据管线已交付；I1 完成 38+2 文档隔离、uint32 token store、memmap、训练冒烟与 BPB / Scaling 基线"
-    next="第二阶段 I2 · 训练加速与显存压榨（AMP / FlashAttention / Compile）"
+    next="第二阶段 I2 · 训练加速与显存压榨（主线收官中；另有 RTX 4070 Ti 番外计划）"
     steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:next, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
@@ -153,7 +153,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **边界与后续扩展**：本次为自有博客的小语料最小闭环；GB 级实测、多源语料配比、MinHash 近似去重、清洗前后及 GPT-2 / model_v3 的完整 BPB 对照留待真实数据需求与后续实验，不作为当前阻塞项。
 {{< /milestone >}}
 
-{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + FlashAttention + Compile）" status="next" >}}
+{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + FlashAttention + Compile）" status="next" status_label="◎ 下一站 · 主线收官中" >}}
 - **进化部位**：改造 `squid/train/` 与注意力算子
 - **装备升级**：
   1. **BF16 自动混合精度（AMP）** 实战落地，对比 FP32 / FP16 / BF16 的动态范围、吞吐与显存账本；
@@ -161,6 +161,22 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   3. 激活重计算（Activation Checkpointing）用算力换显存，把单卡可训上下文窗口与 batch size 推到极限。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 3 章（混合精度与算术强度）+ 第 6～7 章（GPU 架构与算子优化）+ 作业 3
 - **待完成验收（含 I0 拆出的训练吞吐对照）**：产出单卡训练 MFU（算力利用率）、峰值显存与 tokens/sec 的前中后三档实测表，并完成经典 GPT-2 与 `model_v3` 在同数据、同训练配置下的**训练吞吐对照**
+{{< /milestone >}}
+
+{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="optional" status_label="计划 · 未开始（非主线阻塞）" sub="true" date="2026-11-11 计划" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
+- **复测范围**（使用同一代码版本、同一模型配置、同一份 token 数据，并保持相同 `batch size`、`context length`、`warmup` 和测量步数）：
+  1. `FP32 / FP16 / BF16`（AMP）对照；
+  2. `eager / SDPA` 对照；
+  3. `torch.compile` 对照；
+  4. `Activation Checkpointing` 对照。
+- **环境记录与验收指标**：
+  - **环境记录**：Windows 原生还是 WSL2、GPU 型号（RTX 4070 Ti）、驱动版本、PyTorch 版本、CUDA 版本，以及关键算子和 FlashAttention 的真实支持情况；
+  - **验收指标**：`tokens/s`、当前显存与峰值显存、loss 与行为正确性、首次编译成本与稳态吞吐，以及与 Mac/MPS 结果的并列对照。
+- **边界与约束**：
+  - 不预设 FlashAttention 或所有 CUDA 算子一定可用，以实际环境探针为准；
+  - 不把 Mac/MPS 的结果推广为通用结论，也不把“参考 CUDA 优化”写成“已经达到生产级性能”；
+  - 不修改实验条件来追求更好看的数字；Mac 与 Windows 报告分别保存，不互相覆盖；
+  - 番外不是当前主线阻塞项，不计入主线完成度；未实际运行前不显示性能数据，不标记为已完成（`done`）。
 {{< /milestone >}}
 
 {{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="todo" >}}

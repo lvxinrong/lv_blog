@@ -12,6 +12,8 @@
 {{- $code := .Get "code" -}}
 {{- $title := .Get "title" -}}
 {{- $status := .Get "status" | default "todo" -}}
+{{- $statusText := .Get "status_label" -}}
+{{- $sub := eq (.Get "sub") "true" -}}
 {{- $date := .Get "date" -}}
 {{- $question := .Get "question" -}}
 {{- $n1Title := .Get "note1_title" -}}
@@ -19,12 +21,12 @@
 {{- $n2Title := .Get "note2_title" -}}
 {{- $n2Url := .Get "note2_url" -}}
 {{- $statusLabel := dict "done" "✓ 已验收" "next" "◎ 下一站" "todo" "待开工" "planning" "规划中" "optional" "可选支线" -}}
-<article class="ms-card is-{{ $status }}" id="{{ $id }}">
+<article class="ms-card is-{{ $status }}{{ if $sub }} is-subcard{{ end }}" id="{{ $id }}">
   <header class="ms-card-head">
     <div class="ms-card-title-wrap">
       <span class="ms-code">{{ $code }}</span>
       <h3 class="ms-title">{{ $title }}</h3>
-      <span class="ms-status">{{ index $statusLabel $status | default $status }}</span>
+      <span class="ms-status">{{ $statusText | default (index $statusLabel $status | default $status) }}</span>
       {{- with $date }}<time class="ms-date">{{ . }}</time>{{ end }}
     </div>
     {{- if or $n1Url $n2Url }}
