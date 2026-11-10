@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-06T13:13:15+08:00
+lastmod = 2026-11-10T13:05:02+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 1/6）已完成 I0 现代架构与 Qwen2.5 承接，下一站 I1；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 2/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO，下一站 I2；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 1/6 (I0 已完成，下一站 I1) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 2/6 (I0、I1 已完成，下一站 I2) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
@@ -110,12 +110,12 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
     rules="装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 承接现代架构与 Qwen 权重，并按 I0～I6 逐件升级数据、训练、推理与后训练"
-    done="1"
+    done="2"
     total="6"
-    current="I0 · 现代架构与模型承接（2026-11-06 已完成）"
-    delivered="已完成 model_v3、Qwen2.5 Base/Instruct、Chat Server 与本地实验台（全量 46 passed）"
-    next="第二阶段 I1 · 工业数据工程与流式 IO"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:next, i2:I2:训练与算子加速:todo, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
+    current="I1 · 工业数据工程与流式 IO（2026-11-10 已完成）"
+    delivered="I0 模型承接与 I1 数据管线已交付；I1 完成 38+2 文档隔离、uint32 token store、memmap、训练冒烟与 BPB / Scaling 基线"
+    next="第二阶段 I2 · 训练加速与显存压榨（AMP / FlashAttention / Compile）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:next, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
 ## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
@@ -142,14 +142,15 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 4 章（现代 Transformer 架构演进）+ 作业 2
 {{< /milestone >}}
 
-{{< milestone id="i1" code="I1" title="工业数据工程与流式 IO（Data Pipeline & Scaling）" status="next" >}}
+{{< milestone id="i1" code="I1" title="工业数据工程与流式 IO（Data Pipeline & Scaling）" status="done" date="2026-11-10" note1_title="笔记 18：I1，让语料从文本流向可训练数据" note1_url="/llm/llm-18-i1-data-pipeline/" >}}
 - **进化部位**：改造 `squid/data/` 与 `squid/tokenizer/`
-- **装备升级**：
-  1. **语料工程管线**：网页/长文清洗、启发式质量过滤、MinHash 去重与多源语料配比；
-  2. **内存映射流式加载（`np.memmap`）**：告别 `read_text()` 全量塞内存，支持 GB 级语料零拷贝随机切片；
-  3. **分词器热路径提速**与 Chinchilla **Scaling Laws** 最优“参数量 vs Token 数”配比测算。
+- **已完成成果**：
+  1. **可追溯语料管线**：建立 42 条源文档清单与类型区分，保留 39 篇 article + 1 篇 profile 为 40 个候选，固定 38 条训练候选与 2 篇 held-out；最小 Markdown 清洗通过 `5 passed`；
+  2. **JSONL 与 uint32 token store**：一行一篇文档，标题 + 正文进入编码，逐篇追加 EOS，记录正文与实际编码文本 hash、offset 和 length；生成 train `117,890` tokens、held-out `5,485` tokens；
+  3. **memmap 按需读取**：token 二进制与旧 `pack_tokens()` 逐元素一致，新旧 Dataset 在 stride 64/128 下样本一致；同输入 117,890 tokens、921 窗口时，Python 当前分配由旧版 `2,004,496` bytes 降为 memmap `1,766` bytes；
+  4. **训练与指标基线**：完成 5 步小模型训练、checkpoint 保存重载与前向一致性；算出 held-out 冒烟 `BPB=4.9495`，完成参数量、token 量与 Chinchilla 参考基线测算。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 2 章（分词器进阶）+ 第 11 章（数据工程）+ 第 9 章（Scaling Laws）+ 作业 1 & 作业 5
-- **待完成验收（含 I0 拆出的 BPB 对照）**：内存占用与语料总体积脱钩（恒定低内存跑大语料），给出清洗前后同模型 BPB，以及经典 GPT-2 与 `model_v3` 在同语料上的 **BPB 对照**
+- **边界与后续扩展**：本次为自有博客的小语料最小闭环；GB 级实测、多源语料配比、MinHash 近似去重、清洗前后及 GPT-2 / model_v3 的完整 BPB 对照留待真实数据需求与后续实验，不作为当前阻塞项。
 {{< /milestone >}}
 
 {{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + FlashAttention + Compile）" status="todo" >}}
