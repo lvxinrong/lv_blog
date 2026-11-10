@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "craft/面试300场之后.md",
+                "file": "llm/手搓LLM笔记18-I1数据管线.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "面试300场之后"
+              "title": "手搓LLM笔记18-I1数据管线"
             }
           }
         ]
@@ -187,6 +187,7 @@
   },
   "active": "3ead6be47698c010",
   "lastOpenFiles": [
+    "craft/面试300场之后.md",
     "ai/AI时代下程序员何去何从.md",
     "llm/手搓LLM笔记17-model_v3承接Qwen.md",
     "llm/手搓LLM笔记16-M6对话界面.md",
@@ -213,7 +214,6 @@
     "llm/手搓LLM笔记07-3-LoRA剂量实验.md",
     "llm/手搓LLM笔记07-2-换底座.md",
     "llm/手搓LLM笔记05-预训练与生成.md",
-    "llm/手搓LLM笔记04-GPT架构拼装.md",
     "llm/llm-05-a4-generate.jpg",
     "llm/llm-05-a4-calc-loss-batch.jpg",
     "llm/llm-11-structured-sparsity.png",

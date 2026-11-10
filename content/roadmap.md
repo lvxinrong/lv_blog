@@ -39,7 +39,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I1 · 工业数据工程与流式 IO（I0 已于 2026-11-06 完成）"
+    next="第二阶段 I2 · 训练加速与显存压榨（I0、I1 已完成）"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -153,7 +153,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **边界与后续扩展**：本次为自有博客的小语料最小闭环；GB 级实测、多源语料配比、MinHash 近似去重、清洗前后及 GPT-2 / model_v3 的完整 BPB 对照留待真实数据需求与后续实验，不作为当前阻塞项。
 {{< /milestone >}}
 
-{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + FlashAttention + Compile）" status="todo" >}}
+{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + FlashAttention + Compile）" status="next" >}}
 - **进化部位**：改造 `squid/train/` 与注意力算子
 - **装备升级**：
   1. **BF16 自动混合精度（AMP）** 实战落地，对比 FP32 / FP16 / BF16 的动态范围、吞吐与显存账本；
@@ -229,7 +229,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" >}}
 1. **先完成第二阶段 `I0～I3` 的相关基础**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
-   - 数据与流式 IO（`I1` 待完成）；
+   - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
    - 训练加速与资源核算（`I2` 待完成）；
    - KV Cache、量化、投机解码和基础推理指标（`I3` 待完成）。
 2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
@@ -468,5 +468,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）已交付，后续推进 `I1～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证数据管线、训练吞吐与推理服务。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）已交付，后续推进 `I2～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证训练吞吐与推理服务。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I6、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
