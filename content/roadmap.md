@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-10T21:35:37+08:00
+lastmod = 2026-11-11T12:25:17+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 3/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（Mac/MPS 主线），下一站为 I2 番外（Windows + RTX 4070 Ti CUDA 对照复测，随后推进 I3）；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 3/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（含 RTX 4070 Ti CUDA 对照番外），下一站 I3；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 3/6 (I0～I2 已完成，下一站 I2 番外) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 3/6 (I0～I2 及番外已完成，下一站 I3) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
@@ -39,7 +39,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I2 番外 · Windows + RTX 4070 Ti CUDA 对照复测（I0～I2 主线已完成）"
+    next="第二阶段 I3 · 高性能推理与服务引擎（I0～I2 及 CUDA 番外已完成）"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -112,10 +112,10 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     rules="装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 承接现代架构与 Qwen 权重，并按 I0～I6 逐件升级数据、训练、推理与后训练"
     done="3"
     total="6"
-    current="I2 · 训练加速与显存压榨（2026-11-10 已完成）"
-    delivered="I0 模型承接、I1 数据管线与 I2 训练优化已交付；I2 完成 AMP / SDPA / compile / checkpointing 对照与 16 项收官回归"
-    next="第二阶段 I2 番外 · Windows + RTX 4070 Ti CUDA 对照复测（随后推进 I3）"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i2-windows:I2 番外:RTX4070Ti复测:next, i3:I3:量化与投机推理:todo, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
+    current="I2 · 训练加速与显存压榨（含 2026-11-11 CUDA 对照番外）"
+    delivered="I0、I1、I2 及 Windows + RTX 4070 Ti 番外已交付；完成 MPS / CUDA 双环境 AMP、SDPA、compile、checkpointing 三轮对照"
+    next="第二阶段 I3 · 高性能推理与服务引擎（量化 / 投机解码 / 流式 Serving）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:next, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
 ## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
@@ -162,27 +162,21 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   4. **Activation Checkpointing**：logits、loss 与反向梯度对照通过；吞吐中位数下降约 `5.36%`，驱动分配内存减少 `8 MiB`，当前分配内存不变，体现用计算换显存的代价与收益。
 - **收官回归**：相关测试 `16 passed in 33.02s`，覆盖 Qwen 专项、SDPA、checkpointing、Markdown、token store 与 memmap Dataset，不调用外部评估 API。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 3 章（混合精度与算术强度）+ 第 6～7 章（GPU 架构与算子优化）+ 作业 3
-- **边界与后续对照**：当前结果仅适用于 Mac/MPS、小模型和已记录的测量配置；MFU、峰值显存与经典 GPT-2 / model_v3 训练吞吐对照经确认移至下方 Windows + RTX 4070 Ti 番外，不在 Mac 上虚构指标。
+- **边界与后续对照**：当前结果仅适用于 Mac/MPS、小模型和已记录的测量配置；Windows + RTX 4070 Ti 的 CUDA 硬件对照与峰值显存统计已于下方 `I2 番外` 完成，MFU 与经典 GPT-2 / `model_v3` 的额外吞吐对照留待第三阶段 `S0` 深入。
 {{< /milestone >}}
 
-{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="next" status_label="◎ 下一站 · 计划未开始（非主线阻塞）" sub="true" date="2026-11-11 计划" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
-- **复测范围**（使用同一代码版本、同一模型配置、同一份 token 数据，并保持相同 `batch size`、`context length`、`warmup` 和测量步数）：
-  1. `FP32 / FP16 / BF16`（AMP）对照；
-  2. `eager / SDPA` 对照；
-  3. `torch.compile` 对照；
-  4. `Activation Checkpointing` 对照；
-  5. 经典 GPT-2 与 `model_v3` 在同数据、同训练配置下的训练吞吐对照。
-- **环境记录与验收指标**：
-  - **环境记录**：Windows 原生还是 WSL2、GPU 型号（RTX 4070 Ti）、驱动版本、PyTorch 版本、CUDA 版本，以及关键算子和 FlashAttention 的真实支持情况；
-  - **验收指标**：`tokens/s`、`MFU`、当前显存与峰值显存、loss 与行为正确性、首次编译成本与稳态吞吐，以及与 Mac/MPS 结果的并列对照。
-- **边界与约束**：
-  - 不预设 FlashAttention 或所有 CUDA 算子一定可用，以实际环境探针为准；
-  - 不把 Mac/MPS 的结果推广为通用结论，也不把“参考 CUDA 优化”写成“已经达到生产级性能”；
-  - 不修改实验条件来追求更好看的数字；Mac 与 Windows 报告分别保存，不互相覆盖；
-  - 番外不是当前主线阻塞项，不计入主线完成度；未实际运行前不显示性能数据，不标记为已完成（`done`）。
+{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-11" note1_title="笔记 20：CUDA 对照" note1_url="/llm/llm-20-i2-windows-cuda/" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
+- **环境与排障闭环**：打通 `Mac → SSH → Windows → WSL2 (Ubuntu 24.04) → RTX 4070 Ti (12 GB, PyTorch 2.14.1+cu130)` 远程实验链路，锁定同一代码提交、Python `3.12.12` 与同一份 token store（train `117,890` / held-out `5,485` tokens）；通过 Inductor worker 日志定位并根除 `matplot → pyloco → typing 3.10.0.0` 遮蔽标准库导致的并行 `torch.compile` 崩溃，补齐 CUDA 同步计时与 `allocated / reserved`（`current / peak`）显存口径。
+- **CUDA 三轮正式对照**（同 2 层小模型、`batch=2`、`context=128`、2 步 warmup + 10 步测量，取三轮中位数）：
+  1. `FP32 / eager`：吞吐中位数 `21614.87` tokens/s，峰值分配 `691.67 MiB`，峰值预留 `854 MiB`；
+  2. `BF16 / AMP` vs `FP16 / AMP`：BF16 吞吐 `22002.51` tokens/s（`+1.79%`），峰值分配降至 `635.55 MiB`（`-56.12 MiB / -8.11%`），但缓存分配器峰值预留升至 `876 MiB`（`+22 MiB`）；FP16 吞吐 `20954.75` tokens/s（`-3.05%`）；
+  3. `SDPA + FP32`：吞吐 `21588.02` tokens/s（`-0.12%`，基本持平），峰值分配 `690.81 MiB`、峰值预留 `852 MiB`（仅验证调用 SDPA，未确认实际落入 FlashAttention kernel）；
+  4. `compile + FP32`：稳态吞吐中位数 `25346.90` tokens/s（相对 FP32 基线提升约 **`17.27%`**），峰值分配 `690.85 MiB` 基本持平，峰值预留首轮 `778 MiB`、后两轮 `852 MiB`；
+  5. `checkpointing + FP32`：吞吐中位数 `17140.50` tokens/s（下降约 `20.70%`），峰值分配 `687.53 MiB`（仅减少 `4.14 MiB / 0.60%`），当前小模型无显存瓶颈，重算代价大于显存收益。
+- **MPS / CUDA 横向观察与边界**：同一配置下 RTX 4070 Ti 吞吐约为 Mac/MPS 的 `1.6x ～ 2.2x`，`compile` 在两边均体现稳态收益（MPS `+7.27%` vs CUDA `+17.27%`）；结果仅代表当前两台设备的小模型短步测量（首次编译成本未摊入稳态吞吐，不伪造跨设备峰值显存对照），更大模型/长上下文、SDPA 具体后端确认、MFU 及 GPT-2 / `model_v3` 额外吞吐对照尚未覆盖。
 {{< /milestone >}}
 
-{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="todo" >}}
+{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="next" >}}
 - **进化部位**：承接 M3 / M6 遗留的服务层进阶项，改造 `squid/generate/` 与对话服务层
 - **装备升级**：
   1. **滑动窗口 / 会话级 KV Cache** 与按 token 预算的 history 截断管理（消除动态 `torch.cat` 拷贝与粗粒度轮数截断）；
@@ -249,10 +243,10 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 1. **先完成第二阶段 `I0～I3` 的相关基础**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
-   - 训练加速与资源核算（`I2` Mac/MPS 主线已完成，见[笔记 19](/llm/llm-19-i2-environment-probe/)；RTX 4070 Ti 番外待复测）；
-   - KV Cache、量化、投机解码和基础推理指标（`I3` 待完成）。
+   - 训练加速与资源核算（`I2` 及 RTX 4070 Ti CUDA 番外已完成，见[笔记 19](/llm/llm-19-i2-environment-probe/) 与[笔记 20](/llm/llm-20-i2-windows-cuda/)）；
+   - KV Cache、量化、投机解码和基础推理指标（`I3` 下一站）。
 2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
-3. **实验环境**：准备 Linux GPU 实验环境后再开展真实多卡与底层算子实验。
+3. **实验环境**：已打通 Windows + WSL2（Ubuntu 24.04）+ RTX 4070 Ti 单卡 CUDA 实验环境（见[笔记 20](/llm/llm-20-i2-windows-cuda/)），真实多卡与底层算子实验按后续阶段需要继续扩展。
 4. **本地环境边界**：当前 Mac + MPS 环境不作为 [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 部署验收环境。
 5. **DeepInfer 硬件边界说明**：[DeepInfer](https://github.com/deepseek-ai/DeepInfer) 官方目前要求特定的 NVIDIA SM100 或 Ascend 950 环境，因此：
    - **源码研读不依赖本机部署**；
@@ -487,5 +481,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨）已交付，下一站完成 `I2 番外`（Windows + RTX 4070 Ti CUDA 对照复测）后推进 `I3～I5`，继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）已交付，后续推进 `I3～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证量化推理、投机解码与服务引擎。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I6、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
