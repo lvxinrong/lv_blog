@@ -3250,10 +3250,34 @@ details.toc a.is-active {
     background: color-mix(in srgb, var(--entry) 88%, var(--page-bg));
 }
 
+.ms-card.is-subcard.is-done {
+    border-left-color: #10b981;
+    background:
+        linear-gradient(120deg, rgba(16, 185, 129, 0.07) 0%, transparent 48%),
+        var(--entry);
+}
+
+[data-theme="dark"] .ms-card.is-subcard.is-done {
+    border-left-color: #34d399;
+    background:
+        linear-gradient(120deg, rgba(52, 211, 153, 0.10) 0%, transparent 48%),
+        var(--entry);
+}
+
 .ms-card.is-subcard .ms-code {
     background: var(--series-soft, var(--accent-soft));
     border-color: color-mix(in srgb, var(--series, var(--accent)) 30%, var(--border));
     color: var(--series, var(--accent));
+}
+
+.ms-card.is-subcard.is-done .ms-code {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.30);
+    color: #059669;
+}
+
+[data-theme="dark"] .ms-card.is-subcard.is-done .ms-code {
+    color: #34d399;
 }
 
 .ms-card-head {
