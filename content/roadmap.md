@@ -187,6 +187,44 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **待完成验收（含 I0 拆出的 KV 实际占用测量）**：在 M3 的 3.6x 提速基线上，测出量化与投机解码叠加后的首字延迟（TTFT）、解码吞吐（tokens/s）与显存降幅，并实测 MHA / GQA 的 **KV Cache 实际字节数与设备占用对照**
 {{< /milestone >}}
 
+{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="选修番外 · 规划中（非主线阻塞）" sub="true" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例演进 ModelV4？" >}}
+- **定位说明**：面向模型承接能力的选修番外——学习面对陌生模型时如何系统审计兼容性与缺失能力，并以 `Qwen3-0.6B Dense` 为最小案例基于 `v3` 演进 `ModelV4`；不改变 `I3` 主线的投机解码、SSE / 多会话隔离等待完成项，不计入第二阶段 `I0～I6` 主线完成度。
+- **学习内容**：
+  1. **阅读 ModelScope / Hugging Face 的 `config.json`**：
+     - `model_type`、`architectures`；
+     - `vocab_size`、`hidden_size`、`intermediate_size`；
+     - `num_hidden_layers`、`num_attention_heads`、`num_key_value_heads`；
+     - `head_dim`、`rope_theta`、`rms_norm_eps`；
+     - `attention_bias`、`tie_word_embeddings`；
+     - `max_position_embeddings`、`layer_types / sliding_window`。
+  2. **检查 `.safetensors` 权重键、张量形状、分片与 `lm_head`**：
+     - 不依赖模型名称猜测兼容性；
+     - 识别 Qwen3 的 `q_norm / k_norm`；
+     - 理解 `tie_word_embeddings=true / false` 对加载器的影响。
+  3. **阅读官方 `forward` 语义**：
+     - QK RMSNorm 的位置与维度；
+     - 显式 `head_dim` 与 `hidden_size` 解耦；
+     - RoPE、掩码、残差、输出头和 KV Cache。
+  4. **产出模型兼容性矩阵**：按“已支持 / 缺失 / 待确认 / 不适用”四类归档审计结果。
+  5. **基于 `v3` 演进 `ModelV4`（而非推倒重写）**：
+     - 显式 `head_dim`；
+     - QK RMSNorm；
+     - 通用 Qwen 配置与权重映射；
+     - 以 `Qwen3-0.6B Dense` 为最小验收目标。
+- **最小验收**：
+  - 权重键无缺失、无未处理项；
+  - 中文、英文和代码输入与官方实现做 logits 容差对照；
+  - `prefill` 与连续 cache decode 对照；
+  - 固定输入的生成结果对照；
+  - 明确当前只验证了哪一个模型配置，不把单点通过写成“支持 Qwen3 全系列”。
+- **边界说明**：
+  - 当前项目中尚未存在 `ModelV4`，本节点是规划，不是既有成果；
+  - 当前 `v3` 已验证的是 `Qwen2.5-0.5B / 0.5B-Instruct`，其他 `Qwen2 / Qwen2.5` 尺寸不能未经测试写成已支持；
+  - 第一阶段只面向 `Qwen3 Dense`；`Qwen3 MoE`、其他模型家族、`GGUF / NVFP4` 和 `27B` 模型不在本次最小验收范围内；
+  - 严格区分“能加载权重”、“能正确前向”、“能正确对话”三个层级；
+  - 不虚构尚未执行的模型下载、logits 对照或硬件验证结果。
+{{< /milestone >}}
+
 {{< milestone id="i4" code="I4" title="后训练深水区：多轮对话 SFT、CoT 思维链与 DPO / GRPO 对齐" status="todo" >}}
 - **进化部位**：承接 M4 与 M6 暴露的“多轮旧答案复制”边界，升级 `squid/data/instruct.py` 与 `squid/train/`
 - **装备升级**：
