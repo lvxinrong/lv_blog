@@ -16,6 +16,10 @@
 {{- $sub := eq (.Get "sub") "true" -}}
 {{- $date := .Get "date" -}}
 {{- $question := .Get "question" -}}
+{{- $summary := .Get "summary" -}}
+{{- $detailLabel := .Get "detail_label" | default "详细内容、验收与边界" -}}
+{{- $open := eq (.Get "open") "true" -}}
+{{- $collapsible := or (ne $summary "") (eq (.Get "collapsible") "true") -}}
 {{- $n1Title := .Get "note1_title" -}}
 {{- $n1Url := .Get "note1_url" -}}
 {{- $n2Title := .Get "note2_title" -}}
@@ -42,7 +46,25 @@
     <span class="ms-question-text">{{ . }}</span>
   </div>
   {{- end }}
+  {{- with $summary }}
+  <div class="ms-overview">
+    <span class="ms-overview-label">概览</span>
+    <div class="ms-overview-text">{{ . | $.Page.RenderString }}</div>
+  </div>
+  {{- end }}
+  {{- if $collapsible }}
+  <details class="ms-details"{{ if $open }} open{{ end }}>
+    <summary class="ms-details-summary">
+      <span class="ms-details-label">{{ $detailLabel }}</span>
+      <span class="ms-details-hint" data-open-text="收起明细 ▴" data-close-text="展开明细 ▾"></span>
+    </summary>
+    <div class="ms-card-body">
+      {{ .Inner | .Page.RenderString (dict "display" "block") }}
+    </div>
+  </details>
+  {{- else }}
   <div class="ms-card-body">
     {{ .Inner | .Page.RenderString (dict "display" "block") }}
   </div>
+  {{- end }}
 </article>

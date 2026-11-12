@@ -122,7 +122,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 > 第一阶段解决“**有没有一辆自己造的车**”，第二阶段以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
-{{< milestone id="i0" code="I0" title="现代架构与模型承接（model_v3：RoPE + RMSNorm + SwiGLU + GQA + Qwen 权重加载）" status="done" date="2026-11-06" note1_title="笔记 14：RoPE 先行闭环" note1_url="/llm/llm-14-eval-resume/" note2_title="笔记 17：model_v3 承接 Qwen" note2_url="/llm/llm-17-model-v3-qwen/" >}}
+{{< milestone id="i0" code="I0" title="现代架构与模型承接（model_v3：RoPE + RMSNorm + SwiGLU + GQA + Qwen 权重加载）" status="done" date="2026-11-06" note1_title="笔记 14：RoPE 先行闭环" note1_url="/llm/llm-14-eval-resume/" note2_title="笔记 17：model_v3 承接 Qwen" note2_url="/llm/llm-17-model-v3-qwen/" summary="新建独立 `model_v3` 并完成 `Qwen2.5-0.5B` Base/Instruct 权重承接、chat template、Chat Server 与本地实验台；Qwen 专项 `7 passed`、全量 `46 passed`（已严格限定受控对齐与 GQA 理论存储边界）。" >}}
 - **版本演进策略**：
   - 新建独立的 `model_v3`（`v3_modern`）模型版本，不持续修改旧模型；
   - 旧版本保持独立，体现学习演进和版本差异：
@@ -142,7 +142,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 4 章（现代 Transformer 架构演进）+ 作业 2
 {{< /milestone >}}
 
-{{< milestone id="i1" code="I1" title="工业数据工程与流式 IO（Data Pipeline & Scaling）" status="done" date="2026-11-10" note1_title="笔记 18：I1，让语料从文本流向可训练数据" note1_url="/llm/llm-18-i1-data-pipeline/" >}}
+{{< milestone id="i1" code="I1" title="工业数据工程与流式 IO（Data Pipeline & Scaling）" status="done" date="2026-11-10" note1_title="笔记 18：I1，让语料从文本流向可训练数据" note1_url="/llm/llm-18-i1-data-pipeline/" summary="完成 38+2 文档隔离、JSONL + `uint32` token store、`np.memmap` 按需切片（Python 分配降至 `1,766` bytes）、5 步训练冒烟及 held-out `BPB=4.9495` 与 Chinchilla 基线测算。" >}}
 - **进化部位**：改造 `squid/data/` 与 `squid/tokenizer/`
 - **已完成成果**：
   1. **可追溯语料管线**：建立 42 条源文档清单与类型区分，保留 39 篇 article + 1 篇 profile 为 40 个候选，固定 38 条训练候选与 2 篇 held-out；最小 Markdown 清洗通过 `5 passed`；
@@ -153,7 +153,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **边界与后续扩展**：本次为自有博客的小语料最小闭环；GB 级实测、多源语料配比、MinHash 近似去重、清洗前后及 GPT-2 / model_v3 的完整 BPB 对照留待真实数据需求与后续实验，不作为当前阻塞项。
 {{< /milestone >}}
 
-{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + SDPA + Compile + Checkpointing）" status="done" date="2026-11-10" note1_title="笔记 19：I2，训练加速与显存压榨" note1_url="/llm/llm-19-i2-environment-probe/" >}}
+{{< milestone id="i2" code="I2" title="训练加速与显存压榨（AMP + SDPA + Compile + Checkpointing）" status="done" date="2026-11-10" note1_title="笔记 19：I2，训练加速与显存压榨" note1_url="/llm/llm-19-i2-environment-probe/" summary="在 Mac/MPS 完成 FP32/FP16/BF16、SDPA、`torch.compile`（`+7.27%`）与 Activation Checkpointing（驱动分配降 `8 MiB`）三轮对照；收官回归 `16 passed`。" >}}
 - **进化部位**：改造 `squid/train/` 与注意力算子
 - **已完成成果**：
   1. **混合精度（AMP）**：完成 FP32 / FP16 / BF16 探针与三轮训练对照；中位数分别为 `11001.65 / 9892.09 / 9942.47` tokens/s，当前 Mac/MPS 小模型未体现混合精度吞吐收益，loss 无 NaN/Inf；
@@ -165,7 +165,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **边界与后续对照**：当前结果仅适用于 Mac/MPS、小模型和已记录的测量配置；Windows + RTX 4070 Ti 的 CUDA 硬件对照与峰值显存统计已于下方 `I2 番外` 完成，MFU 与经典 GPT-2 / `model_v3` 的额外吞吐对照留待第三阶段 `S0` 深入。
 {{< /milestone >}}
 
-{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-11" note1_title="笔记 20：CUDA 对照" note1_url="/llm/llm-20-i2-windows-cuda/" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" >}}
+{{< milestone id="i2-windows" code="↳ I2 番外" title="I2 番外：Windows + RTX 4070 Ti CUDA 对照复测" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-11" note1_title="笔记 20：CUDA 对照" note1_url="/llm/llm-20-i2-windows-cuda/" question="在 Windows 台式机的 RTX 4070 Ti 上复跑同一批 I2 训练实验，作为 Mac/MPS 之外的 CUDA 硬件对照（比较不同硬件与计算后端下的性能、显存与正确性表现，非推翻 Mac 结果）。" summary="打通 SSH + WSL2 + RTX 4070 Ti 远程链路并根除 `typing` 遮蔽编译崩溃；完成 6 组 CUDA 三轮对照（`compile` 稳态 `+17.27%`）及 `allocated/reserved` 峰值显存与 MPS 横向观察。" >}}
 - **环境与排障闭环**：打通 `Mac → SSH → Windows → WSL2 (Ubuntu 24.04) → RTX 4070 Ti (12 GB, PyTorch 2.14.1+cu130)` 远程实验链路，锁定同一代码提交、Python `3.12.12` 与同一份 token store（train `117,890` / held-out `5,485` tokens）；通过 Inductor worker 日志定位并根除 `matplot → pyloco → typing 3.10.0.0` 遮蔽标准库导致的并行 `torch.compile` 崩溃，补齐 CUDA 同步计时与 `allocated / reserved`（`current / peak`）显存口径。
 - **CUDA 三轮正式对照**（同 2 层小模型、`batch=2`、`context=128`、2 步 warmup + 10 步测量，取三轮中位数）：
   1. `FP32 / eager`：吞吐中位数 `21614.87` tokens/s，峰值分配 `691.67 MiB`，峰值预留 `854 MiB`；
@@ -176,7 +176,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **MPS / CUDA 横向观察与边界**：同一配置下 RTX 4070 Ti 吞吐约为 Mac/MPS 的 `1.6x ～ 2.2x`，`compile` 在两边均体现稳态收益（MPS `+7.27%` vs CUDA `+17.27%`）；结果仅代表当前两台设备的小模型短步测量（首次编译成本未摊入稳态吞吐，不伪造跨设备峰值显存对照），更大模型/长上下文、SDPA 具体后端确认、MFU 及 GPT-2 / `model_v3` 额外吞吐对照尚未覆盖。
 {{< /milestone >}}
 
-{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="next" >}}
+{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="next" open="true" summary="改造推理与服务层：覆盖会话级 KV Cache 与按 token 截断、INT8/INT4 量化、投机解码、SSE 流式输出及 MHA/GQA 实际显存占用测量。" >}}
 - **进化部位**：承接 M3 / M6 遗留的服务层进阶项，改造 `squid/generate/` 与对话服务层
 - **装备升级**：
   1. **滑动窗口 / 会话级 KV Cache** 与按 token 预算的 history 截断管理（消除动态 `torch.cat` 拷贝与粗粒度轮数截断）；
@@ -187,7 +187,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **待完成验收（含 I0 拆出的 KV 实际占用测量）**：在 M3 的 3.6x 提速基线上，测出量化与投机解码叠加后的首字延迟（TTFT）、解码吞吐（tokens/s）与显存降幅，并实测 MHA / GQA 的 **KV Cache 实际字节数与设备占用对照**
 {{< /milestone >}}
 
-{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="选修番外 · 规划中（非主线阻塞）" sub="true" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例演进 ModelV4？" >}}
+{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="选修番外 · 规划中（非主线阻塞）" sub="true" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例演进 ModelV4？" summary="选修番外（规划中，尚未实现）：系统审计 `config.json` / `.safetensors` / `forward` 语义并产出四分类兼容性矩阵，基于 `v3` 演进支持显式 `head_dim` 与 `QK RMSNorm` 的 `ModelV4`，以 `Qwen3-0.6B Dense` 为最小验收目标。" >}}
 - **定位说明**：面向模型承接能力的选修番外——学习面对陌生模型时如何系统审计兼容性与缺失能力，并以 `Qwen3-0.6B Dense` 为最小案例基于 `v3` 演进 `ModelV4`；不改变 `I3` 主线的投机解码、SSE / 多会话隔离等待完成项，不计入第二阶段 `I0～I6` 主线完成度。
 - **学习内容**：
   1. **阅读 ModelScope / Hugging Face 的 `config.json`**：
@@ -225,7 +225,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不虚构尚未执行的模型下载、logits 对照或硬件验证结果。
 {{< /milestone >}}
 
-{{< milestone id="i4" code="I4" title="后训练深水区：多轮对话 SFT、CoT 思维链与 DPO / GRPO 对齐" status="todo" >}}
+{{< milestone id="i4" code="I4" title="后训练深水区：多轮对话 SFT、CoT 思维链与 DPO / GRPO 对齐" status="todo" summary="解决 M6 多轮历史复制问题：引入多轮对话 SFT 与按轮掩码、CoT 思维链微调、LoRA/全参对标，以及 DPO / GRPO 最小对齐闭环。" >}}
 - **进化部位**：承接 M4 与 M6 暴露的“多轮旧答案复制”边界，升级 `squid/data/instruct.py` 与 `squid/train/`
 - **装备升级**：
   1. **真正的多轮对话 SFT + 思维链（CoT）微调**：引入多轮对话指令数据与按轮掩码（解决 M6 暴露的多轮历史复制问题），并构造“推理步骤 `<think>` + 最终答案”数据；
@@ -235,7 +235,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **待完成验收**：解决 Web UI 多轮对话复制旧答案问题，并给出 SFT vs CoT-SFT vs DPO 的评委胜率（Win Rate）对比
 {{< /milestone >}}
 
-{{< milestone id="i5" code="I5" title="评估校准与回归基准自动化（Judge Calibration）" status="todo" >}}
+{{< milestone id="i5" code="I5" title="评估校准与回归基准自动化（Judge Calibration）" status="todo" summary="承接 M5 评估流水线：校准 LLM-as-Judge 位置与长度偏见、检验多评委一致性，并建立一键对比门禁报告。" >}}
 - **进化部位**：承接 M5 评估流水线，升级 `squid/eval/`
 - **装备升级**：
   1. **LLM-as-Judge 偏见校准**：双向交换位置消除先后偏见（Position Bias）、控制长度偏见（Length Bias）；
@@ -244,7 +244,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **待完成验收**：每次装备升级（I0～I4）均可一键跑出带置信区间与胜率矩阵的对比报告
 {{< /milestone >}}
 
-{{< milestone id="i6" code="I6" title="第二阶段独立彩蛋：MoE 稀疏专家与分布式并行沙盘" status="optional" >}}
+{{< milestone id="i6" code="I6" title="第二阶段独立彩蛋：MoE 稀疏专家与分布式并行沙盘" status="optional" summary="独立高阶架构彩蛋（不计入主线）：实现 Top-K 路由与负载均衡辅助损失的迷你 MoE 层，并复现 DDP 与 ZeRO/FSDP 核心分片思想。" >}}
 - **定位说明**：独立高阶架构彩蛋，不计入主线进度；与 GPU 和分布式一起学——先在小模型上实现 Top-K 路由和负载均衡，再理解 Expert Parallelism 与通信开销
 - **装备升级**：
   1. 把稠密 FFN 改造为迷你 **MoE（Mixture of Experts）** 层：实现 Top-K 门控路由与负载均衡辅助损失（Load Balancing Loss）；
@@ -277,7 +277,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0 ～ S6 全部 7 张里程碑卡片与总交付目标（点击上方 S0～S6 节点可直接跳转）" >}}
 
-{{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" >}}
+{{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I3` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
 1. **先完成第二阶段 `I0～I3` 的相关基础**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
@@ -292,7 +292,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
    - **不把普通 GPU 上无法运行 DeepInfer 写成学习失败**。
 {{< /milestone >}}
 
-{{< milestone id="s0" code="S0" title="GPU 系统基础与性能基线" status="planning" question="优化之前，能不能先建立一张可信的性能与资源账本？" >}}
+{{< milestone id="s0" code="S0" title="GPU 系统基础与性能基线" status="planning" question="优化之前，能不能先建立一张可信的性能与资源账本？" summary="建立 GPU 硬件、Roofline 瓶颈与 `torch.profiler` 基础认知，交付统一 benchmark 入口与可重复的 GPT-2 / `model_v3` 性能资源基线。" >}}
 - **学习内容**：
   - CPU / GPU、Host / Device、SM、Warp、HBM 与内存带宽；
   - 算术强度、Roofline、计算瓶颈与带宽瓶颈；
@@ -310,7 +310,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 性能测试与数值正确性测试分开，不用速度掩盖错误。
 {{< /milestone >}}
 
-{{< milestone id="s1" code="S1" title="DeepInfer 请求链路与源码地图" status="planning" question="一条请求从输入到输出，究竟穿过了哪些工业级推理组件？" note1_title="DeepInfer 源码仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" >}}
+{{< milestone id="s1" code="S1" title="DeepInfer 请求链路与源码地图" status="planning" question="一条请求从输入到输出，究竟穿过了哪些工业级推理组件？" note1_title="DeepInfer 源码仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="按 `offline_inference.py` → `llm_engine.py` → `worker` → `model_executor` → `tests` 顺序研读源码，交付请求链路图、职责地图与能力边界说明。" >}}
 - **阅读顺序**：
   1. `examples/offline_inference.py`
   2. `engine/llm_engine.py`
@@ -337,7 +337,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不虚构未实际阅读过的源码细节。
 {{< /milestone >}}
 
-{{< milestone id="s2" code="S2" title="自定义算子与 Kernel 优化" status="planning" question="同一个数学公式，为什么不同计算路径会有不同的性能与浮点结果？" >}}
+{{< milestone id="s2" code="S2" title="自定义算子与 Kernel 优化" status="planning" question="同一个数学公式，为什么不同计算路径会有不同的性能与浮点结果？" summary="理解 eager / SDPA / FlashAttention / 融合算子与 Triton，从 RMSNorm/RoPE/FFN 切入实现小型自定义算子并完成容差与吞吐显存对照。" >}}
 - **学习内容**：
   - eager、SDPA、FlashAttention 与融合算子的关系；
   - Triton 入门，按需了解 CUDA / TileLang；
@@ -355,7 +355,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不在没有测量的情况下声称优化有效。
 {{< /milestone >}}
 
-{{< milestone id="s3" code="S3" title="分布式训练与参数分片" status="planning" question="模型和数据变大以后，计算、梯度、参数与 checkpoint 怎样分布到多个设备？" >}}
+{{< milestone id="s3" code="S3" title="分布式训练与参数分片" status="planning" question="模型和数据变大以后，计算、梯度、参数与 checkpoint 怎样分布到多个设备？" summary="沿 DDP → All-Reduce → FSDP/ZeRO → TP/PP/CP → 分布式 checkpoint 顺序构建最小沙盘，完成单/多进程对照与恢复实验。" >}}
 - **学习顺序**：
   1. 数据并行与 DDP；
   2. Gradient All-Reduce 与通信开销；
@@ -376,7 +376,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不以“启动了多个进程”冒充分布式训练已经掌握。
 {{< /milestone >}}
 
-{{< milestone id="s4" code="S4" title="MoE 与专家并行" status="planning" question="怎样增加模型容量，同时避免每个 token 都执行全部专家？" >}}
+{{< milestone id="s4" code="S4" title="MoE 与专家并行" status="planning" question="怎样增加模型容量，同时避免每个 token 都执行全部专家？" summary="实现小模型 Top-K MoE 层与负载均衡辅助损失，完成 Dense FFN 同规模对照并理解 Expert Parallelism 与 DeepEP/EPLB。" >}}
 - **学习内容**：
   - Dense FFN → Sparse MoE；
   - Router、Top-K、capacity factor；
@@ -397,7 +397,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不把“参数量变大”直接写成“能力必然提升”。
 {{< /milestone >}}
 
-{{< milestone id="s5" code="S5" title="生产推理调度与服务化" status="planning" question="当一个请求变成成千上万个请求，推理系统怎样保持吞吐、延迟与隔离？" >}}
+{{< milestone id="s5" code="S5" title="生产推理调度与服务化" status="planning" question="当一个请求变成成千上万个请求，推理系统怎样保持吞吐、延迟与隔离？" summary="搭建最小推理调度沙盘，验证 continuous batching、paged/bounded KV Cache、多 Session 隔离、背压超时与 TTFT/TPOT/P95 实测。" >}}
 - **学习内容**：
   - continuous batching；
   - 异步调度与 CPU/device 工作重叠；
@@ -419,7 +419,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 性能结论必须来自实测，不照抄官方数字。
 {{< /milestone >}}
 
-{{< milestone id="s6" code="S6" title="稳定性、确定性与综合验收" status="planning" question="系统不只要能跑，还要能证明它稳定、可复现、可诊断、可恢复。" >}}
+{{< milestone id="s6" code="S6" title="稳定性、确定性与综合验收" status="planning" question="系统不只要能跑，还要能证明它稳定、可复现、可诊断、可恢复。" summary="补齐 batch-invariant inference、确定性采样、日志 trace 与故障注入压测，产出全景图、DeepInfer 总结与第三阶段收官笔记。" >}}
 - **学习内容**：
   - batch-invariant inference；
   - deterministic sampling；
@@ -441,7 +441,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 不以“参考了 DeepInfer”冒充“已经达到 DeepInfer 的生产能力”。
 {{< /milestone >}}
 
-{{< milestone id="s-goal" code="总目标" title="第三阶段总交付目标与“六不追求”边界" status="planning" question="第三阶段收官时应当能够回答什么问题？明确不追求哪些事情？" >}}
+{{< milestone id="s-goal" code="总目标" title="第三阶段总交付目标与“六不追求”边界" status="planning" question="第三阶段收官时应当能够回答什么问题？明确不追求哪些事情？" summary="收官需能回答测量、引擎链路、算子误差、多设备分担、并发隔离与可靠性 6 个核心问题，并守住“六不追求”边界。" >}}
 - **阶段结束时应当能够回答的 6 个核心问题**：
   1. 一个模型的训练和推理性能瓶颈如何测量？
   2. 一个请求如何穿过推理引擎？
@@ -482,7 +482,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **模型增长与扩层后训练（后续选修）**：研究 Block Expansion / Depth Up-Scaling（Net2Net、LLaMA Pro、SOLAR），在原有 Transformer Block 之后、`final_norm` 之前插入少量新层，重点理解恒等初始化、冻结与逐步解冻，并与 LoRA、全参数训练做同数据对照；不阻塞当前主线或 `M7`；
 - **个人中文语料 midtrain（尚未开始训练）**：承载下方 `M7` 独立彩蛋。
 
-{{< milestone id="m7" code="M7" title="第四阶段独立彩蛋：个人中文语料中间训练（Midtrain）" status="optional" >}}
+{{< milestone id="m7" code="M7" title="第四阶段独立彩蛋：个人中文语料中间训练（Midtrain）" status="optional" summary="第四阶段独立彩蛋（尚未开始训练，仅完成语料盘点）：基于已就绪的 Qwen 底座与个人中文语料开展 midtrain 与评估对照。" >}}
 - **定位与当前状态**：属于第四阶段独立彩蛋（不计入第一或第二阶段主线完成度），**目前尚未开始训练**（仅完成个人语料盘点，尚未产生 midtrain loss 或新 checkpoint）。
 - **底座边界说明**：第一阶段 GPT-2 355M 底座偏英文，不适合直接承接全中文个人语料；现 `I0` 现代架构改造与 Qwen 权重加载已就绪，后续将在 Qwen 底座上启动。
 - **前置依赖**：

@@ -184,7 +184,7 @@
         updateActive();
     })();
 
-    /* 导图已完成阶段抽屉：点击上方进度条节点（如 #m0～#m6）时，若所在阶段抽屉处于收起状态，自动展开并定位。 */
+    /* 导图已完成阶段抽屉与里程碑明细抽屉：点击上方进度条节点时，自动展开所在阶段及目标里程碑明细并定位。 */
     (function () {
         document.addEventListener('click', function (event) {
             var link = event.target.closest && event.target.closest('a.roadmap-step[href^="#"]');
@@ -196,6 +196,10 @@
             var drawer = target.closest('details.roadmap-phase-drawer');
             if (drawer && !drawer.open) {
                 drawer.open = true;
+            }
+            var msDetails = target.querySelector('details.ms-details');
+            if (msDetails && !msDetails.open) {
+                msDetails.open = true;
             }
         });
     })();
