@@ -185,11 +185,11 @@
       "bases:新建数据库": false
     }
   },
-  "active": "119cfaa7b45dd98c",
+  "active": "9dbe826771160c38",
   "lastOpenFiles": [
-    "llm/手搓LLM笔记22-I3番外Qwen3兼容性.md",
-    "llm/手搓LLM笔记21-I3推理基线.md",
     "llm/手搓LLM笔记20-I2番外Windows-CUDA.md",
+    "llm/手搓LLM笔记21-I3推理基线.md",
+    "llm/手搓LLM笔记22-I3番外Qwen3兼容性.md",
     "llm/手搓LLM笔记19-I2环境探针.md",
     "llm/手搓LLM笔记18-I1数据管线.md",
     "craft/面试300场之后.md",

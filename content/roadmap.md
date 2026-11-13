@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-11T12:25:17+08:00
+lastmod = 2026-11-13T14:51:25+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 3/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（含 RTX 4070 Ti CUDA 对照番外），下一站 I3；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 4/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（含 RTX 4070 Ti CUDA 对照番外）、I3 高性能推理与服务引擎，主线下一站 I4，另有 I3 选修番外（ModelV4 / Qwen3 兼容性审计）待启动；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 3/6 (I0～I2 及番外已完成，下一站 I3) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 4/6 (I0～I3 及番外已完成，主线下一站 I4) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 蓝图与 DeepInfer 对照 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · 对齐/诊断/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环"
 >}}
 
 {{< roadmap_progress
@@ -39,7 +39,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I3 · 高性能推理与服务引擎（I0～I2 及 CUDA 番外已完成）"
+    next="第二阶段 I4 · 后训练深水区（I0～I3 及番外已完成）"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -110,12 +110,12 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
     rules="装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 承接现代架构与 Qwen 权重，并按 I0～I6 逐件升级数据、训练、推理与后训练"
-    done="3"
+    done="4"
     total="6"
-    current="I2 · 训练加速与显存压榨（含 2026-11-11 CUDA 对照番外）"
-    delivered="I0、I1、I2 及 Windows + RTX 4070 Ti 番外已交付；完成 MPS / CUDA 双环境 AMP、SDPA、compile、checkpointing 三轮对照"
-    next="第二阶段 I3 · 高性能推理与服务引擎（量化 / 投机解码 / 流式 Serving）"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:next, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
+    current="I3 · 高性能推理与服务引擎（2026-11-13 收官）"
+    delivered="I0～I3 及 Windows + RTX 4070 Ti 番外已交付；完成推理基线、会话级 KV Cache、INT8 / INT4 量化、贪心投机解码、SSE 流式与多会话隔离，Mac / CUDA 双环境对照"
+    next="I3 选修番外：ModelV4 / Qwen3 兼容性审计（不计入主线）；主线下一站 I4 · 后训练深水区"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
 ## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
@@ -176,19 +176,40 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **MPS / CUDA 横向观察与边界**：同一配置下 RTX 4070 Ti 吞吐约为 Mac/MPS 的 `1.6x ～ 2.2x`，`compile` 在两边均体现稳态收益（MPS `+7.27%` vs CUDA `+17.27%`）；结果仅代表当前两台设备的小模型短步测量（首次编译成本未摊入稳态吞吐，不伪造跨设备峰值显存对照），更大模型/长上下文、SDPA 具体后端确认、MFU 及 GPT-2 / `model_v3` 额外吞吐对照尚未覆盖。
 {{< /milestone >}}
 
-{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="next" open="true" summary="改造推理与服务层：覆盖会话级 KV Cache 与按 token 截断、INT8/INT4 量化、投机解码、SSE 流式输出及 MHA/GQA 实际显存占用测量。" >}}
+{{< milestone id="i3" code="I3" title="高性能推理与服务引擎（量化 + 投机解码 + 流式 Serving）" status="done" date="2026-11-13" note1_title="笔记 21：I3 推理与服务" note1_url="/llm/llm-21-i3-inference-baseline/" summary="完成推理基线、增量 prefill 掩码修复、会话级 KV Cache 与滑动裁剪、INT8 / INT4 权重量化、贪心投机解码、SSE 流式输出与多会话隔离，并实测 MHA / GQA KV 占用与 CUDA 同口径复测；量化与投机当前均未提速，保留教学路径边界。" >}}
 - **进化部位**：承接 M3 / M6 遗留的服务层进阶项，改造 `squid/generate/` 与对话服务层
-- **装备升级**：
-  1. **滑动窗口 / 会话级 KV Cache** 与按 token 预算的 history 截断管理（消除动态 `torch.cat` 拷贝与粗粒度轮数截断）；
-  2. **INT8 / INT4 权重量化推理**（W8A16 / W4A16），实测模型体积压缩比与困惑度损益；
-  3. **投机解码（Speculative Decoding）**：用极小草稿模型（Draft Model）一次猜多个 token，主模型单次前向并行校验，打破自回归内存带宽墙；
-  4. **SSE 流式输出**与多用户/多会话状态隔离管理。
+- **已完成成果（2026-11-11 → 2026-11-13，详见[笔记 21](/llm/llm-21-i3-inference-baseline/)）**：
+  1. **推理基线**：拆分 Prefill / Decode，实测 TTFT、decode tokens/s、KV Cache 实际字节数与设备内存；
+  2. **增量 prefill 修复**：修复 v1 / v2 多 token 增量 prefill 的掩码偏移；
+  3. **会话级 KV Cache**：token 预算管理、v3 滑动裁剪与位置进度；
+  4. **INT8 / INT4 权重量化**：packing / unpacking，W8A32 / W4A32 与 W8A16 / W4A16 对照；
+  5. **贪心投机解码**：Draft / Target 接受、修正、bonus 与双方 cache 回滚同步；
+  6. **SSE 流式输出**：连接中断状态失效与浏览器流式渲染；
+  7. **多会话管理**：状态隔离与有界 LRU，新建会话、切换会话与历史恢复入口；
+  8. **MHA / GQA 实测**：实际 KV 占用、量化叠加投机与 TTFT、CUDA 同口径复测。
+- **真实结果与结论**：
+  - KV Cache decode 提速 Mac 基线约 `1.73x`，CUDA 当前短 prompt 约 `1.06x`，收益依设备而变；
+  - GQA 实际 KV Cache 为 MHA 的 `1/7`（减少 `85.71%`），张量字节数与设备增量一致；
+  - INT8 持久张量减少 `54.26%`，当前 heldout PPL 损失较小；INT4 减少 `63.31%`，但当前逐行实现质量损失显著；
+  - 当前量化路径在 Mac / CUDA 上均未提速，CUDA 的相对反量化开销通常更小；
+  - 贪心投机在 FP32 下保持 Target 逐 token 一致，但 k=2 / 4 / 8 均为负收益，接受率依次为 `48.48% / 33.93% / 20.41%`；
+  - BF16 在 Mac k=2 与 CUDA k=4 上出现输出不一致，严格数值等价性尚不稳定，相关性能结果不作为正确性验收通过；
+  - FP16 PPL 异常定位为 RMSNorm 的 FP16 平方溢出，改为 FP32 累积后 PPL 与生成恢复正常；
+  - SSE、多轮对话、多会话新建 / 切换与历史恢复已由用户真实验收。
+- **收官回归**：当前学习范围相关回归由用户实际运行达到 `44 passed`；不同阶段的测试数字不累加为一次全量回归。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 10 章（推理加速：KV Cache 进阶、量化、投机解码）
-- **待完成验收（含 I0 拆出的 KV 实际占用测量）**：在 M3 的 3.6x 提速基线上，测出量化与投机解码叠加后的首字延迟（TTFT）、解码吞吐（tokens/s）与显存降幅，并实测 MHA / GQA 的 **KV Cache 实际字节数与设备占用对照**
+- **边界与后续**：
+  - 当前量化与投机实现均为教学路径，不代表生产 kernel 或生产 Serving；
+  - 预分配 KV Cache 后移，动态 `torch.cat` 尚未消除；
+  - 严格采样投机、自适应 lookahead、融合量化 kernel 尚未实现；
+  - 多会话请求当前串行，不是并发模型推理；
+  - 实际量化文件大小、多任务质量评测尚未覆盖；
+  - 滑动窗口细节与 INT4 pack / unpack 仍需独立复盘；
+  - 功能跑通不等于所有内容已经吃透。
 {{< /milestone >}}
 
-{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="选修番外 · 规划中（非主线阻塞）" sub="true" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例演进 ModelV4？" summary="选修番外（规划中，尚未实现）：系统审计 `config.json` / `.safetensors` / `forward` 语义并产出四分类兼容性矩阵，基于 `v3` 演进支持显式 `head_dim` 与 `QK RMSNorm` 的 `ModelV4`，以 `Qwen3-0.6B Dense` 为最小验收目标。" >}}
-- **定位说明**：面向模型承接能力的选修番外——学习面对陌生模型时如何系统审计兼容性与缺失能力，并以 `Qwen3-0.6B Dense` 为最小案例基于 `v3` 演进 `ModelV4`；不改变 `I3` 主线的投机解码、SSE / 多会话隔离等待完成项，不计入第二阶段 `I0～I6` 主线完成度。
+{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="下一步选修 · 尚未开始（非主线阻塞）" sub="true" note1_title="笔记 22：Qwen3 兼容性" note1_url="/llm/llm-22-qwen3-compatibility/" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例在隔离的 V4 中实现 ModelV4？" summary="选修番外（下一步选修，尚未开始）：系统审计 `config.json` / `.safetensors` / `forward` 语义并产出四分类兼容性矩阵，在完全隔离的 V4 中实现显式 `head_dim`、QK RMSNorm 与 Qwen3 配置 / 权重映射，以 `Qwen3-0.6B Dense` 为最小验收目标。" >}}
+- **定位说明**：面向模型承接能力的选修番外——学习面对陌生模型时如何系统审计兼容性与缺失能力，并以 `Qwen3-0.6B Dense` 为最小案例实现 `ModelV4`；`I3` 主线已收官，本番外为下一步选修工作，不计入第二阶段 `I0～I6` 主线完成度，也不改变主线下一站 `I4` 的顺序。
 - **学习内容**：
   1. **阅读 ModelScope / Hugging Face 的 `config.json`**：
      - `model_type`、`architectures`；
@@ -206,11 +227,18 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
      - 显式 `head_dim` 与 `hidden_size` 解耦；
      - RoPE、掩码、残差、输出头和 KV Cache。
   4. **产出模型兼容性矩阵**：按“已支持 / 缺失 / 待确认 / 不适用”四类归档审计结果。
-  5. **基于 `v3` 演进 `ModelV4`（而非推倒重写）**：
+  5. **在完全隔离的 V4 中实现 `ModelV4`**：
      - 显式 `head_dim`；
      - QK RMSNorm；
-     - 通用 Qwen 配置与权重映射；
+     - Qwen3 配置与权重映射；
      - 以 `Qwen3-0.6B Dense` 为最小验收目标。
+- **隔离要求**：
+  - `V3` 保持为稳定的 Qwen2.5 参照实现；
+  - `V4` 使用独立的 `src/squid/model/v4_qwen3/`、`checkpoints/qwen3.py` 与 `tests/test_qwen3/`；
+  - `V4` 不直接 import 或修改 `V3` 的模型实现；
+  - 公共 device、tokenizer 协议与报告工具可以复用；
+  - RMSNorm 的 FP32 累积修复必须带入 `V4`；
+  - `V4` 实验不得改变 `V3` 行为，`V3` / `V4` 测试分别验收。
 - **最小验收**：
   - 权重键无缺失、无未处理项；
   - 中文、英文和代码输入与官方实现做 logits 容差对照；
@@ -223,6 +251,39 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 第一阶段只面向 `Qwen3 Dense`；`Qwen3 MoE`、其他模型家族、`GGUF / NVFP4` 和 `27B` 模型不在本次最小验收范围内；
   - 严格区分“能加载权重”、“能正确前向”、“能正确对话”三个层级；
   - 不虚构尚未执行的模型下载、logits 对照或硬件验证结果。
+{{< /milestone >}}
+
+{{< milestone id="i3-qwen-lineage" code="↳ 番外子任务" title="Qwen 谱系表：建立自己的技术脉络坐标系" status="planning" status_label="规划中 · 选修子任务（不阻塞 ModelV4）" sub="true" question="看到某个 Qwen 模型的 config、权重键和 tokenizer 时，能否判断它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标？" summary="I3 番外下的规划中选修子任务：建立 Qwen 技术演进的个人坐标系（非对外展示或营销）。以 Qwen2.5-0.5B（V3 已验证）与 Qwen3-0.6B Dense（V4 最小目标）为锚点，逐代扩充覆盖结构、规范化、位置编码、模板与 thinking 的谱系表并保留官方来源；当前只建立谱系与学习计划，不宣称已下载、已加载或已实测所有模型。" >}}
+- **定位说明**：`i3-model-v4` 下的规划中选修子任务，目的是建立个人技术坐标系而非对外展示或营销——看到某个模型的 config、权重键和 tokenizer 时，能知道它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标；不计入第二阶段 `I0～I6` 主线完成度，不阻塞 `ModelV4` 实现。
+- **表格字段（每代 / 每个代表模型至少覆盖）**：
+  - 世代 / 代表模型与参数规模；
+  - 层数；
+  - Q heads、KV heads、head_dim；
+  - Dense / MoE（若为 MoE，补充 experts 与激活专家数）；
+  - 最大上下文（单位明确为 tokens，不是字符）；
+  - 规范化方式：RMSNorm、Pre-Norm、是否存在 QK RMSNorm；
+  - 位置编码：RoPE、rope_theta、rope scaling / 其他变体；
+  - chat template、特殊 token、是否支持 thinking 及其开关；
+  - 相对上一代新增 / 删除了什么；
+  - 为什么这样变化。
+- **内容组织要求**：
+  1. 不只按“代”给一行就掩盖同代不同尺寸的差异；层数、head 配置与上下文可能随具体型号变化，应注明代表模型或给出明确范围；
+  2. 优先使用 Qwen 官方模型卡、官方 `config.json`、官方源码与发布说明，并保留来源链接；
+  3. 当前已知学习锚点：`Qwen2.5-0.5B / 0.5B-Instruct`（V3 已验证）、`Qwen3-0.6B Dense`（V4 最小目标）；视频中的“Qwen3.8 27B”属于社区 / 定制模型内容，不能未经官方证据写成 Qwen 官方新世代；
+  4. 某代若同时包含 Dense 与 MoE，应分开标注，不把 MoE 当成整代所有模型的统一结构；
+  5. “新增 / 删除 / 为什么”必须区分三类证据：官方明确说明的设计动机、从 config / 源码可确认的结构事实、尚无官方解释的推测；没有证据的“为什么”写“官方未说明”，不编造设计意图；
+  6. 上下文长度、模板与 thinking 要区分：模型结构支持的上下文、当前本地实验使用的上下文、官方生成配置或 chat template 默认行为；
+  7. 当前只建立谱系与学习计划，不虚构已下载、已加载或已实测所有模型。
+- **希望形成的学习产出**：
+  - 一张可逐代扩充的 Qwen 谱系表；
+  - 每个代表模型的官方来源；
+  - 一段“从 Qwen 到 Qwen3 的演进主线”；
+  - 一组与 ModelV4 兼容性审计直接相关的观察点：head_dim、QK RMSNorm、GQA / MoE、RoPE、权重绑定、chat template / thinking。
+- **官方来源入口（建表时逐一核对并扩充）**：
+  - [Qwen Hugging Face 组织](https://huggingface.co/Qwen)；
+  - [Qwen2.5-0.5B 模型卡](https://huggingface.co/Qwen/Qwen2.5-0.5B)（V3 锚点）；
+  - [Qwen3-0.6B 模型卡](https://huggingface.co/Qwen/Qwen3-0.6B)（V4 锚点）；
+  - [QwenLM Qwen3 仓库](https://github.com/QwenLM/Qwen3)。
 {{< /milestone >}}
 
 {{< milestone id="i4" code="I4" title="后训练深水区：多轮对话 SFT、CoT 思维链与 DPO / GRPO 对齐" status="todo" summary="解决 M6 多轮历史复制问题：引入多轮对话 SFT 与按轮掩码、CoT 思维链微调、LoRA/全参对标，以及 DPO / GRPO 最小对齐闭环。" >}}
@@ -267,22 +328,22 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     repo="squid-llms"
     theory_title="DeepSeek DeepInfer"
     theory_url="https://github.com/deepseek-ai/DeepInfer"
-    rules="阶段定位::从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 DeepInfer 理解生产级系统设计 | 前置依赖::先完成第二阶段 I0～I3 相关基础，具备 Python / PyTorch / Transformer 与训练推理链路知识，准备 Linux GPU 实验环境 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    rules="阶段定位::从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 DeepInfer 理解生产级系统设计 | 前置依赖::第二阶段 I0～I3 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
     done="0"
     total="7"
     unit="规划里程碑（尚未启动）"
-    planning_note="规划中 · 待第二阶段 I0～I3 与 Linux GPU 实验环境就绪后按 S0 → S6 依赖顺序启动"
+    planning_note="规划中 · 第二阶段 I0～I3 已完成，待其余前置条件就绪后按 S0 → S6 依赖顺序启动"
     steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, s6:S6:稳定性验收:todo"
 >}}
 
 {{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0 ～ S6 全部 7 张里程碑卡片与总交付目标（点击上方 S0～S6 节点可直接跳转）" >}}
 
 {{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I3` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
-1. **先完成第二阶段 `I0～I3` 的相关基础**：
+1. **第二阶段 `I0～I3` 的相关基础（均已完成）**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
    - 训练加速与资源核算（`I2` 及 RTX 4070 Ti CUDA 番外已完成，见[笔记 19](/llm/llm-19-i2-environment-probe/) 与[笔记 20](/llm/llm-20-i2-windows-cuda/)）；
-   - KV Cache、量化、投机解码和基础推理指标（`I3` 下一站）。
+   - KV Cache、量化、投机解码和基础推理指标（`I3` 已完成，见[笔记 21](/llm/llm-21-i3-inference-baseline/)）。
 2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
 3. **实验环境**：已打通 Windows + WSL2（Ubuntu 24.04）+ RTX 4070 Ti 单卡 CUDA 实验环境（见[笔记 20](/llm/llm-20-i2-windows-cuda/)），真实多卡与底层算子实验按后续阶段需要继续扩展。
 4. **本地环境边界**：当前 Mac + MPS 环境不作为 [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 部署验收环境。
@@ -519,5 +580,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）已交付，后续推进 `I3～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证量化推理、投机解码与服务引擎。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）、`I3`（高性能推理与服务引擎）已交付，后续推进 `I4～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证后训练与评估校准。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I6、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
