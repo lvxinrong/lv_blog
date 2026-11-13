@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/手搓LLM笔记21-I3推理基线.md",
+                "file": "llm/手搓LLM笔记22-I3番外Qwen3兼容性.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "手搓LLM笔记21-I3推理基线"
+              "title": "手搓LLM笔记22-I3番外Qwen3兼容性"
             }
           }
         ]
@@ -185,10 +185,10 @@
       "bases:新建数据库": false
     }
   },
-  "active": "9dbe826771160c38",
+  "active": "119cfaa7b45dd98c",
   "lastOpenFiles": [
-    "llm/手搓LLM笔记20-I2番外Windows-CUDA.md",
     "llm/手搓LLM笔记21-I3推理基线.md",
+    "llm/手搓LLM笔记20-I2番外Windows-CUDA.md",
     "llm/手搓LLM笔记22-I3番外Qwen3兼容性.md",
     "llm/手搓LLM笔记19-I2环境探针.md",
     "llm/手搓LLM笔记18-I1数据管线.md",

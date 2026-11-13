@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-13T14:51:25+08:00
+lastmod = 2026-11-13T19:40:19+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 4/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（含 RTX 4070 Ti CUDA 对照番外）、I3 高性能推理与服务引擎，主线下一站 I4，另有 I3 选修番外（ModelV4 / Qwen3 兼容性审计）待启动；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 4/6）已完成 I0 现代架构与 Qwen2.5 承接、I1 工业数据工程与流式 IO、I2 训练加速与显存压榨（含 RTX 4070 Ti CUDA 对照番外）、I3 高性能推理与服务引擎，I3 选修番外（ModelV4 / Qwen3 兼容性审计）已验收，主线下一站 I4；第三阶段（工业级训练、推理与分布式系统，S0～S6）已建立完整规划蓝图；第四至第六阶段保留演进方向与依赖。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -113,8 +113,8 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     done="4"
     total="6"
     current="I3 · 高性能推理与服务引擎（2026-11-13 收官）"
-    delivered="I0～I3 及 Windows + RTX 4070 Ti 番外已交付；完成推理基线、会话级 KV Cache、INT8 / INT4 量化、贪心投机解码、SSE 流式与多会话隔离，Mac / CUDA 双环境对照"
-    next="I3 选修番外：ModelV4 / Qwen3 兼容性审计（不计入主线）；主线下一站 I4 · 后训练深水区"
+    delivered="I0～I3 主线及 CUDA、ModelV4 / Qwen3 两个番外已交付；完成推理基线、会话级 KV Cache、INT8 / INT4 量化、贪心投机解码、SSE 流式与多会话隔离，Mac / CUDA 双环境对照"
+    next="I4 · 后训练深水区（主线下一站；I3 番外 ModelV4 / Qwen3 已验收，Qwen 谱系表选修仍规划中）"
     steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:todo, i5:I5:评委校准CI:todo, i6:I6:MoE与分布式:optional"
 >}}
 
@@ -208,53 +208,23 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 功能跑通不等于所有内容已经吃透。
 {{< /milestone >}}
 
-{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="optional" status_label="下一步选修 · 尚未开始（非主线阻塞）" sub="true" note1_title="笔记 22：Qwen3 兼容性" note1_url="/llm/llm-22-qwen3-compatibility/" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例在隔离的 V4 中实现 ModelV4？" summary="选修番外（下一步选修，尚未开始）：系统审计 `config.json` / `.safetensors` / `forward` 语义并产出四分类兼容性矩阵，在完全隔离的 V4 中实现显式 `head_dim`、QK RMSNorm 与 Qwen3 配置 / 权重映射，以 `Qwen3-0.6B Dense` 为最小验收目标。" >}}
-- **定位说明**：面向模型承接能力的选修番外——学习面对陌生模型时如何系统审计兼容性与缺失能力，并以 `Qwen3-0.6B Dense` 为最小案例实现 `ModelV4`；`I3` 主线已收官，本番外为下一步选修工作，不计入第二阶段 `I0～I6` 主线完成度，也不改变主线下一站 `I4` 的顺序。
-- **学习内容**：
-  1. **阅读 ModelScope / Hugging Face 的 `config.json`**：
-     - `model_type`、`architectures`；
-     - `vocab_size`、`hidden_size`、`intermediate_size`；
-     - `num_hidden_layers`、`num_attention_heads`、`num_key_value_heads`；
-     - `head_dim`、`rope_theta`、`rms_norm_eps`；
-     - `attention_bias`、`tie_word_embeddings`；
-     - `max_position_embeddings`、`layer_types / sliding_window`。
-  2. **检查 `.safetensors` 权重键、张量形状、分片与 `lm_head`**：
-     - 不依赖模型名称猜测兼容性；
-     - 识别 Qwen3 的 `q_norm / k_norm`；
-     - 理解 `tie_word_embeddings=true / false` 对加载器的影响。
-  3. **阅读官方 `forward` 语义**：
-     - QK RMSNorm 的位置与维度；
-     - 显式 `head_dim` 与 `hidden_size` 解耦；
-     - RoPE、掩码、残差、输出头和 KV Cache。
-  4. **产出模型兼容性矩阵**：按“已支持 / 缺失 / 待确认 / 不适用”四类归档审计结果。
-  5. **在完全隔离的 V4 中实现 `ModelV4`**：
-     - 显式 `head_dim`；
-     - QK RMSNorm；
-     - Qwen3 配置与权重映射；
-     - 以 `Qwen3-0.6B Dense` 为最小验收目标。
-- **隔离要求**：
-  - `V3` 保持为稳定的 Qwen2.5 参照实现；
-  - `V4` 使用独立的 `src/squid/model/v4_qwen3/`、`checkpoints/qwen3.py` 与 `tests/test_qwen3/`；
-  - `V4` 不直接 import 或修改 `V3` 的模型实现；
-  - 公共 device、tokenizer 协议与报告工具可以复用；
-  - RMSNorm 的 FP32 累积修复必须带入 `V4`；
-  - `V4` 实验不得改变 `V3` 行为，`V3` / `V4` 测试分别验收。
-- **最小验收**：
-  - 权重键无缺失、无未处理项；
-  - 中文、英文和代码输入与官方实现做 logits 容差对照；
-  - `prefill` 与连续 cache decode 对照；
-  - 固定输入的生成结果对照；
-  - 明确当前只验证了哪一个模型配置，不把单点通过写成“支持 Qwen3 全系列”。
-- **边界说明**：
-  - 当前项目中尚未存在 `ModelV4`，本节点是规划，不是既有成果；
-  - 当前 `v3` 已验证的是 `Qwen2.5-0.5B / 0.5B-Instruct`，其他 `Qwen2 / Qwen2.5` 尺寸不能未经测试写成已支持；
-  - 第一阶段只面向 `Qwen3 Dense`；`Qwen3 MoE`、其他模型家族、`GGUF / NVFP4` 和 `27B` 模型不在本次最小验收范围内；
-  - 严格区分“能加载权重”、“能正确前向”、“能正确对话”三个层级；
-  - 不虚构尚未执行的模型下载、logits 对照或硬件验证结果。
+{{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-13" note1_title="笔记 22：Qwen3 兼容性" note1_url="/llm/llm-22-qwen3-compatibility/" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例在隔离的 V4 中实现 ModelV4？" summary="选修番外（已验收，不计入主线）：完成 config / safetensors / 官方 forward 兼容性审计，从零实现完全隔离的 V4（显式 head_dim=128、QK RMSNorm、Qwen3 配置 / 权重映射）；Qwen3-0.6B Dense 在 CPU / FP32 / eager 下通过官方 logits、连续 cache decode 与固定生成对照，并接通本地 thinking 对话与流式修复。结论限定单模型与受控环境，不代表 Qwen3 全系列。" >}}
+- **定位说明**：面向模型承接能力的选修番外，已验收；不计入第二阶段 `I0～I6` 主线完成度（主线仍 `4/6`），主线下一站仍为 `I4`。`V3` 继续作为 Qwen2.5-0.5B / 0.5B-Instruct 的稳定对照，`V4` 独立承接 Qwen3-0.6B。
+- **已完成成果（详见[笔记 22](/llm/llm-22-qwen3-compatibility/)）**：
+  1. **V4 独立实现**：新建 `src/squid/model/v4_qwen3/`、独立加载器 `src/squid/checkpoints/qwen3.py`、独立测试 `tests/test_qwen3/`；RMSNorm、SwiGLU、RoPE、Attention、TransformerBlock、GPTModelV4 全部重新实现，没有复制或 import V3 的模型实现；RMSNorm 带入 FP32 累积修复，避免重新引入 FP16 平方溢出。
+  2. **Qwen3-0.6B 兼容性审计**：完成 config、safetensors 权重键、形状与官方 forward 语义审计，新增可复用检查能力 `src/squid/checkpoints/inspect.py`（只读元数据，最小回归 `1 passed`）；支持显式 `head_dim=128`、16 Q heads、8 KV heads、QK RMSNorm；checkpoint 中 embedding 与 lm_head 虽重复保存，实测逐元素完全一致（`torch.equal=True`），加载后共享一份参数。
+  3. **官方数值与生成验收**：条件为 Qwen3-0.6B、CPU、FP32、eager、固定英文 prompt；最大 logit 差异 `4.1008e-05`、平均 `4.3524e-06`，`allclose(1e-4)=true`、top-1 一致；连续 3 次 cache decode 与官方 token 一致；固定 8-token 贪心生成的 token IDs 与文本完全一致。
+  4. **本地对话与流式修复**：`chat_server` 与 Web UI 切换到 V4 / Qwen3-0.6B（后训练对话模型，非 Base）；支持 thinking 开关、思考区折叠与正式回答分离；修复流式中思考区跑到正文下方（明确 DOM 顺序）与临时 `U+FFFD` 被提前推送导致的中文乱码（不稳定前缀暂缓推送）；默认 `context_size=8192`、`max_new_tokens=1024`，保留 `LVCHAT_CONTEXT_SIZE` / `LVCHAT_MAX_NEW_TOKENS` 覆盖；SSE done 事件新增 `finish_reason` / `generated_tokens` / `max_new_tokens`，`finish_reason=length` 时页面明确提示回答可能不完整；1024 下同一注意力机制问题完整生成到总结，清理后历史回答重新编码为 `585` tokens；临时 16-token 实验已真实验证截断提示。
+- **本轮回归与边界**：本轮对话修复相关指定回归 `10 passed`，JavaScript `node --check` 通过；这只是本轮指定回归集合，不是全量测试，不与早期 `13 passed` 或 I3 主线收官 `44 passed` 相加，也不覆盖 I3 主线原有记录。
+- **能力边界**：
+  - 当前只验收 `Qwen3-0.6B Dense`，不代表 Qwen3 全系列；不包含 MoE、GGUF、NVFP4 或 27B；
+  - 数值对齐结论限定于当前输入及 CPU / FP32 / eager，不扩大为所有设备、dtype 或任意生成过程；
+  - 本地对话功能通过不等于模型回答质量稳定（小模型仍有算错、重复耗尽预算等情况），不用工程测试替模型能力背书；
+  - 当前服务仍不是生产级并发推理系统；上下文与生成预算是本地实验配置，因果掩码平方级开销与 KV Cache 增长尚未做长上下文性能优化。
 {{< /milestone >}}
 
-{{< milestone id="i3-qwen-lineage" code="↳ 番外子任务" title="Qwen 谱系表：建立自己的技术脉络坐标系" status="planning" status_label="规划中 · 选修子任务（不阻塞 ModelV4）" sub="true" question="看到某个 Qwen 模型的 config、权重键和 tokenizer 时，能否判断它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标？" summary="I3 番外下的规划中选修子任务：建立 Qwen 技术演进的个人坐标系（非对外展示或营销）。以 Qwen2.5-0.5B（V3 已验证）与 Qwen3-0.6B Dense（V4 最小目标）为锚点，逐代扩充覆盖结构、规范化、位置编码、模板与 thinking 的谱系表并保留官方来源；当前只建立谱系与学习计划，不宣称已下载、已加载或已实测所有模型。" >}}
-- **定位说明**：`i3-model-v4` 下的规划中选修子任务，目的是建立个人技术坐标系而非对外展示或营销——看到某个模型的 config、权重键和 tokenizer 时，能知道它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标；不计入第二阶段 `I0～I6` 主线完成度，不阻塞 `ModelV4` 实现。
+{{< milestone id="i3-qwen-lineage" code="↳ 番外子任务" title="Qwen 谱系表：建立自己的技术脉络坐标系" status="planning" status_label="规划中 · 选修子任务（不阻塞主线）" sub="true" question="看到某个 Qwen 模型的 config、权重键和 tokenizer 时，能否判断它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标？" summary="I3 番外下的规划中选修子任务：建立 Qwen 技术演进的个人坐标系（非对外展示或营销）。以 Qwen2.5-0.5B（V3 已验证）与 Qwen3-0.6B Dense（V4 已验收）为锚点，逐代扩充覆盖结构、规范化、位置编码、模板与 thinking 的谱系表并保留官方来源；当前只建立谱系与学习计划，不宣称已下载、已加载或已实测所有模型。" >}}
+- **定位说明**：`i3-model-v4` 下的规划中选修子任务，目的是建立个人技术坐标系而非对外展示或营销——看到某个模型的 config、权重键和 tokenizer 时，能知道它位于哪一代、继承了什么、新增或删除了什么，以及这些变化服务于什么目标；不计入第二阶段 `I0～I6` 主线完成度，不阻塞主线推进。
 - **表格字段（每代 / 每个代表模型至少覆盖）**：
   - 世代 / 代表模型与参数规模；
   - 层数；
@@ -269,7 +239,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 - **内容组织要求**：
   1. 不只按“代”给一行就掩盖同代不同尺寸的差异；层数、head 配置与上下文可能随具体型号变化，应注明代表模型或给出明确范围；
   2. 优先使用 Qwen 官方模型卡、官方 `config.json`、官方源码与发布说明，并保留来源链接；
-  3. 当前已知学习锚点：`Qwen2.5-0.5B / 0.5B-Instruct`（V3 已验证）、`Qwen3-0.6B Dense`（V4 最小目标）；视频中的“Qwen3.8 27B”属于社区 / 定制模型内容，不能未经官方证据写成 Qwen 官方新世代；
+  3. 当前已知学习锚点：`Qwen2.5-0.5B / 0.5B-Instruct`（V3 已验证）、`Qwen3-0.6B Dense`（V4 已验收）；视频中的“Qwen3.8 27B”属于社区 / 定制模型内容，不能未经官方证据写成 Qwen 官方新世代；
   4. 某代若同时包含 Dense 与 MoE，应分开标注，不把 MoE 当成整代所有模型的统一结构；
   5. “新增 / 删除 / 为什么”必须区分三类证据：官方明确说明的设计动机、从 config / 源码可确认的结构事实、尚无官方解释的推测；没有证据的“为什么”写“官方未说明”，不编造设计意图；
   6. 上下文长度、模板与 thinking 要区分：模型结构支持的上下文、当前本地实验使用的上下文、官方生成配置或 chat template 默认行为；
