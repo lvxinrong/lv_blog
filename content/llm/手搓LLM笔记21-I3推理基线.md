@@ -929,3 +929,182 @@ RMSNorm 改为 FP32 累积、输出再转回原 dtype 后，FP16 参考组 PPL �
 - 滑动窗口细节和 INT4 pack / unpack 实现的独立复盘。
 
 测试数字均对应当时明确列出的测试文件与范围，不把不同阶段的 `passed` 数量累加成一次全量回归。功能进度与学习理解也继续保持两本账：跑通的功能可以记录为已验证，尚未吃透的部分仍明确留给后续。
+
+## 十六、投机解码：正确性闭环完成，但当前实现没有提速
+
+### 1. 从纯校验到真实双模型
+
+I3-3 使用 Qwen2.5-0.5B-Instruct 作为 Draft、Qwen2.5-1.5B-Instruct 作为 Target。两者使用同一 tokenizer，Draft 负责一次猜测多个 token，Target 负责批量校验、修正和保持最终输出标准。
+
+实现拆为三层：
+
+1. `verify_greedy_draft()`：只计算接受长度、Target 修正、拒绝数量和全部接受时的 bonus token；
+2. no-cache 双模型生成：通过完整重算验证算法，不处理 cache 回滚；
+3. cached 双模型生成：分别维护 Draft / Target 的 KV Cache，回滚被拒绝部分，并将修正 / bonus token 同步输入双方模型。
+
+Bonus 的含义是：当 k 个草稿全部被接受时，Target 处理完第 k 个草稿后，该位置的 logits 已经能预测第 k+1 个 token，因此可以额外产生一个无需单独校验的 token。如果中间发生拒绝，bonus 的计算历史已经失效，不能使用。
+
+修正或 bonus token 虽然已经进入最终文本，但尚未进入模型状态，因此还要同步输入 Draft 和 Target，保证下一轮双方看到同一份真实历史。
+
+### 2. 分层验收
+
+- 纯校验测试覆盖全部接受、中间拒绝、首个拒绝、最后一个拒绝、长度错误和 KV Cache 精确裁剪，合计 7 项通过；
+- no-cache 真实模型结构对照 2 项通过，覆盖相同模型全部接受 / bonus 与不同 Draft 的 Target 一致性；
+- cached 双模型对照 2 项通过，覆盖修正、双方回滚和状态同步；
+- 所有测试均由用户实际运行，数字不与其他阶段累加成一次全量回归。
+
+真实 Target 加载先完成 Qwen2.5-1.5B 的 V3 / 官方 CPU FP32 logits 对照：最大差异约 3.72e-5，平均差异约 3.83e-6，allclose(1e-4) 通过，top-1 一致。
+
+### 3. 真实生成结果
+
+统一使用固定 prompt、32 个新 token、贪心解码、1 次 warmup、3 次正式测量。
+
+| 配置 | 输出逐 token 一致 | Draft 接受率 | Target-only 中位耗时 | 投机中位耗时 | 结果 |
+| --- | --- | ---: | ---: | ---: | --- |
+| BF16，k=4 | 是 | 55.00% | 0.904 s | 1.395 s | 投机约 1.54 倍耗时 |
+| BF16，k=2 | **否** | 67.86% | 0.938 s | 1.689 s | 正确性验收失败，不接受性能结论 |
+| FP32，k=2 | 是 | 48.48% | 1.269 s | 2.464 s | 投机约 1.94 倍耗时 |
+| FP32，k=4 | 是 | 33.93% | 1.504 s | 2.810 s | 投机约 1.87 倍耗时 |
+| FP32，k=8 | 是 | 20.41% | 1.293 s | 3.349 s | 投机约 2.59 倍耗时 |
+
+FP32 k=2 的账目为：16 个接受的 Draft token + 10 个 Target 修正 token + 6 个 bonus token = 32 个最终 token。
+
+FP32 k=4 的账目为：19 个接受的 Draft token + 11 个 Target 修正 token + 2 个 bonus token = 32 个最终 token。
+
+BF16 k=2 的文本与 Target-only 不一致；切换到同设备 FP32 后恢复逐 token 一致。这说明 BF16 多 token 校验与单 token decode 的数值差异可能累积并改变 argmax。该现象只保留为当前实现的数值边界，不宣称已经定位到某个底层 kernel。
+
+### 4. 为什么没有加速
+
+当前负收益来自多项共同开销：
+
+- Draft 仍需逐 token 前向；
+- Target 批量校验需要处理整段草稿；
+- 被拒绝部分需要回滚双方 cache；
+- 修正 / bonus token 还要同步进入双方模型；
+- Python 循环、设备同步与张量操作都有成本；
+- 1.5B Target 在当前 MPS 上可能还不足以形成明显的单步摊销优势；
+- 当前 Draft / Target 的接受率不足以抵消这些成本。
+
+因此当前结论是：**投机算法已在当前实现中跑通，但这组 0.5B / 1.5B 模型、Mac / MPS、Python 分解路径和测试负载没有获得性能收益**。不能据此推广为投机解码在生产 GPU、融合运行时或更大 Target 上无效。
+
+### 5. 当前边界
+
+- 当前只实现贪心投机，不支持 temperature / top-k / top-p 的严格分布保持；
+- 采样场景需要使用目标与草稿概率的接受规则及残差修正，不能简单比较 argmax；
+- 已补测 FP32 k=8：接受率降至 20.41%，98 个草稿仅接受 20 个，无 bonus，投机耗时约为 Target-only 的 2.59 倍；未做自适应 lookahead；
+- 尚未进行 CUDA 复测；
+- BF16 k=2 的数值不一致需要后续独立排查，不能写成所有 BF16 路径都通过；
+- 当前性能结论是负收益，但算法正确性和测试证据完整保留。
+
+## 十七、SSE 流式输出与多会话隔离
+
+I3-4 将原来“等待完整回答后一次性返回 JSON”的服务，扩展为逐 token 推送的 SSE 服务，并按 `session_id` 隔离会话状态。本阶段由用户显式切换到工作模式，Kimi 负责实现与运行验证，用户负责最终验收。
+
+### 1. 流式生成与 ChatSession 状态复用
+
+`generate_stream()` 使用与 `generate()` 相同的 prefill / decode、采样、EOS 和位置参数，在每个新 token 产生时 yield；迭代结束后通过 `StopIteration.value` 返回完整序列与最终 cache。
+
+`ChatSession` 的 `ask()` 和 `ask_stream()` 共用输入准备、回答清理、history、cache 和 `next_position` 收尾。流式路径累计解码 token IDs，再计算本次新增文本，避免直接改变最终回答的语义。
+
+如果流式生成中途异常或连接断开，当前未完成 cache 会被失效，下一次请求使用完整重算，避免把半截生成状态误当成有效历史。
+
+验收结果：
+
+- `generate_stream()` 与 `generate()` 的输出 token 和各层 K/V 完全一致；
+- `ask_stream()` 与 `ask()` 的回答、history、cached token IDs、位置和 cache 一致；
+- 中途关闭流后状态被清理，随后可重新生成；
+- 流式生成、会话、原有生成与推理基线相关测试合计 **16 passed**，仅覆盖本次明确列出的测试文件。
+
+### 2. SSE 服务端
+
+新增 `POST /chat/stream`，响应使用：
+
+```text
+Content-Type: text/event-stream; charset=utf-8
+Cache-Control: no-cache
+X-Accel-Buffering: no
+```
+
+每个事件写入后立即 flush：
+
+```text
+data: {"session_id":"...","delta":"你"}
+
+data: {"session_id":"...","delta":"好"}
+
+data: {"session_id":"...","done":true}
+```
+
+不再使用 `Content-Length` 作为流式响应长度。结束或异常后关闭当前连接；客户端断开时由生成器清理未完成状态。
+
+原 `POST /chat` 同步接口保留，便于与 SSE 路径做对照。
+
+### 3. 多会话隔离与有界存储
+
+新增 `SessionStore`：
+
+```text
+session_id A → 独立 ChatSession A
+session_id B → 独立 ChatSession B
+```
+
+每个会话分别保存 history、KV Cache、cached token IDs 和位置进度。默认最多保留 16 个会话，使用 LRU 淘汰最久未使用的会话，避免本地状态无限增长。`LVCHAT_MAX_SESSIONS` 和 `LVCHAT_MAX_NEW_TOKENS` 可用于本地实验配置。
+
+当前仍使用单线程 `HTTPServer`，因此这是**多会话状态隔离、请求串行处理**，不宣称支持并发模型推理或生产级调度。
+
+### 4. 浏览器流式渲染
+
+页面为每个浏览器生成并保存独立 `session_id`，通过 `fetch()` POST 发送消息，再使用 `ReadableStream` + `TextDecoder` 增量读取 SSE 事件。
+
+流式过程中使用纯文本追加，结束后复用已有的安全 Markdown 渲染；同时校验事件的 `session_id`，避免接收其他会话的内容。页面文案已同步为 SSE / 多会话模式。
+
+### 5. 真实服务与浏览器验收
+
+使用真实 Qwen2.5-0.5B-Instruct、每轮最多 16 个新 token、最多 2 个会话：
+
+- session A 第一轮“记住：我最喜欢的运动是划船”收到 16 个 delta 事件和最终 done；
+- session A 第二轮“我最喜欢的运动是什么？”回答“你最喜欢的运动是划船。”，收到 7 个 delta 事件和 done；
+- session B 问同一问题时没有继承 A 的偏好，健康检查显示 2 个独立会话；
+- 浏览器中真实发送问题后，页面逐段接收并展示回答，状态为“就绪 · SSE 流式返回”，TURN 计数正常；
+- JavaScript 语法检查通过。
+
+验收中观察到模型回答偶有 ``。同步 `/chat` 在全新会话中也出现相同字符，因此该现象属于当前模型 token 输出 / 解码的质量边界，不是 SSE 增量推送引入的错误。
+
+当前服务保留在 `http://127.0.0.1:8000/` 供用户验收。SSE 改善的是内容逐步可见，不改变模型本身的速度或能力。
+
+## 十八、多会话入口补齐：从服务端隔离到用户可用
+
+SSE 首次验收时，页面虽然显示 Multi，但只有后端按 `session_id` 隔离，没有新建或切换会话的用户入口。用户验收及时发现：服务端能力存在，不等于用户侧功能闭环已经完成。
+
+### 补充实现
+
+- 顶部新增会话下拉框与“新建会话”按钮；
+- `SessionStore` 增加会话元数据列表和按 ID 查找；
+- 新增 `GET /sessions`：返回会话 ID、首轮标题和轮数；
+- 新增 `GET /session/history?session_id=...`：返回指定会话的文本历史；
+- 新建会话生成新的 UUID，清空当前页面输入与历史区域；
+- 切换会话时加载对应历史，恢复消息、TURN 数和当前会话标识；
+- 切换过程只读取已有状态，不重新执行模型；模型 history、KV Cache 和位置进度仍按同一个 session ID 对齐；
+- 生成过程中禁用新建与切换，避免请求进行中切换状态。
+
+### 验收
+
+会话元数据、查找、LRU、流式生成与 ChatSession 相关测试合计 **11 passed**，JavaScript 语法检查通过。
+
+真实浏览器中完成：
+
+1. 会话 A 输入“记住：我喜欢划船”，下拉框显示该会话 1 轮；
+2. 点击“新建会话”，页面清空并使用新的 session ID；
+3. 会话 B 独立输入“我最喜欢的运动是什么？”；
+4. 再切回会话 A，原始提问、回答和 TURN 数完整恢复；
+5. 两个会话的服务端 history、KV Cache 与页面文本保持独立。
+
+当前仍是单线程请求处理；多会话管理不代表并发推理。旧服务进程曾占用 8000 端口，核对命令后正常结束旧实例，再启动新版完成验收，没有用终止不明进程的方式绕过问题。
+
+### 浏览器验收截图
+
+![I3 浏览器验收：会话选择、新建会话、流式状态与本地模型回答](/images/i3-sse-multi-session.png)
+
+截图记录了用户最终验收时的页面：顶部可以切换已有会话或新建会话，右侧显示当前 session、TURN 数和 SSE 流式返回状态，正文由本地模型逐段生成并安全渲染。
+
+这张截图证明的是**会话管理与流式服务链路已经跑通**。截图中的模型回答仅用于展示输出，不作为 SSE 技术定义或模型能力结论。

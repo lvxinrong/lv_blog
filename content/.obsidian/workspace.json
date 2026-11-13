@@ -187,6 +187,7 @@
   },
   "active": "119cfaa7b45dd98c",
   "lastOpenFiles": [
+    "llm/手搓LLM笔记22-I3番外Qwen3兼容性.md",
     "llm/手搓LLM笔记21-I3推理基线.md",
     "llm/手搓LLM笔记20-I2番外Windows-CUDA.md",
     "llm/手搓LLM笔记19-I2环境探针.md",
@@ -212,7 +213,6 @@
     "llm/手搓LLM笔记03-因果掩码与多头.md",
     "llm/手搓LLM笔记01-第二章.md",
     "llm/手搓LLM笔记00-立项书.md",
-    "incident-skill/01-evidence.md",
     "未命名",
     "llm/llm-05-a4-generate.jpg",
     "llm/llm-05-a4-calc-loss-batch.jpg",
