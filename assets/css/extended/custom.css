@@ -1788,34 +1788,16 @@ details.toc a.is-active {
     margin-top: 16px;
 }
 
-/* 个人学习口号：姓名下方的一条旅程宣言。
+/* 个人宣言：姓名下方的一条旅程宣言，不贴「学习口号」之类标签。
    两个端点（矩阵乘法 → Agent）渲染成代码风格节点芯片——起点描边、终点实心，
    呼应实现导图「开工顺序即依赖顺序」的节点脉络；动效保持克制，尊重减弱动效偏好。 */
 .home-slogan {
-    margin: 2px 0 16px;
+    margin: 0 0 16px;
     animation: home-slogan-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.home-slogan-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    color: var(--accent);
-}
-
-.home-slogan-tag::before {
-    content: "";
-    width: 20px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-}
-
 .home-slogan-line p {
-    margin: 8px 0 0;
+    margin: 0;
     color: var(--primary);
     font-size: clamp(19px, 2.5vw, 25px);
     font-weight: 500;
