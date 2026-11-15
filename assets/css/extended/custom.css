@@ -1788,6 +1788,95 @@ details.toc a.is-active {
     margin-top: 16px;
 }
 
+/* 个人学习口号：姓名下方的一条旅程宣言。
+   两个端点（矩阵乘法 → Agent）渲染成代码风格节点芯片——起点描边、终点实心，
+   呼应实现导图「开工顺序即依赖顺序」的节点脉络；动效保持克制，尊重减弱动效偏好。 */
+.home-slogan {
+    margin: 2px 0 16px;
+    animation: home-slogan-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.home-slogan-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+}
+
+.home-slogan-tag::before {
+    content: "";
+    width: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.home-slogan-line p {
+    margin: 8px 0 0;
+    color: var(--primary);
+    font-size: clamp(19px, 2.5vw, 25px);
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+.home-slogan-line strong {
+    display: inline-block;
+    margin: 0 3px;
+    padding: 1px 10px;
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    white-space: nowrap;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    animation: home-slogan-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.home-slogan-line strong:first-of-type {
+    animation-delay: 0.12s;
+}
+
+/* 终点芯片实心：从「基础」走到「目的地」。文字用主题底色，浅/暗模式都有对比。 */
+.home-slogan-line strong:last-of-type {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--theme, #fff);
+    animation-delay: 0.24s;
+}
+
+.home-slogan-line strong:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 18px -10px var(--accent-fade);
+}
+
+@keyframes home-slogan-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-slogan,
+    .home-slogan-line strong {
+        animation: none;
+    }
+    .home-slogan-line strong {
+        transition: none;
+    }
+}
+
 /* 首页栏目网格：篇数充沛的主力栏目跨满整行（内部左右分栏），
    新开或筹备中的轻量连载自动组成双列矩阵，消除纵向冗长空白。 */
 .home-sections {
@@ -2809,6 +2898,19 @@ details.toc a.is-active {
 
     .home-intro-copy {
         font-size: 15.5px;
+    }
+
+    .home-slogan {
+        margin-bottom: 12px;
+    }
+
+    .home-slogan-line p {
+        font-size: 17px;
+    }
+
+    .home-slogan-line strong {
+        margin: 0 2px;
+        padding: 1px 7px;
     }
 
     .home-intro .social-icons {

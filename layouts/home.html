@@ -13,6 +13,12 @@
 {{- with site.Params.homeInfoParams }}
 <header class="home-intro">
   {{- with .Title }}<h1>{{ . | markdownify }}</h1>{{ end }}
+  {{- with .Slogan }}
+  <div class="home-slogan">
+    <span class="home-slogan-tag">学习口号</span>
+    <div class="home-slogan-line">{{ . | markdownify }}</div>
+  </div>
+  {{- end }}
   {{- with .Content }}<div class="home-intro-copy">{{ . | markdownify }}</div>{{ end }}
   {{ partial "social_icons.html" (dict "variant" "home") }}
 </header>
