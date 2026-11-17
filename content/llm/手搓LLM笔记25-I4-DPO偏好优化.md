@@ -1,10 +1,15 @@
 +++
 title = "手搓 LLM 笔记 25：I4 DPO 偏好优化"
-date = 2026-11-16
+date = 2026-11-16T15:00:00+08:00
 draft = false
 slug = "llm-25-i4-dpo-preference"
 tags = ["LLM", "I4", "DPO", "偏好优化", "CoT", "后训练", "学习笔记"]
 summary = "DPO 起步实录：理解 chosen / rejected、序列 logprob、参考模型、score 与 loss，完成偏好数据、模板编码审计和单步更新。记录梯度裁剪对 Adam 整体缩放不敏感，以及 LR=1e-7 的温和更新；批量 DPO 训练尚未开始。"
+[cover]
+    image = "covers/llm-25-i4-dpo-preference.jpg"
+    alt = "手搓 LLM 笔记 25：I4 DPO 偏好优化"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 今天先停在 **DPO 小批量训练之前**。

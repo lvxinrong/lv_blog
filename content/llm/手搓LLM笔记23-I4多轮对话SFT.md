@@ -1,10 +1,15 @@
 +++
 title = "手搓 LLM 笔记 23：I4 多轮对话 SFT"
-date = 2026-11-16
+date = 2026-11-16T09:00:00+08:00
 draft = false
 slug = "llm-23-i4-multiturn-sft"
 tags = ["LLM", "I4", "SFT", "多轮对话", "后训练", "学习笔记"]
 summary = "从 Assistant-only loss mask、Qwen 多轮模板和 128 条合成样本开始，完成全参数 SFT、独立行为评测与训练量干预。记录 v1 能力回退、v2 恢复，以及 loss 与行为表现不一致的真实证据。"
+[cover]
+    image = "covers/llm-23-i4-multiturn-sft.jpg"
+    alt = "手搓 LLM 笔记 23：I4 多轮对话 SFT"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 这篇记录的是 **I4-B：多轮对话 SFT 的最小完整闭环**，不是整个 I4 的收官。CoT-SFT、DPO、GRPO、LoRA 与全参对照尚未开始。

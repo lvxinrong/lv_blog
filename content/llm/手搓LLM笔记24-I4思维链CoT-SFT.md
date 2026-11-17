@@ -1,10 +1,15 @@
 +++
 title = "手搓 LLM 笔记 24：I4 思维链 CoT-SFT"
-date = 2026-11-16
+date = 2026-11-16T12:00:00+08:00
 draft = false
 slug = "llm-24-i4-cot-sft"
 tags = ["LLM", "I4", "CoT", "SFT", "思维链", "后训练", "学习笔记"]
 summary = "从 CoT 数据契约、Qwen 历史思考剥离和严格格式验收出发，完成 128 + 32 条 CoT 数据审计与三组 peak_lr 对照。记录 CoT 丢失、低学习率恢复、输出长度与推理算式变化，以及最终答案未超过原始模型的边界。"
+[cover]
+    image = "covers/llm-24-i4-cot-sft.jpg"
+    alt = "手搓 LLM 笔记 24：I4 思维链 CoT-SFT"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 这篇记录 **I4-C：思维链 CoT-SFT 的受控实验与阶段收官**。它不是“CoT 能力已经解决”的证明，而是一次从数据协议、模板行为、训练干预到行为验收的完整排障。

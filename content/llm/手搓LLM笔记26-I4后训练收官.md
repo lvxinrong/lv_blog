@@ -5,6 +5,11 @@ draft = false
 slug = "llm-26-i4-post-training-recap"
 tags = ["LLM", "I4", "SFT", "DPO", "LoRA", "RLVR", "GRPO", "后训练", "学习笔记"]
 summary = "I4 收官：完成多轮 SFT、CoT-SFT、DPO 批量训练、LoRA / 全参对照、RLVR / GRPO 单组更新、同题规则胜率与真实 Web UI 回归。保留所有未超越原始模型、局部回退和最小实验边界。"
+[cover]
+    image = "covers/llm-26-i4-post-training-recap.jpg"
+    alt = "手搓 LLM 笔记 26：I4 后训练收官"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 这篇是 I4 的收官汇总，承接：
