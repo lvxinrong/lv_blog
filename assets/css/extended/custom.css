@@ -863,6 +863,31 @@ pre:hover .copy-code,
     box-shadow: none;
 }
 
+/* 单页封面 plate：仅 PC 显示。列表页仍隐藏封面以保住扫读密度；
+   单页在桌面端把封面作为一块克制的「封面 plate」展示，移动端隐藏。
+   没有 cover.image 的文章不渲染 figure，保持现状。 */
+.post-single .entry-cover {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .post-single .entry-cover {
+        display: block;
+        max-width: 480px;
+        margin: 6px 0 26px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .post-single .entry-cover img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
 /* --------------------------------------------------------------------------
    6. 目录（TOC）与宽屏侧栏滚动高亮
    -------------------------------------------------------------------------- */
