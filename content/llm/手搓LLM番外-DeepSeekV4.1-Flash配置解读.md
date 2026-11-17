@@ -1,10 +1,15 @@
 +++
 title = "手搓 LLM 番外：DeepSeek V4.1 Flash text_config 配置解读"
-date = 2026-11-18
+date = 2026-11-18T01:50:00+08:00
 draft = false
 slug = "llm-extra-deepseek-v41-flash-text-config"
 tags = ["DeepSeek", "MoE", "Engram", "DSpark", "RoPE", "模型配置", "学习笔记"]
 summary = "逐字段阅读 DeepSeek V4.1 Flash 的 text_config：从 hidden_size、Attention、MoE、长上下文压缩到 Engram 与 DSpark。区分配置事实、结构直觉与必须回源码确认的实现细节，不展开 vision_config。"
+[cover]
+    image = "covers/llm-extra-deepseek-v41-flash-text-config.jpg"
+    alt = "手搓 LLM 番外：DeepSeek V4.1 Flash text_config 配置解读"
+    hiddenInList = true
+    hiddenInSingle = true
 +++
 
 这份 `text_config` 的信息密度很高。它不是一个简单的“更大版 Qwen”，而是把 **MoE、低秩 Attention、长上下文压缩、稀疏索引、Engram 查表记忆和 DSpark 投机解码**放进了同一套架构。
