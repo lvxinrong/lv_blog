@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-17T14:48:06+08:00
+lastmod = 2026-11-18T02:14:49+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 5/7）已完成 I0～I4 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I5，后续 I6 领域后训练打榜（Java 缺陷定位与修复）待启动，I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修）覆盖性能基线、源码地图、手搓推理引擎、算子优化、分布式训练与稳定性、专家并行、生产 Serving 与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 5/7）已完成 I0～I4 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I5，后续 I6 领域后训练打榜（Java 缺陷定位与修复）待启动，I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 9 个里程碑）覆盖性能基线、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 5/7 (I0～I4 及番外已完成，主线下一站 I5；I6 领域后训练打榜待启动，I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + Mini-Serving 主干实践 + S2.5 长上下文 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 5/7 (I0～I4 及番外已完成，主线下一站 I5；I6 领域后训练打榜待启动，I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
 >}}
 
 {{< roadmap_progress
@@ -360,25 +360,27 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 > **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段当前处于“规划中”（尚未开始，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**
 >
-> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜 → I7-A Mini MoE → I7-B MLA → I7-C MTP（架构选修）→ S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。I7 架构番外、Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度，也不阻塞主线推进。
+> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜 → I7-A Mini MoE → I7-B MLA → I7-C MTP（架构选修）→ S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ V5 稀疏架构与低秩表示 → S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → V6 长上下文记忆与推理协同 → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。I7 架构番外、Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度；V5 / V6 为第三阶段正式版本里程碑，计入该阶段里程碑总数。
 
 {{< roadmap_progress
     id="phase-03"
     season="STAGE 03 · 第三阶段（规划中）"
-    title="工业级训练、推理与分布式系统（S0 ～ S6）"
+    title="工业级训练、推理与分布式系统（S0 ～ S6 + V5/V6）"
     phase_state="planning"
     repo="squid-llms"
     theory_title="DeepSeek DeepInfer"
     theory_url="https://github.com/deepseek-ai/DeepInfer"
-    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I4 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I4 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
     done="0"
-    total="7"
+    total="9"
     unit="规划里程碑（尚未启动）"
-    planning_note="规划中 · I0～I4 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 选修 → S3 → S4 → S5 → S6 启动"
-    steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, s6:S6:稳定性验收:todo"
+    delivered="尚未交付；S0～S6 与 V5 / V6 均为规划里程碑"
+    next="S0 · GPU 系统基础与性能基线（规划起点）"
+    planning_note="规划中 · I0～I4 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
+    steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, v5:V5:稀疏架构与低秩表示:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, v6:V6:记忆与推理协同:todo, s6:S6:稳定性验收:todo"
 >}}
 
-{{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0 ～ S6 共 7 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方 S0～S6 节点可直接跳转）" >}}
+{{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6 与 V5/V6 共 9 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}
 
 {{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I4` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
 1. **第二阶段 `I0～I4` 的相关基础（均已完成）**：
@@ -512,6 +514,26 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - [DeepSeek-V3.2-Exp](https://github.com/deepseek-ai/DeepSeek-V3.2-Exp)。
 {{< /milestone >}}
 
+{{< milestone id="s-v5" code="V5" title="V5：稀疏架构与低秩表示" status="planning" question="怎样在不复刻 DeepSeek 的前提下，亲手实现一个小型、可验证的稀疏架构与原生低秩表示主干？" summary="第三阶段正式版本里程碑（规划中）：承接 I7 的 MoE / MLA 与 S0～S2 的测量 / 源码 / Kernel 基础，实现 Top-K Router + Shared Expert、原生低秩 Q / O 投影、部分 RoPE 与 KV Cache 位置进度的小型稀疏主干；与 V4 Dense 基线同口径对照，不预设提速或优于 V4。" >}}
+- **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；承接 `I7` 的 MoE / MLA 基础与 `S0～S2` 的测量、源码与 Kernel 基础。不是复刻 DeepSeek，而是先实现一个小型、可验证的稀疏架构主干。
+- **第一版范围**：
+  - Top-K Router + Shared Expert；
+  - 原生低秩 Q / O 投影；
+  - 部分 RoPE；
+  - KV Cache 与逐 token 位置进度。
+- **重点学习**：
+  - 原生低秩结构与后训练 LoRA adapter 的区别（前者预训练即存在，后者是已有权重的低秩补丁）；
+  - Top-K 路由、负载均衡与共享专家；
+  - 部分通道 RoPE 与全通道 RoPE 的差异；
+  - 总参数、激活参数、KV Cache 与实际生成行为的关系。
+- **规划验收标准**：
+  - 路由、共享专家、投影形状与位置进度正确；
+  - 前向、cache decode 与固定生成测试通过；
+  - 与 V4 Dense 基线比较参数量、激活参数、KV Cache、生成行为与资源成本；
+  - 不预设一定提速或一定优于 V4；
+  - 不直接加载或复刻 DeepSeek 大模型权重。
+{{< /milestone >}}
+
 {{< milestone id="s3" code="S3" title="分布式训练与训练稳定性" status="planning" question="模型和数据变大以后，计算、梯度、参数与 checkpoint 怎样分布到多个设备，训练又怎样保持稳定？" summary="沿 DDP → All-Reduce → FSDP/ZeRO → TP/PP/CP → 分布式 checkpoint 构建最小沙盘，并纳入 FP8 / Activation Storage、Muon / MuonClip、Attention Logit 稳定性与通信 / 重算 / Activation Offload；硬件不支持的内容只做源码或最小实验。" >}}
 - **学习顺序**：
   1. 数据并行与 DDP；
@@ -588,6 +610,23 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 性能结论必须来自实测（TTFT / TPOT / 吞吐 / P95），不照抄官方数字。
 {{< /milestone >}}
 
+{{< milestone id="s-v6" code="V6" title="V6：长上下文、记忆与推理协同" status="planning" question="怎样把长上下文、记忆与推理调度协同起来，并让草稿—验证链路可验证、可对照？" summary="第三阶段正式版本里程碑（规划中）：同时依赖模型结构、KV 管理、缓存复用、推理调度与验证机制；首选 DSpark 方向（衔接 I3 Draft / Target、Mini-Serving、GRPO 与缓存验证链路），第一版做草稿—目标验证、Markov 顺序依赖、置信度调度与接受率 / 错误处理对照；Engram / 压缩 / 索引留作后续可选扩展。" >}}
+- **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；同时依赖模型结构、KV 管理、缓存复用、推理调度与验证机制。首选方向为 DSpark，因为它与 `I3` 的 Draft / Target 投机解码、`Mini-Serving`、GRPO、缓存和验证链路衔接最自然。
+- **第一版范围**：
+  - 草稿结构与目标模型验证；
+  - Markov 顺序依赖与块内一致性；
+  - 置信度调度；
+  - 接受率与错误处理；
+  - 输出一致性、速度、内存与行为质量对照。
+- **规划验收标准**：
+  - 草稿与目标模型的 token 一致性可验证；
+  - 接受率、置信度调度与失败路径有记录；
+  - 能解释与普通 Draft / Target 投机解码的差异；
+  - 同 prompt、同解码参数、同任务集下比较吞吐、内存与输出质量；
+  - 不把草稿直接当成目标输出，不预设一定提速。
+- **范围边界**：Engram、压缩与索引作为 V6 后续可选扩展，不要求第一版同时完成，避免把版本范围无限扩大。
+{{< /milestone >}}
+
 {{< milestone id="s6" code="S6" title="稳定性、确定性与综合验收" status="planning" question="系统不只要能跑，还要能证明它稳定、可复现、可诊断、可恢复。" summary="补齐 batch-invariant inference、确定性采样、日志 trace 与故障注入压测，加入长上下文质量与性能、Dense V4 与各新架构的同口径对照，产出全景图、DeepInfer 总结与第三阶段收官笔记。" >}}
 - **学习内容**：
   - batch-invariant inference；
@@ -647,16 +686,32 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     phase_state="planning"
     hide_bar="true"
     repo="squid-llms"
-    rules="阶段定位::证明模型能力真的变强了——以 Agentic 后训练与能力形成为核心，多模态保持选修 | 前置依赖::现代架构底座已就绪，待 I4 / I5 后训练基础与第三阶段系统能力完成后展开 | 探索衔接::承载推理强化、模型诊断、扩层后训练（后续选修），以及下方尚未开始训练的 M7 个人中文语料 Midtrain"
+    rules="阶段定位::证明模型能力真的变强了——以 Agentic 后训练与能力形成为核心，多模态保持选修 | 前置依赖::现代架构底座已就绪，待 I4 / I5 后训练基础与第三阶段系统能力完成后展开 | 架构选型::V4 Pro vs Flash 架构差异与场景取舍（模型谱系、架构选型与场景适配），具备部署条件再做同口径对照 | 探索衔接::承载推理强化、模型诊断、扩层后训练（后续选修），以及下方尚未开始训练的 M7 个人中文语料 Midtrain"
 >}}
 
 - **Agentic 后训练与能力形成**：大规模 Agentic 数据合成、RLVR、自我评价奖励、工具调用与环境交互，以及更进一步的推理强化；
 - **推理强化与对齐**：CoT、DPO、GRPO、RLVR（承接 I4 后训练基础）；
 - **数据与评测工程**：指令数据工程与评委校准；
 - **领域模型与权重诊断**：领域模型训练与评估、模型诊断和权重空间编程（探索记录见[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)）；
+- **模型谱系与架构选型**：V4 Pro vs Flash 架构差异与场景取舍（见下方研究节点）；Flash 侧以 `text_config` 解读为依据、Pro 侧待官方来源核对，不提前断言谁更强更快；
 - **模型增长与扩层后训练（后续选修）**：研究 Block Expansion / Depth Up-Scaling（Net2Net、LLaMA Pro、SOLAR），在原有 Transformer Block 之后、`final_norm` 之前插入少量新层，重点理解恒等初始化、冻结与逐步解冻，并与 LoRA、全参数训练做同数据对照；不阻塞当前主线或 `M7`；
 - **多模态（保持选修）**：不作为主阶段，只保留未来选修，不为补清单改变当前主线；
 - **个人中文语料 midtrain（尚未开始训练）**：承载下方 `M7` 独立彩蛋。
+
+{{< milestone id="v4-pro-flash-comparison" code="V4 Pro / Flash" title="V4 Pro vs Flash：架构差异与场景取舍" status="planning" question="同一模型家族中 Pro 与 Flash 的架构差异是什么，它们分别适合哪些任务与部署环境？" summary="第四阶段正式架构选型研究（规划中，非番外 / 追新）：对照 Pro 与 Flash 的参数 / 激活规模、专家与路由、Attention / KV / RoPE、Engram 与 DSpark、上下文扩展、量化与部署成本等维度；Flash 侧已有 text_config 解读，Pro 侧配置待官方来源核对；具备部署条件后再做同口径质量 / 速度 / 成本对照，不提前断言谁更强更快。" >}}
+- **定位说明**：正式研究方向（非番外、非临时追新），研究同一模型家族中 Pro 与 Flash 的架构差异及其各自适合的任务与部署环境；服务于模型谱系、架构选型与场景适配。
+- **配置对照维度**：
+  - 参数规模与激活参数；
+  - 专家数、路由方式与激活比例；
+  - Attention / KV / RoPE；
+  - Engram 与 DSpark 配置；
+  - 上下文长度与扩展方式；
+  - 量化格式、权重存储与部署成本；
+  - 本地可运行性、云端资源与推理成本。
+- **证据边界**：Flash 侧已有 `text_config` 逐字段解读番外可作依据；Pro 侧配置尚未核对官方来源，不虚构 Pro 数值或 Pro / Flash 实测差异。
+- **部署对照（具备条件后）**：同 prompt、同解码参数、同任务集、同测量口径下的质量、速度与成本对照。
+- **暂无部署条件时**：只写配置与架构差异，不提前声称 Pro 一定更强或 Flash 一定更快。
+{{< /milestone >}}
 
 {{< milestone id="m7" code="M7" title="第四阶段独立彩蛋：个人中文语料中间训练（Midtrain）" status="optional" summary="第四阶段独立彩蛋（尚未开始训练，仅完成语料盘点）：基于已就绪的 Qwen 底座与个人中文语料开展 midtrain 与评估对照。" >}}
 - **定位与当前状态**：属于第四阶段独立彩蛋（不计入第一或第二阶段主线完成度），**目前尚未开始训练**（仅完成个人语料盘点，尚未产生 midtrain loss 或新 checkpoint）。
