@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
+                "file": "llm/手搓LLM笔记27-I5评估校准与回归基准自动化.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "手搓LLM番外-DeepSeekV4.1-Flash配置解读"
+              "title": "手搓LLM笔记27-I5评估校准与回归基准自动化"
             }
           }
         ]
@@ -187,9 +187,10 @@
   },
   "active": "119cfaa7b45dd98c",
   "lastOpenFiles": [
+    "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
+    "llm/手搓LLM笔记27-I5评估校准与回归基准自动化.md",
     "roadmap.md.tmp.49047.1794939444582",
     "llm/手搓LLM笔记26-I4后训练收官.md",
-    "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
     "llm/手搓LLM番外-默写GPTModel.md",
     "llm/手搓LLM笔记25-I4-DPO偏好优化.md",
     "llm/手搓LLM笔记23-I4多轮对话SFT.md",
