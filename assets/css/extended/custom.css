@@ -4705,3 +4705,369 @@ details.roadmap-phase-drawer[open] .roadmap-phase-drawer-hint::after {
         grid-template-columns: 1fr;
     }
 }
+
+/* --------------------------------------------------------------------------
+   N. Roadmap 展示重构（仅表现层，内容不变）：
+      统一状态色 + 图例 / 卡片·矩阵双视图 / 粘性阶段轨 / 阶段折叠 /
+      横向里程碑轨连接线 / 子卡片嵌套。
+   -------------------------------------------------------------------------- */
+:root {
+    --st-done: #2f9e6e;
+    --st-next: #3b5bdb;
+    --st-todo: #9aa0aa;
+    --st-optional: #d97706;
+    --st-planning: #0e8f9c;
+}
+
+[data-theme="dark"] {
+    --st-done: #4cc38a;
+    --st-next: #8ba4ff;
+    --st-todo: #7d838e;
+    --st-optional: #f0a020;
+    --st-planning: #3fc9d6;
+}
+
+/* 工具条：状态图例 + 视图切换 */
+.roadmap-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--entry, transparent);
+}
+
+.roadmap-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+}
+
+.roadmap-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--secondary);
+}
+
+.roadmap-legend-item i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--st);
+}
+
+.roadmap-legend-item.is-optional i {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+    border: 2px dashed var(--st);
+}
+
+.roadmap-view-toggle {
+    margin-left: auto;
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.roadmap-view-toggle button {
+    padding: 4px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--secondary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.roadmap-view-toggle button.is-on {
+    background: var(--accent);
+    color: var(--theme, #fff);
+}
+
+/* 粘性阶段轨 */
+.phase-rail {
+    position: sticky;
+    top: 60px;
+    z-index: 40;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 2px;
+    margin: 0 0 14px;
+    background: color-mix(in srgb, var(--page-bg, #fff) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+}
+
+.phase-rail-item {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--entry, transparent);
+    color: var(--secondary);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.phase-rail-item i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--st);
+}
+
+.phase-rail-item strong {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--primary);
+}
+
+.phase-rail-item.is-active {
+    border-color: var(--accent-border);
+    color: var(--primary);
+}
+
+/* 阶段折叠 */
+.phase-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0 12px;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--entry, transparent);
+    color: var(--secondary);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.phase-toggle:hover {
+    border-color: var(--accent-border);
+    color: var(--primary);
+}
+
+.phase-toggle-hint {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+[data-phasebody][hidden] {
+    display: none;
+}
+
+/* 折叠态的阶段控制台压缩为紧凑摘要；矩阵视图下控制台由矩阵取代 */
+.roadmap-console.is-collapsed .roadmap-spec-grid,
+.roadmap-console.is-collapsed .roadmap-bar-track,
+.roadmap-console.is-collapsed .roadmap-stepper {
+    display: none;
+}
+
+body.roadmap-matrix-mode .roadmap-console {
+    display: none;
+}
+
+/* 横向里程碑轨：节点间连接线 + 统一状态色 */
+.md-content .roadmap-stepper a.roadmap-step {
+    position: relative;
+}
+
+.md-content .roadmap-stepper a.roadmap-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 8px;
+    height: 2px;
+    background: var(--border);
+}
+
+.roadmap-step.is-done {
+    border-color: color-mix(in srgb, var(--st-done) 35%, transparent) !important;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--st-done) 10%, transparent), transparent) !important;
+}
+
+.roadmap-step.is-done .roadmap-step-dot {
+    background: var(--st-done);
+    color: #fff;
+}
+
+.roadmap-step.is-next {
+    border-color: var(--st-next) !important;
+    background: color-mix(in srgb, var(--st-next) 10%, transparent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--st-next) 18%, transparent);
+}
+
+.roadmap-step.is-next .roadmap-step-dot {
+    background: var(--st-next);
+    color: #fff;
+}
+
+.roadmap-step.is-todo .roadmap-step-dot {
+    background: var(--code-bg);
+    border: 1px solid var(--st-todo);
+    color: var(--st-todo);
+}
+
+.roadmap-step.is-optional .roadmap-step-dot {
+    border: 1px dashed var(--st-optional);
+    color: var(--st-optional);
+}
+
+.roadmap-step.is-planning .roadmap-step-dot {
+    background: transparent;
+    border: 1px solid var(--st-planning);
+    color: var(--st-planning);
+}
+
+/* 里程碑卡片状态色统一 + 子卡片嵌套 */
+.ms-card.is-done .ms-status {
+    color: var(--st-done);
+    background: color-mix(in srgb, var(--st-done) 12%, transparent);
+    border-color: color-mix(in srgb, var(--st-done) 30%, transparent);
+}
+
+.ms-card.is-next .ms-status {
+    color: var(--st-next);
+    background: color-mix(in srgb, var(--st-next) 12%, transparent);
+    border-color: color-mix(in srgb, var(--st-next) 30%, transparent);
+}
+
+.ms-card.is-todo .ms-status {
+    color: var(--st-todo);
+    background: color-mix(in srgb, var(--st-todo) 12%, transparent);
+    border-color: color-mix(in srgb, var(--st-todo) 30%, transparent);
+}
+
+.ms-card.is-optional .ms-status {
+    color: var(--st-optional);
+    background: color-mix(in srgb, var(--st-optional) 12%, transparent);
+    border-color: color-mix(in srgb, var(--st-optional) 30%, transparent);
+}
+
+.ms-card.is-planning .ms-status {
+    color: var(--st-planning);
+    background: color-mix(in srgb, var(--st-planning) 12%, transparent);
+    border-color: color-mix(in srgb, var(--st-planning) 30%, transparent);
+}
+
+.ms-card.is-subcard {
+    margin-left: 26px;
+    border-left: 2px dashed color-mix(in srgb, var(--series, var(--accent)) 40%, var(--border));
+}
+
+.ms-card-head {
+    cursor: pointer;
+}
+
+/* 矩阵视图 */
+.roadmap-matrix {
+    display: none;
+    margin: 0 0 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body.roadmap-matrix-mode .roadmap-matrix {
+    display: block;
+}
+
+body.roadmap-matrix-mode [data-phasebody],
+body.roadmap-matrix-mode .phase-toggle {
+    display: none;
+}
+
+.matrix-phase + .matrix-phase {
+    border-top: 1px solid var(--border);
+}
+
+.matrix-phase-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--entry, transparent);
+    font-size: 12.5px;
+    color: var(--primary);
+}
+
+.matrix-phase-label strong {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--secondary);
+}
+
+.matrix-cells {
+    display: grid;
+    gap: 6px;
+    padding: 10px 14px 14px;
+}
+
+.matrix-cell {
+    padding: 8px 4px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--secondary);
+    cursor: pointer;
+    text-align: center;
+}
+
+.matrix-cell.is-done {
+    border-color: color-mix(in srgb, var(--st-done) 40%, transparent);
+    background: color-mix(in srgb, var(--st-done) 14%, transparent);
+    color: var(--st-done);
+}
+
+.matrix-cell.is-next {
+    border-color: var(--st-next);
+    background: color-mix(in srgb, var(--st-next) 14%, transparent);
+    color: var(--st-next);
+}
+
+.matrix-cell.is-todo {
+    border-color: color-mix(in srgb, var(--st-todo) 40%, transparent);
+    color: var(--st-todo);
+}
+
+.matrix-cell.is-optional {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--st-optional) 45%, transparent);
+    color: var(--st-optional);
+}
+
+.matrix-cell.is-planning {
+    border-color: color-mix(in srgb, var(--st-planning) 40%, transparent);
+    color: var(--st-planning);
+}
+
+@media (max-width: 768px) {
+    .phase-rail {
+        top: 56px;
+    }
+
+    .ms-card.is-subcard {
+        margin-left: 12px;
+    }
+
+    .matrix-cells {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}

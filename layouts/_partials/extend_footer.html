@@ -106,7 +106,7 @@
                 }
             });
             dropdown.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () { dropdown.open = false); });
+                link.addEventListener('click', function () { dropdown.open = false; });
             });
         });
     })();
@@ -245,5 +245,170 @@
             if (event.target instanceof Element && event.target.matches('iframe.giscus-frame')) sync();
         }, true);
         sync();
+    })();
+
+    /* Roadmap 展示重构：粘性阶段轨 / 阶段折叠 / 卡片·矩阵双视图 / 节点与卡片联动。
+       仅表现层增强，不改内容；无 JS 时回落到原有抽屉与卡片。 */
+    (function () {
+        var root = document.querySelector('.post-content.md-content');
+        if (!root) return;
+        var consoles = Array.prototype.slice.call(root.querySelectorAll('section.roadmap-console[id]'));
+        if (!consoles.length) return;
+
+        var stateOf = function (c) {
+            if (c.classList.contains('is-phase-done')) return 'done';
+            if (c.classList.contains('is-phase-active')) return 'active';
+            return 'planning';
+        };
+        var stVar = { done: '--st-done', active: '--st-next', planning: '--st-planning' };
+        var statOf = function (c) {
+            var s = c.querySelector('.roadmap-console-stat strong');
+            return s ? s.textContent.trim() : '';
+        };
+        var titleOf = function (c) {
+            var t = c.querySelector('.roadmap-phase-title');
+            return t ? t.textContent.trim() : c.id;
+        };
+
+        var first = consoles[0];
+        var toolbar = document.createElement('div');
+        toolbar.className = 'roadmap-toolbar';
+        toolbar.innerHTML =
+            '<div class="roadmap-legend">' +
+            [['done', '已验收', '--st-done'], ['next', '下一站', '--st-next'], ['todo', '待开工', '--st-todo'], ['optional', '可选', '--st-optional'], ['planning', '规划中', '--st-planning']].map(function (p) {
+                return '<span class="roadmap-legend-item is-' + p[0] + '" style="--st: var(' + p[2] + ')"><i></i>' + p[1] + '</span>';
+            }).join('') +
+            '</div>' +
+            '<div class="roadmap-view-toggle" role="group" aria-label="视图切换">' +
+            '<button type="button" data-view="card" class="is-on">卡片视图</button>' +
+            '<button type="button" data-view="matrix">矩阵视图</button>' +
+            '</div>';
+        var rail = document.createElement('nav');
+        rail.className = 'phase-rail';
+        rail.setAttribute('aria-label', '阶段导航');
+        var matrix = document.createElement('div');
+        matrix.className = 'roadmap-matrix';
+        first.parentNode.insertBefore(toolbar, first);
+        first.parentNode.insertBefore(rail, first);
+        first.parentNode.insertBefore(matrix, first);
+
+        consoles.forEach(function (c) {
+            var st = stateOf(c);
+            var a = document.createElement('a');
+            a.className = 'phase-rail-item' + (st === 'active' ? ' is-active' : '');
+            a.href = '#' + c.id;
+            a.style.setProperty('--st', 'var(' + stVar[st] + ')');
+            a.innerHTML = '<i></i><span>' + titleOf(c) + '</span><strong>' + statOf(c) + '</strong>';
+            rail.appendChild(a);
+        });
+
+        var bodies = {};
+        var toggles = {};
+        consoles.forEach(function (c, i) {
+            var stop = consoles[i + 1] || null;
+            var els = [];
+            var n = c.nextElementSibling;
+            while (n && n !== stop) {
+                if (n.tagName === 'H2' && /支线探索/.test(n.textContent)) break;
+                els.push(n);
+                n = n.nextElementSibling;
+            }
+            bodies[c.id] = els;
+            var st = stateOf(c);
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'phase-toggle';
+            c.parentNode.insertBefore(btn, c.nextSibling);
+            toggles[c.id] = btn;
+            var setOpen = function (open) {
+                els.forEach(function (el) { el.hidden = !open; });
+                c.classList.toggle('is-collapsed', !open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                btn.innerHTML = '<span>' + titleOf(c) + ' · ' + (st === 'done' ? '已完成' : st === 'active' ? '进行中' : '规划中') + ' ' + statOf(c) + '</span><span class="phase-toggle-hint">' + (open ? '收起 ▴' : '展开 ▾') + '</span>';
+            };
+            btn.addEventListener('click', function () { setOpen(btn.getAttribute('aria-expanded') !== 'true'); });
+            setOpen(st === 'active');
+            els.forEach(function (el) { el.setAttribute('data-phasebody', c.id); });
+        });
+        var openPhase = function (id) {
+            var btn = toggles[id];
+            if (btn && btn.getAttribute('aria-expanded') !== 'true') btn.click();
+        };
+
+        consoles.forEach(function (c) {
+            var steps = Array.prototype.slice.call(c.querySelectorAll('.roadmap-stepper .roadmap-step'));
+            if (!steps.length) return;
+            var row = document.createElement('div');
+            row.className = 'matrix-phase';
+            var label = document.createElement('div');
+            label.className = 'matrix-phase-label';
+            label.innerHTML = '<span>' + titleOf(c) + '</span><strong>' + statOf(c) + '</strong>';
+            var cells = document.createElement('div');
+            cells.className = 'matrix-cells';
+            cells.style.gridTemplateColumns = 'repeat(' + steps.length + ', minmax(0,1fr))';
+            steps.forEach(function (s) {
+                var status = (s.className.match(/is-(done|next|todo|optional|planning)/) || [])[1] || 'todo';
+                var code = s.querySelector('.roadmap-step-code');
+                var name = s.querySelector('.roadmap-step-name');
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'matrix-cell is-' + status;
+                b.textContent = code ? code.textContent.trim() : '';
+                b.title = name ? name.textContent.trim() : '';
+                b.setAttribute('data-target', (s.getAttribute('href') || '').slice(1));
+                cells.appendChild(b);
+            });
+            row.appendChild(label);
+            row.appendChild(cells);
+            matrix.appendChild(row);
+        });
+
+        var setView = function (mode) {
+            document.body.classList.toggle('roadmap-matrix-mode', mode === 'matrix');
+            toolbar.querySelectorAll('.roadmap-view-toggle button').forEach(function (b) {
+                b.classList.toggle('is-on', b.getAttribute('data-view') === mode);
+            });
+        };
+        toolbar.querySelectorAll('.roadmap-view-toggle button').forEach(function (b) {
+            b.addEventListener('click', function () { setView(b.getAttribute('data-view')); });
+        });
+
+        var goto = function (id) {
+            var target = document.getElementById(id);
+            if (!target) return;
+            setView('card');
+            var pid = target.getAttribute('data-phasebody');
+            if (pid) openPhase(pid);
+            var d = target.querySelector('details.ms-details');
+            if (d) d.open = true;
+            var drawer = target.closest('details.roadmap-phase-drawer');
+            if (drawer) drawer.open = true;
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        matrix.addEventListener('click', function (e) {
+            var cell = e.target.closest('.matrix-cell');
+            if (cell) goto(cell.getAttribute('data-target'));
+        });
+        rail.addEventListener('click', function (e) {
+            var a = e.target.closest('.phase-rail-item');
+            if (!a) return;
+            rail.querySelectorAll('.phase-rail-item').forEach(function (x) { x.classList.remove('is-active'); });
+            a.classList.add('is-active');
+        });
+        root.addEventListener('click', function (e) {
+            var step = e.target.closest('a.roadmap-step[href^="#"]');
+            if (step) {
+                var t = document.getElementById(step.getAttribute('href').slice(1));
+                if (t) { var pid = t.getAttribute('data-phasebody'); if (pid) openPhase(pid); }
+                return;
+            }
+            var head = e.target.closest('.ms-card-head');
+            if (head && !e.target.closest('a')) {
+                var card = head.closest('.ms-card');
+                var dd = card && card.querySelector('details.ms-details');
+                if (dd) dd.open = !dd.open;
+            }
+        });
+        if (window.location.hash === '#matrix') setView('matrix');
     })();
 </script>
