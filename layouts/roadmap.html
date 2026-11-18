@@ -1,0 +1,75 @@
+{{- define "main" }}
+{{- $roadmap := .Params.roadmap }}
+
+<article class="post-single roadmap-page">
+  <header class="post-header roadmap-header">
+    <h1 class="post-title">{{ $roadmap.heading }}</h1>
+    <p class="roadmap-tagline">{{ $roadmap.tagline }}</p>
+    <p class="roadmap-purpose">{{ $roadmap.purpose }}</p>
+    <p class="roadmap-updated">更新于 <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2006.01.02" }}</time></p>
+  </header>
+
+  {{- with where $roadmap.phases "state" "active" }}
+  {{- $current := index . 0 }}
+  <section class="roadmap-now" aria-labelledby="roadmap-now-title">
+    <header class="roadmap-now-header">
+      <div>
+        <p class="roadmap-now-label">当前阶段 <span>{{ $current.number }}</span></p>
+        <h2 id="roadmap-now-title">{{ $current.title }}</h2>
+      </div>
+      {{- with $current.total }}
+      <p class="roadmap-progress"><strong>{{ $current.done }} / {{ . }}</strong><span>主线已验收</span></p>
+      {{- end }}
+    </header>
+    <div class="roadmap-now-entries">
+      {{- range slice $roadmap.latest $roadmap.next }}
+      <div class="roadmap-now-entry">
+        <p class="roadmap-now-entry-label">{{ .label }}</p>
+        <div>
+          <p class="roadmap-now-entry-title"><span class="roadmap-code">{{ .id | upper }}</span> {{ .title }}</p>
+          <p class="roadmap-now-entry-text">{{ .summary }}</p>
+        </div>
+        <a class="roadmap-now-link" href="{{ .url | default (printf "#%s" .id) }}">{{ .action }} <span aria-hidden="true">{{ if .url }}↗{{ else }}↓{{ end }}</span></a>
+      </div>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  <nav class="roadmap-route" aria-labelledby="roadmap-route-title">
+    <h2 id="roadmap-route-title">六阶段路线</h2>
+    <ol role="list">
+      {{- range $roadmap.phases }}
+      <li>
+        <a href="#{{ .id }}"{{ if eq .state "active" }} aria-current="step"{{ end }}>
+          <span class="roadmap-code">{{ .number }}</span>
+          <span class="roadmap-route-name">{{ .title }}</span>
+          <span class="roadmap-route-status">{{ .status }}{{ if eq .state "done" }} · {{ .done }} / {{ .total }}{{ end }}</span>
+          <span class="roadmap-route-arrow" aria-hidden="true">↓</span>
+        </a>
+      </li>
+      {{- end }}
+    </ol>
+  </nav>
+
+  <div class="post-content md-content roadmap-content">
+    {{ .Content }}
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      {{- range .GetTerms (.Language.Params.Taxonomies.tag | default "tags") }}
+      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
+    </ul>
+  </footer>
+
+  {{- if .Param "comments" }}
+    {{- partial "comments.html" . }}
+  {{- end }}
+</article>
+
+{{- with resources.Get "js/roadmap.js" | minify | fingerprint }}
+<script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
+{{- end }}
+{{- end }}
