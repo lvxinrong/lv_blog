@@ -1,9 +1,9 @@
 +++
-title = "lvchat 实现导图：开工顺序即依赖顺序"
+title = "lvchat 实现导图：主干先行，局部进化，持续验收"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-18T16:20:57+08:00
+lastmod = 2026-11-18T21:39:02+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
@@ -19,7 +19,8 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 +++
 
 {{< roadmap_overview
-    north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
+    north_star="构建并持续演进可对话的小模型及其工程系统，贯通数据、训练、后训练、推理、评估与服务；用可复现、可对照、可解释的证据说明每一代版本的能力、成本与边界。"
+    north_star_archived="用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
     phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 6/7 (I0～I5 及番外已完成，主线下一站 I6；I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
 >}}
 
@@ -388,7 +389,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     delivered="尚未交付；S0～S6 与 V5 / V6 均为规划里程碑"
     next="S0 · GPU 系统基础与性能基线（规划起点）"
     planning_note="规划中 · I0～I5 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
-    steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, v5:V5:稀疏架构与低秩表示:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, v6:V6:记忆与推理协同:todo, s6:S6:稳定性验收:todo"
+    steps="s0:S0:性能基线:planning, s1:S1:源码地图:planning, s2:S2:算子优化:planning, v5:V5:稀疏架构与低秩表示:planning, s3:S3:分布式训练:planning, s4:S4:MoE并行:planning, s5:S5:推理调度:planning, v6:V6:记忆与推理协同:planning, s6:S6:稳定性验收:planning"
 >}}
 
 {{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6 与 V5/V6 共 9 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}

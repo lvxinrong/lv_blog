@@ -1,16 +1,23 @@
 {{- /* 导图顶部：北极星指标 + 多阶段（Phase 1～N）全局演进鸟瞰轴。
        参数：
-         north_star  北极星指标宣言
-         phases      用 "|" 分隔的阶段概览，每项格式：
-                     "锚点id::阶段编号::阶段名称::状态(done|active|planning)::时间窗或进度说明"
+         north_star           当前北极星指标宣言
+         north_star_archived  已归档的上一季北极星（可选，弱化显示）
+         phases               用 "|" 分隔的阶段概览，每项格式：
+                              "锚点id::阶段编号::阶段名称::状态(done|active|planning)::时间窗或进度说明"
 */ -}}
 {{- $northStar := .Get "north_star" -}}
+{{- $northStarArchived := .Get "north_star_archived" -}}
 {{- $phasesRaw := .Get "phases" -}}
 
 {{- with $northStar }}
 <div class="roadmap-north-star" role="region" aria-label="北极星指标">
   <span class="roadmap-north-star-badge"><span class="roadmap-north-star-dot" aria-hidden="true"></span>NORTH STAR · 北极星指标</span>
-  <p class="roadmap-north-star-text">{{ . }}</p>
+  <div class="roadmap-north-star-body">
+    <p class="roadmap-north-star-text">{{ . }}</p>
+    {{- with $northStarArchived }}
+    <p class="roadmap-north-star-archived">第一季北极星（已完成）：{{ . }}</p>
+    {{- end }}
+  </div>
 </div>
 {{- end }}
 

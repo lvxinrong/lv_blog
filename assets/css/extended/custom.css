@@ -4973,6 +4973,28 @@ body.roadmap-matrix-mode .roadmap-console {
     cursor: pointer;
 }
 
+/* 仅有明细抽屉的卡片头才显示可点手势 */
+.ms-card:not(:has(details.ms-details)) .ms-card-head {
+    cursor: default;
+}
+
+/* 暗色下统一状态色（覆盖旧的高特异性 dark 规则） */
+[data-theme="dark"] .ms-card.is-done .ms-status {
+    color: var(--st-done);
+    background: color-mix(in srgb, var(--st-done) 14%, transparent);
+    border-color: color-mix(in srgb, var(--st-done) 30%, transparent);
+}
+
+[data-theme="dark"] .roadmap-step.is-done .roadmap-step-dot {
+    background: var(--st-done);
+    color: #08131a;
+}
+
+[data-theme="dark"] .roadmap-step.is-next .roadmap-step-dot {
+    background: var(--st-next);
+    color: #0b1020;
+}
+
 /* 矩阵视图 */
 .roadmap-matrix {
     display: none;
@@ -5070,4 +5092,22 @@ body.roadmap-matrix-mode .phase-toggle {
     .matrix-cells {
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     }
+}
+
+/* 已归档的上一季北极星：弱化显示，保留演进痕迹 */
+.roadmap-north-star-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.roadmap-north-star-archived {
+    margin: 8px 0 0;
+    padding-top: 7px;
+    border-top: 1px dashed var(--border);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--secondary);
+    opacity: 0.85;
 }
