@@ -1,7 +1,30 @@
 {{- /* 全量文章时间线：调用方传入 pages；归档和标签页可同时显示栏目名。 */ -}}
 {{- $pages := .pages -}}
 {{- $showSection := .showSection | default false -}}
+{{- /* 阶段徽章：映射见 data/llm_stages.yaml；仅列入映射的页面显示。 */ -}}
+{{- $stageData := hugo.Data.llm_stages | default dict -}}
+{{- $stageNotes := $stageData.notes | default dict -}}
+{{- $stageMeta := $stageData.stages | default dict -}}
+{{- $present := slice -}}
+{{- range $pages -}}
+  {{- if eq .Kind "page" -}}
+    {{- with index $stageNotes .Slug -}}
+      {{- $present = $present | append .phase -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $present = uniq $present -}}
 <div class="article-timeline">
+  {{- if $present -}}
+  <div class="stage-legend" aria-label="阶段图例">
+    {{- range $key := slice "1" "2" "3" "4" "5" "6" "extra" -}}
+      {{- if in $present $key -}}
+        {{- $s := index $stageMeta $key -}}
+        <span class="stage-legend-item" style="--stage-color: {{ $s.color }}"><i aria-hidden="true"></i>{{ $s.word }}<em>{{ $s.range }}</em></span>
+      {{- end -}}
+    {{- end -}}
+  </div>
+  {{- end -}}
   {{- range $pages.GroupByPublishDate "2006" }}
     {{- if ne .Key "0001" }}
     {{- $year := .Key }}
@@ -23,6 +46,10 @@
               <article class="timeline-entry" data-series="{{ .Section }}">
                 <div class="timeline-entry-top">
                   <time class="timeline-date" datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "01.02" }}</time>
+                  {{- with index $stageNotes .Slug -}}
+                    {{- $s := index $stageMeta .phase -}}
+                    <span class="stage-badge" style="--stage-color: {{ $s.color }}">{{ $s.word }}{{ with .code }} · {{ . }}{{ end }}{{ if .extra }} · 番外{{ end }}</span>
+                  {{- end -}}
                   <h4 class="timeline-title">
                     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
                     {{- if .Draft }}<span class="timeline-draft">草稿</span>{{ end }}

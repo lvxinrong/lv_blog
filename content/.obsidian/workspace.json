@@ -185,8 +185,15 @@
       "bases:新建数据库": false
     }
   },
-  "active": "119cfaa7b45dd98c",
+  "active": "9dbe826771160c38",
   "lastOpenFiles": [
+    "llm/public/tags/index.xml",
+    "llm/public/categories/index.xml",
+    "llm/public/tags",
+    "llm/public/sitemap.xml",
+    "llm/public/index.xml",
+    "llm/public/categories",
+    "llm/public",
     "llm/手搓LLM笔记27-I5评估校准与回归基准自动化.md",
     "ai/我眼中的学生-吕炘嵘.md",
     "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
@@ -214,7 +221,6 @@
     "reading/weight-space-programming-guide.md",
     "ai/企业级 AI 编程的终极形态推演.md",
     "llm/手搓LLM笔记14-M5评估框架.md",
-    "llm/手搓LLM笔记13-SFT.md",
     "未命名",
     "llm/llm-05-a4-generate.jpg",
     "llm/llm-05-a4-calc-loss-batch.jpg",
@@ -225,8 +231,6 @@
     "Pasted image 20261027104005.png",
     "Pasted image 20261027103613.png",
     "Pasted image 20261027101642.png",
-    "nanochat",
-    "scan-skill",
-    "incident-skill"
+    "nanochat"
   ]
 }

@@ -1,0 +1,70 @@
+# 手搓 LLM 系列「阶段徽章」映射。
+# 阶段代表词 / 配色 / 范围与 content/roadmap.md 的阶段划分保持一致；
+# notes 以 slug 为键，标注所属阶段、里程碑码与是否番外。
+# 未列入的页面不显示徽章。改阶段归属只需改这里，不动笔记正文。
+stages:
+  "1":
+    word: 从零手搓
+    color: "#1f6fe0"
+    range: "M0～M6"
+  "2":
+    word: 现代架构
+    color: "#7c4ddb"
+    range: "I0～I7"
+  "3":
+    word: 工业级系统
+    color: "#0e8f9c"
+    range: "S0～S6 + V5/V6"
+  "4":
+    word: 能力形成
+    color: "#d97706"
+    range: "Agentic 后训练"
+  "5":
+    word: Skill 生态
+    color: "#0e8f9c"
+    range: "工具与规范"
+  "6":
+    word: Agent 协作
+    color: "#7c4ddb"
+    range: "多角色编排"
+  extra:
+    word: 番外
+    color: "#8a909c"
+    range: "独立支线 / 番外"
+notes:
+  llm-00-proposal: { phase: "1" }
+  nanochat-proposal: { phase: "1" }
+  llm-01-ch02: { phase: "1" }
+  llm-02-attention: { phase: "1" }
+  llm-03-mask-multihead: { phase: "1" }
+  llm-04-gpt-architecture: { phase: "1" }
+  llm-05-pretrain-generate: { phase: "1" }
+  llm-06-class-finetune: { phase: "1" }
+  llm-07-instruction-finetune: { phase: "1" }
+  llm-07-2-switch-base: { phase: "1", extra: true }
+  llm-07-3-lora-dose: { phase: "1", extra: true }
+  llm-08-rewrite-lvllm: { phase: "1", code: M0 }
+  llm-08-1-gpt-details-qa: { phase: "1", code: M0, extra: true }
+  llm-09-diy-llm-tokenizer: { phase: "1", code: M1 }
+  llm-10-handwritten-bpe: { phase: "1", code: M1 }
+  llm-10-1-embedding-shapes-qa: { phase: "1", code: M1, extra: true }
+  llm-11-pytorch-resource-accounting: { phase: "1", code: M2 }
+  llm-12-kv-cache: { phase: "1", code: M3 }
+  llm-13-sft-instruction-following: { phase: "1", code: M4 }
+  llm-14-eval-resume: { phase: "1", code: M5 }
+  llm-16-chat-web-ui: { phase: "1", code: M6 }
+  llm-handwriting-gptmodel: { phase: "1", extra: true }
+  diy-llm-proposal: { phase: "2" }
+  llm-17-model-v3-qwen: { phase: "2", code: I0 }
+  llm-18-i1-data-pipeline: { phase: "2", code: I1 }
+  llm-19-i2-environment-probe: { phase: "2", code: I2 }
+  llm-20-i2-windows-cuda: { phase: "2", code: I2, extra: true }
+  llm-21-i3-inference-baseline: { phase: "2", code: I3 }
+  llm-22-qwen3-compatibility: { phase: "2", code: I3, extra: true }
+  llm-23-i4-multiturn-sft: { phase: "2", code: I4 }
+  llm-24-i4-cot-sft: { phase: "2", code: I4 }
+  llm-25-i4-dpo-preference: { phase: "2", code: I4 }
+  llm-26-i4-post-training-recap: { phase: "2", code: I4 }
+  llm-27-i5-judge-calibration-regression: { phase: "2", code: I5 }
+  llm-15-weight-space-arithmetic: { phase: extra }
+  llm-extra-deepseek-v41-flash-text-config: { phase: extra }
