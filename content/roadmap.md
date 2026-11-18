@@ -3,14 +3,14 @@ title = "lvchat 实现导图：开工顺序即依赖顺序"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-18T02:28:07+08:00
+lastmod = 2026-11-18T16:20:57+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 5/7）已完成 I0～I4 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I5，后续 I6 领域后训练打榜（Java 缺陷定位与修复）待启动，I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 9 个里程碑）覆盖性能基线、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 6/7）已完成 I0～I5 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I6 领域后训练打榜（Java 缺陷定位与修复），I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 9 个里程碑）覆盖性能基线、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -20,7 +20,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_overview
     north_star="目标：用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 5/7 (I0～I4 及番外已完成，主线下一站 I5；I6 领域后训练打榜待启动，I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 6/7 (I0～I5 及番外已完成，主线下一站 I6；I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
 >}}
 
 {{< roadmap_progress
@@ -39,7 +39,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I5 · 评估校准与回归基准自动化（I0～I4 及番外已完成）"
+    next="第二阶段 I6 · 领域后训练与可复现打榜（I0～I5 及番外已完成）"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -109,13 +109,13 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     proposal_url="/llm/diy-llm-proposal/"
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
-    rules="阶段定位::证明结构写对了——I0～I3 最小结构验证、I4 后训练里程碑收官，I7 架构进阶番外选修；系统级性能、分布式与 Serving 留待第三阶段 | 装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练，I7 架构番外选修"
-    done="5"
+    rules="阶段定位::证明结构写对了——I0～I3 最小结构验证、I4 后训练与 I5 评估校准里程碑收官，I7 架构进阶番外选修；系统级性能、分布式与 Serving 留待第三阶段 | 装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练，I7 架构番外选修"
+    done="6"
     total="7"
-    current="I4 · 后训练深水区（2026-11-17 收官）"
-    delivered="I0～I4 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新与规则胜率 / Web UI 回归。"
-    next="I5 · 评估校准与回归基准自动化（主线下一站；后续 I6 领域后训练打榜，I7 架构番外选修）"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:done, i5:I5:评委校准CI:todo, i6:I6:领域后训练打榜:todo, i7:I7:架构进阶番外:optional"
+    current="I5 · 评估校准与回归基准自动化（2026-11-18 收官）"
+    delivered="I0～I5 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新，以及人工盲评、位置校准、多评委对照、paired bootstrap 与 I0～I4 注册范围一键回归报告。"
+    next="I6 · 领域后训练与可复现打榜（主线下一站；I7 架构番外选修）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:done, i5:I5:评委校准CI:done, i6:I6:领域后训练打榜:todo, i7:I7:架构进阶番外:optional"
 >}}
 
 ## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I7）
@@ -209,7 +209,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< /milestone >}}
 
 {{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-13" note1_title="笔记 22：Qwen3 兼容性" note1_url="/llm/llm-22-qwen3-compatibility/" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例在隔离的 V4 中实现 ModelV4？" summary="选修番外（已验收，不计入主线）：完成 config / safetensors / 官方 forward 兼容性审计，从零实现完全隔离的 V4（显式 head_dim=128、QK RMSNorm、Qwen3 配置 / 权重映射）；Qwen3-0.6B Dense 在 CPU / FP32 / eager 下通过官方 logits、连续 cache decode 与固定生成对照，并接通本地 thinking 对话与流式修复。结论限定单模型与受控环境，不代表 Qwen3 全系列。" >}}
-- **定位说明**：面向模型承接能力的选修番外，已验收；不计入第二阶段 `I0～I6` 主线完成度（主线仍 `5/7`），主线下一站仍为 `I5`。`V3` 继续作为 Qwen2.5-0.5B / 0.5B-Instruct 的稳定对照，`V4` 独立承接 Qwen3-0.6B。
+- **定位说明**：面向模型承接能力的选修番外，已验收；不计入第二阶段 `I0～I6` 主线完成度（主线仍 `6/7`），主线下一站仍为 `I6`。`V3` 继续作为 Qwen2.5-0.5B / 0.5B-Instruct 的稳定对照，`V4` 独立承接 Qwen3-0.6B。
 - **已完成成果（详见[笔记 22](/llm/llm-22-qwen3-compatibility/)）**：
   1. **V4 独立实现**：新建 `src/squid/model/v4_qwen3/`、独立加载器 `src/squid/checkpoints/qwen3.py`、独立测试 `tests/test_qwen3/`；RMSNorm、SwiGLU、RoPE、Attention、TransformerBlock、GPTModelV4 全部重新实现，没有复制或 import V3 的模型实现；RMSNorm 带入 FP32 累积修复，避免重新引入 FP16 平方溢出。
   2. **Qwen3-0.6B 兼容性审计**：完成 config、safetensors 权重键、形状与官方 forward 语义审计，新增可复用检查能力 `src/squid/checkpoints/inspect.py`（只读元数据，最小回归 `1 passed`）；支持显式 `head_dim=128`、16 Q heads、8 KV heads、QK RMSNorm；checkpoint 中 embedding 与 lm_head 虽重复保存，实测逐元素完全一致（`torch.equal=True`），加载后共享一份参数。
@@ -272,17 +272,28 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 这是学习里程碑完成，不是所有能力目标全面达成；实验主要基于 Qwen3-0.6B 与受控合成数据；
   - 没有证明 SFT、DPO 或 GRPO 全面提升通用能力；loss / score 改善不等于行为改善；
   - GRPO 只有一组、一次更新，未加入参考 KL；DPO 偏好数据不是人工标注；
-  - 规则胜率不是校准后的 LLM 评委胜率（留待 `I5`）；
+  - 规则胜率不是校准后的 LLM 评委胜率（`I5` 已完成位置校准与多评委对照，见笔记 27，仍非普遍评委排名）；
   - Web UI 多轮表达仍有视角混淆；M6 旧 355M 模型未重新回归，不写成旧模型已彻底修复。
 {{< /milestone >}}
 
-{{< milestone id="i5" code="I5" title="评估校准与回归基准自动化（Judge Calibration）" status="todo" summary="承接 M5 评估流水线：校准 LLM-as-Judge 位置与长度偏见、检验多评委一致性，并建立一键对比门禁报告。" >}}
+{{< milestone id="i5" code="I5" title="评估校准与回归基准自动化（Judge Calibration）" status="done" date="2026-11-18" note1_title="笔记 27：I5 评估校准与回归基准" note1_url="/llm/llm-27-i5-judge-calibration-regression/" summary="完成人工盲评与三层评价协议、AB/BA 位置交换校准、无效填充与有效信息的长度控制、DeepSeek / Qwen4 Max 双评委对照、10 对独立 held-out、paired bootstrap 置信区间、I4 回归门禁，以及 I0～I4 当前注册范围的一键总报告；全量回归 173 passed。工程里程碑完成，但小样本与 inconclusive 边界保留。" >}}
 - **进化部位**：承接 M5 评估流水线，升级 `squid/eval/`
-- **装备升级**：
-  1. **LLM-as-Judge 偏见校准**：双向交换位置消除先后偏见（Position Bias）、控制长度偏见（Length Bias）；
-  2. **多评委交叉一致性检验**：计算人工评分与 AI 评委的相关系数，建立每次架构/数据改动后的自动化回归门禁。
+- **已完成成果（详见[笔记 27](/llm/llm-27-i5-judge-calibration-regression/)）**：
+  1. **人工评价与盲评协议**：建立 correctness / instruction / reasoning / clarity 四类原因编码；人工评价整理为任务结果 → 推理质量 → 信息密度三层递进；首批 8 对开发盲评保留匿名公开文件、私密 key、源哈希与标签写保护；新增 10 对独立 held-out 覆盖正确性、有效验算、无效填充、实质等价与指令遵循。
+  2. **成对评委与位置校准**：完成 AB/BA 双顺序调用、结果坐标还原、严格解析、逐次落盘与断点续跑；区分 consistent / position_sensitive / decisive_flip / unresolved；接入 DeepSeek 与 Qwen4 Max 并保存原始结果与配置；双顺序稳定不等于与人工一致，未决样本不自动算平局或从总体描述中隐藏。
+  3. **长度控制**：完成完全重复、无效填充变长、有效验算变长、错误且冗长四类控制条件；当前实验中没有双顺序共识选择更长回答；有效验算变长与无效填充变长分别解释，不把信息增量误判为长度偏见。
+  4. **独立 held-out 与多评委**：DeepSeek 4 对人工一致 / 2 对稳定分歧 / 4 对未决；Qwen4 Max 6 对一致 / 4 对分歧 / 0 对未决；双方都有共识的 6 对结论全部相同；这些是少量合成样本的原始计数，不是普遍评委准确率或模型排名。
+  5. **paired bootstrap 与 I4 门禁**：按 case 配对重采样 2000 次，生成 95% 区间与 6 组胜率矩阵；original / CoT-SFT v2 / DPO v1 / GRPO 单组更新共用同一 32 题；六组 net_win_rate 对照全部 inconclusive；I4 门禁 artifact_status=pass、regression_detected=False、evidence_status=inconclusive；不把「未检测到回退」写成「已经证明无回退」或「模型等效」。
+  6. **I0～I4 注册范围一键报告**：为 I0 新增受控数值对齐 JSON（4/4 完整 logits、首末层 KV、3/3 cache decode 通过，固定 CPU / FP32 / eager 下受控张量最大差异为 0）；建立 8 组注册产物覆盖清单与统一总报告；缓存版与 --refresh-controlled 版均实际运行；受控刷新只重跑 I0/I4，I1～I3 始终读取历史测量；full_live_refresh=False；总状态 artifacts_valid_capability_inconclusive。
+  7. **全量回归**：学习项目实际运行 `uv run pytest -q`，结果 `173 passed in 594.64s`；`git diff --check` 通过；笔记 27 的内容检查、Hugo 构建与封面生成均已通过。
 - **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 12 章（评估与基准）+ 作业 6
-- **待完成验收**：每次装备升级（I0～I4）均可一键跑出带置信区间与胜率矩阵的对比报告
+- **能力边界**：
+  - 主要是小模型、算术与多轮数值更新的受控合成样本；8 对开发样本与 10 对 held-out 都较小，不支持普遍评委排名或统计显著结论；
+  - 人工标签来自单一标注者，代表当前个人评价口径；尚未进行有统计意义的人机相关系数分析，不为满足原规划硬算相关指标；
+  - Qwen 与 DeepSeek 的推理方式及输出预算不同，行为差异不能全部归因于模型本身；没有同批 v1 / v2 对照，不宣称 v2 prompt 的因果提升；
+  - 一键报告只覆盖当前注册范围（registered_scope_only），不等于 I0～I4 所有历史实验已完整接入；I1～I3 在总报告中仍是历史缓存，不是完整 live 回归；
+  - I5 工程里程碑完成不代表已经独立掌握评估工程；后续独立复现、现成框架对照和更多任务评估属于回顾任务，不新增里程碑、不阻塞 I6。
+- **与 I6 衔接**：I6 应先定义 Java 缺陷定位与最小修复的评估协议（数据隔离、定位正确、编译成功、测试通过、基线与通用能力保持），再开展领域训练；loss 下降不能替代可验证的行为提升。
 {{< /milestone >}}
 
 {{< milestone id="i6" code="I6" title="领域后训练与可复现打榜：Java 缺陷定位与修复" status="todo" summary="第二阶段主线 capstone（尚未开始）：承接 I4 后训练基础与 I5 评估校准，选一个与自训模型规模相近的开放权重模型作对照，通过领域数据工程、SFT 与后续对齐，让模型在 Java 缺陷定位与最小修复这一可验证细分领域取得稳定、可复现的分数提升；公开打榜仅作可选后续。" >}}
@@ -370,25 +381,26 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     repo="squid-llms"
     theory_title="DeepSeek DeepInfer"
     theory_url="https://github.com/deepseek-ai/DeepInfer"
-    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I4 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I5 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
     done="0"
     total="9"
     unit="规划里程碑（尚未启动）"
     delivered="尚未交付；S0～S6 与 V5 / V6 均为规划里程碑"
     next="S0 · GPU 系统基础与性能基线（规划起点）"
-    planning_note="规划中 · I0～I4 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
+    planning_note="规划中 · I0～I5 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
     steps="s0:S0:性能基线:todo, s1:S1:源码地图:todo, s2:S2:算子优化:todo, v5:V5:稀疏架构与低秩表示:todo, s3:S3:分布式训练:todo, s4:S4:MoE并行:todo, s5:S5:推理调度:todo, v6:V6:记忆与推理协同:todo, s6:S6:稳定性验收:todo"
 >}}
 
 {{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6 与 V5/V6 共 9 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}
 
-{{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I4` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
-1. **第二阶段 `I0～I4` 的相关基础（均已完成）**：
+{{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I5` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
+1. **第二阶段 `I0～I5` 的相关基础（均已完成）**：
    - 现代模型结构与 Qwen 权重承接（`I0` 已完成）；
    - 数据与流式 IO（`I1` 已完成，见[笔记 18](/llm/llm-18-i1-data-pipeline/)）；
    - 训练加速与资源核算（`I2` 及 RTX 4070 Ti CUDA 番外已完成，见[笔记 19](/llm/llm-19-i2-environment-probe/) 与[笔记 20](/llm/llm-20-i2-windows-cuda/)）；
    - KV Cache、量化、投机解码和基础推理指标（`I3` 已完成，见[笔记 21](/llm/llm-21-i3-inference-baseline/)）；
-   - 多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照与 RLVR / GRPO 最小更新（`I4` 已完成，见[笔记 26](/llm/llm-26-i4-post-training-recap/)）。
+   - 多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照与 RLVR / GRPO 最小更新（`I4` 已完成，见[笔记 26](/llm/llm-26-i4-post-training-recap/)）；
+   - 人工盲评、位置校准、多评委对照、paired bootstrap 与注册范围一键回归报告（`I5` 已完成，见[笔记 27](/llm/llm-27-i5-judge-calibration-regression/)）。
 2. **知识储备**：具备 Python、PyTorch、Transformer 和基础训练/推理链路知识。
 3. **实验环境**：已打通 Windows + WSL2（Ubuntu 24.04）+ RTX 4070 Ti 单卡 CUDA 实验环境（见[笔记 20](/llm/llm-20-i2-windows-cuda/)），真实多卡与底层算子实验按后续阶段需要继续扩展。
 4. **本地环境边界**：当前 Mac + MPS 环境不作为 [DeepInfer](https://github.com/deepseek-ai/DeepInfer) 部署验收环境。
@@ -792,5 +804,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）、`I3`（高性能推理与服务引擎）已交付，后续推进 `I4～I5` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证后训练与评估校准。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）、`I3`（高性能推理与服务引擎）、`I4`（后训练深水区）、`I5`（评估校准与回归基准自动化）已交付，后续推进 `I6` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证领域后训练与可复现打榜。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I7、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
