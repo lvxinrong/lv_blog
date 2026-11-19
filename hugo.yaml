@@ -92,7 +92,9 @@ params:
     # og:title 是文章标题（不含站名后缀），比 URL 稳定。
     mapping: og:title
     # 首次加载跟随系统；随后由 extend_footer.html 与站点主题同步。
-    theme: preferred_dark
+    # 注意：preferred_dark 不是 giscus 合法主题名（会被当自定义 CSS URL 加载导致 MIME 错误），
+    # 跟随系统请用 preferred_color_scheme。
+    theme: preferred_color_scheme
     lang: zh-CN
     title: 评论
 
@@ -199,6 +201,13 @@ menu:
       params:
         kind: 连载
         description: 读《从零构建大模型》，把每一层都拆开看
+    - name: 大模型源码图谱
+      parent: llm-series
+      pageRef: /llm/source
+      weight: 2
+      params:
+        kind: 专栏
+        description: 长期源码阅读地图（规划中）
     - name: AI 随想
       url: /ai/
       weight: 3

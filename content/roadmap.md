@@ -1,13 +1,14 @@
 +++
 title = "lvchat 实现导图：主干先行，局部进化，持续验收"
 slug = "roadmap"
-layout = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
 lastmod = 2026-11-18T21:39:02+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
+ShowBreadCrumbs = false
+ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
 summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 6/7）已完成 I0～I5 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I6 领域后训练打榜（Java 缺陷定位与修复），I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 9 个里程碑）覆盖性能基线、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
 [cover]
@@ -15,139 +16,35 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     alt = "lvchat 实现导图"
     hiddenInSingle = true
     hiddenInList = true
-
-[roadmap]
-heading = "lvchat 实现导图"
-tagline = "主干先行，局部进化，持续验收"
-purpose = "从零做出可对话的小模型，走通数据、训练、后训练、推理、评估与服务，用可复现的实验记录每一代的能力、成本与边界。"
-
-[roadmap.latest]
-id = "i5"
-label = "最近验收"
-title = "评估校准与回归基准自动化"
-summary = "完成人工盲评与多评委校准，打通 I0～I4 已注册范围的一键回归。"
-action = "阅读笔记"
-url = "/llm/llm-27-i5-judge-calibration-regression/"
-
-[roadmap.next]
-id = "i6"
-label = "下一站"
-title = "领域后训练 · Java 缺陷定位与修复"
-summary = "通过同口径对照，验证领域后训练能否带来可复现的能力提升。"
-action = "查看验收计划"
-
-[[roadmap.phases]]
-title = "从零手搓 LLM"
-state = "done"
-status = "已结项"
-brief = "用纯 PyTorch 交付可对话的 355M 模型，跑通从数据到 WebUI 的工程链路。"
-details = "M0～M6 验收与笔记"
-period = "2026.10.13 – 2026.11.04 · 23 天"
-id = "phase-01"
-number = "01"
-repo = "squid-llms"
-done = 7
-total = 7
-links = [
-    { title = "nanochat 立项书", url = "/llm/nanochat-proposal/" },
-]
-context = [
-    { label = "核心交付", text = "完成从 tokenizer、模型、预训练、KV cache、SFT、评估到 CLI/Web UI 的完整工程闭环" },
-    { label = "工程策略", text = "M0 重写底座，M1 起同仓生长，不另起新工程" },
-    { label = "推进铁律", text = "nanochat 当“标准答案”不当教材，开工顺序即依赖顺序" },
-]
-
-[[roadmap.phases]]
-title = "现代架构与模型承接"
-state = "active"
-status = "进行中"
-brief = "在同一工程中承接 Qwen 权重，逐站验证现代架构、数据、训练、推理与后训练。"
-details = "I0～I6 主线与支线"
-period = "2026.11.04 启动"
-alias = "第二阶段施工流水线现代架构承接与-ai-infra-全量里程碑i0--i7"
-intro = "> 第一阶段解决“**有没有一辆自己造的车**”，第二阶段以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。"
-id = "phase-02"
-number = "02"
-repo = "squid-llms"
-done = 6
-total = 7
-links = [
-    { title = "diy-llm 立项书", url = "/llm/diy-llm-proposal/" },
-    { title = "DataWhale diy-llm 教程", url = "https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html" },
-]
-context = [
-    { label = "阶段定位", text = "证明结构写对了——I0～I3 最小结构验证、I4 后训练与 I5 评估校准里程碑收官，I7 架构进阶番外选修；系统级性能、分布式与 Serving 留待第三阶段" },
-    { label = "装备来源", text = "剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界" },
-    { label = "理论蓝本", text = "以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用" },
-    { label = "进化目标", text = "新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练，I7 架构番外选修" },
-    { label = "阶段交付", text = "I0～I5 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新，以及人工盲评、位置校准、多评委对照、paired bootstrap 与 I0～I4 注册范围一键回归报告。" },
-]
-
-[[roadmap.phases]]
-title = "工业级训练、推理与分布式系统"
-state = "planning"
-status = "规划中"
-brief = "第二阶段之后，从性能基线出发，验证推理引擎、分布式训练和生产 Serving。"
-details = "查看前置条件与 9 个规划里程碑"
-alias = "第三阶段规划蓝图工业级训练推理与分布式系统s0--s6--规划中"
-intro = "> **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段当前处于“规划中”（尚未开始，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**\n>\n> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜 → I7-A Mini MoE → I7-B MLA → I7-C MTP（架构选修）→ S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ V5 稀疏架构与低秩表示 → S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → V6 长上下文记忆与推理协同 → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。I7 架构番外、Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度；V5 / V6 为第三阶段正式版本里程碑，计入该阶段里程碑总数。"
-id = "phase-03"
-number = "03"
-repo = "squid-llms"
-links = [
-    { title = "DeepSeek DeepInfer", url = "https://github.com/deepseek-ai/DeepInfer" },
-]
-context = [
-    { label = "阶段定位", text = "证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计" },
-    { label = "前置依赖", text = "第二阶段 I0～I5 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3" },
-    { label = "硬件与验收边界", text = "Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修" },
-]
-
-[[roadmap.phases]]
-title = "后训练与领域能力形成"
-state = "planning"
-status = "规划中"
-brief = "承接后训练、评估与第三阶段的系统能力，探索 Agentic 后训练和领域能力形成。"
-details = "查看研究方向与选修"
-alias = "后续演进阶段第四至第六阶段--方向与依赖"
-intro = "> 第四至第六阶段只保留演进方向与前置依赖，不提前拆细任务清单，也不承诺时间；**[DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html)** 作为第二至第四阶段的系统理论蓝本，按实际项目需要随时调用，无需无差别重读所有章节。"
-id = "phase-04"
-number = "04"
-repo = "squid-llms"
-context = [
-    { label = "阶段定位", text = "证明模型能力真的变强了——以 Agentic 后训练与能力形成为核心，多模态保持选修" },
-    { label = "前置依赖", text = "现代架构底座已就绪，待 I4 / I5 后训练基础与第三阶段系统能力完成后展开" },
-    { label = "架构选型", text = "V4 Pro vs Flash 不同资源约束下的架构取舍（模型谱系、架构选型与场景适配），逐项机制回答节省什么 / 放松条件 / 买到什么 / 是否能力形成，具备部署条件再做同口径对照" },
-    { label = "探索衔接", text = "承载推理强化、模型诊断、扩层后训练（后续选修），以及下方尚未开始训练的 M7 个人中文语料 Midtrain" },
-]
-
-[[roadmap.phases]]
-title = "Skill 工程与工具生态"
-state = "planning"
-status = "远期"
-brief = "在模型与后训练基础上，沉淀系统扫描、生产排查和 MCP 等工程工具。"
-details = "查看方向与实践笔记"
-id = "phase-05"
-number = "05"
-context = [
-    { label = "阶段定位", text = "在扎实的模型与后训练认知之上，沉淀面向真实工程现场的 Skill 工具链与标准规范" },
-]
-
-[[roadmap.phases]]
-title = "Agent 与多模型协作"
-state = "planning"
-status = "远期"
-brief = "让专用模型与 Skill 协作，用 Agent Team 沙盘验证可审计的软件交付。"
-details = "查看方向与交付沙盘"
-id = "phase-06"
-number = "06"
-context = [
-    { label = "阶段定位", text = "将专用模型能力与 Skill 工具生态合流，构建可审计的多角色协作系统（多模态暂不作为主阶段，只保留未来选修）" },
-    { label = "交付闭环", text = "以 Agent Team 沙盘打通需求—数据—后端—前端—测试—运维上线的完整软件交付链路，自动上线仅限隔离环境，生产部署与资金操作保留人工批准" },
-]
 +++
 
-{{< roadmap_phase id="phase-01" >}}
+{{< roadmap_overview
+    north_star="构建并持续演进可对话的小模型及其工程系统，贯通数据、训练、后训练、推理、评估与服务；用可复现、可对照、可解释的证据说明每一代版本的能力、成本与边界。"
+    north_star_archived="用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 6/7 (I0～I5 及番外已完成，主线下一站 I6；I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
+>}}
+
+{{< roadmap_progress
+    id="phase-01"
+    season="STAGE 01 · 第一阶段（已完成）"
+    title="从零手搓 LLM：自造 lvchat v1（M0 ～ M6）"
+    phase_state="done"
+    start_date="2026年10月13日"
+    end_date="2026年11月04日"
+    duration="历时 23 天"
+    repo="squid-llms"
+    proposal_title="nanochat 立项书"
+    proposal_url="/llm/nanochat-proposal/"
+    rules="核心交付::完成从 tokenizer、模型、预训练、KV cache、SFT、评估到 CLI/Web UI 的完整工程闭环 | 工程策略::M0 重写底座，M1 起同仓生长，不另起新工程 | 推进铁律::nanochat 当“标准答案”不当教材，开工顺序即依赖顺序"
+    done="7"
+    total="7"
+    current="M6 · 对话界面"
+    delivered="第一季核心链路已交付"
+    next="第二阶段 I6 · 领域后训练与可复现打榜（I0～I5 及番外已完成）"
+    steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
+>}}
+
+{{< phase_drawer summary="已归档 · 点击展开第一阶段 M0 ～ M6 全部 7 张验收卡片与实录笔记（点击上方 M0～M6 节点可直接跳转）" >}}
 
 {{< milestone id="m0" code="M0" title="重写底座" status="done" date="2026-10-26" note1_title="笔记 08：重写 lvllm" note1_url="/llm/llm-08-rewrite-lvllm/" >}}
 - **核心实现**：按工程结构重写《从零构建大模型》全书代码（`tokenizer` / `model` / `data` / `train` / `generate` / `eval` / `checkpoints` 七层解耦、单一 `config` 与 `device` 入口、checkpoint 三层标准化）
@@ -197,9 +94,34 @@ context = [
 - **能力边界**：当前 355M SFT 模型没有经过可靠的多轮对话训练，连续对话会复制旧回答，因此可靠多轮语义能力未通过。工程验收完成不等于模型多轮能力合格。
 {{< /milestone >}}
 
-{{< /roadmap_phase >}}
+{{< /phase_drawer >}}
 
-{{< roadmap_phase id="phase-02" >}}
+---
+
+{{< roadmap_progress
+    id="phase-02"
+    season="STAGE 02 · 第二阶段（当前阶段）"
+    title="现代架构与模型承接（全量展开 I0 ～ I7）"
+    phase_state="active"
+    start_date="2026年11月04日"
+    end_date="进行中"
+    repo="squid-llms"
+    proposal_title="diy-llm 立项书"
+    proposal_url="/llm/diy-llm-proposal/"
+    theory_title="DataWhale diy-llm 教程"
+    theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
+    rules="阶段定位::证明结构写对了——I0～I3 最小结构验证、I4 后训练与 I5 评估校准里程碑收官，I7 架构进阶番外选修；系统级性能、分布式与 Serving 留待第三阶段 | 装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练，I7 架构番外选修"
+    done="6"
+    total="7"
+    current="I5 · 评估校准与回归基准自动化（2026-11-18 收官）"
+    delivered="I0～I5 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新，以及人工盲评、位置校准、多评委对照、paired bootstrap 与 I0～I4 注册范围一键回归报告。"
+    next="I6 · 领域后训练与可复现打榜（主线下一站；I7 架构番外选修）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:done, i5:I5:评委校准CI:done, i6:I6:领域后训练打榜:todo, i7:I7:架构进阶番外:optional"
+>}}
+
+## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I7）
+
+> 第一阶段解决“**有没有一辆自己造的车**”，第二阶段以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
 {{< milestone id="i0" code="I0" title="现代架构与模型承接（model_v3：RoPE + RMSNorm + SwiGLU + GQA + Qwen 权重加载）" status="done" date="2026-11-06" note1_title="笔记 14：RoPE 先行闭环" note1_url="/llm/llm-14-eval-resume/" note2_title="笔记 17：model_v3 承接 Qwen" note2_url="/llm/llm-17-model-v3-qwen/" summary="新建独立 `model_v3` 并完成 `Qwen2.5-0.5B` Base/Instruct 权重承接、chat template、Chat Server 与本地实验台；Qwen 专项 `7 passed`、全量 `46 passed`（已严格限定受控对齐与 GQA 理论存储边界）。" >}}
 - **版本演进策略**：
@@ -393,8 +315,6 @@ context = [
 - **边界**：尚未开始，不预设分数或实验结果；公开排行榜提交只作为可选后续，不以公开名次代替本地可复现验收。
 {{< /milestone >}}
 
-{{< roadmap_branch label="选修支线 · 不计入主线完成度" >}}
-
 {{< milestone id="i7" code="I7" title="I7 架构进阶番外：Mini MoE + MLA + MTP" status="optional" summary="可选架构进阶番外（不计入主线）：按 I7-A Mini MoE → I7-B MLA → I7-C MTP 顺序，在小模型上逐一验证现代结构写对了；分布式与专家并行留待第三阶段 S3 / S4，生产部署留待 S5。" >}}
 - **定位说明**：独立架构进阶番外，不计入第二阶段 `I0～I6` 主线完成度，不阻塞主线 `I4 → I5 → I6`；第二阶段只证明结构写对了，系统级性能、分布式与 Serving 留待第三阶段。
 - **三个子任务（依次推进）**：
@@ -446,11 +366,33 @@ context = [
   - 最后再测吞吐，不预设一定提速。
 {{< /milestone >}}
 
-{{< /roadmap_branch >}}
+---
 
-{{< /roadmap_phase >}}
+## 第三阶段规划蓝图：工业级训练、推理与分布式系统（S0 → S6 · 规划中）
 
-{{< roadmap_phase id="phase-03" >}}
+> **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段当前处于“规划中”（尚未开始，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**
+>
+> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜 → I7-A Mini MoE → I7-B MLA → I7-C MTP（架构选修）→ S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ V5 稀疏架构与低秩表示 → S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → V6 长上下文记忆与推理协同 → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。I7 架构番外、Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度；V5 / V6 为第三阶段正式版本里程碑，计入该阶段里程碑总数。
+
+{{< roadmap_progress
+    id="phase-03"
+    season="STAGE 03 · 第三阶段（规划中）"
+    title="工业级训练、推理与分布式系统（S0 ～ S6 + V5/V6）"
+    phase_state="planning"
+    repo="squid-llms"
+    theory_title="DeepSeek DeepInfer"
+    theory_url="https://github.com/deepseek-ai/DeepInfer"
+    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I5 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    done="0"
+    total="9"
+    unit="规划里程碑（尚未启动）"
+    delivered="尚未交付；S0～S6 与 V5 / V6 均为规划里程碑"
+    next="S0 · GPU 系统基础与性能基线（规划起点）"
+    planning_note="规划中 · I0～I5 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
+    steps="s0:S0:性能基线:planning, s1:S1:源码地图:planning, s2:S2:算子优化:planning, v5:V5:稀疏架构与低秩表示:planning, s3:S3:分布式训练:planning, s4:S4:MoE并行:planning, s5:S5:推理调度:planning, v6:V6:记忆与推理协同:planning, s6:S6:稳定性验收:planning"
+>}}
+
+{{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6 与 V5/V6 共 9 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}
 
 {{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I5` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
 1. **第二阶段 `I0～I5` 的相关基础（均已完成）**：
@@ -585,7 +527,7 @@ context = [
   - [DeepSeek-V3.2-Exp](https://github.com/deepseek-ai/DeepSeek-V3.2-Exp)。
 {{< /milestone >}}
 
-{{< milestone id="s-v5" alias="v5" code="V5" title="V5：稀疏架构与低秩表示" status="planning" question="怎样在不复刻 DeepSeek 的前提下，亲手实现一个小型、可验证的稀疏架构与原生低秩表示主干？" summary="第三阶段正式版本里程碑（规划中）：承接 I7 的 MoE / MLA 与 S0～S2 的测量 / 源码 / Kernel 基础，实现 Top-K Router + Shared Expert、原生低秩 Q / O 投影、部分 RoPE 与 KV Cache 位置进度的小型稀疏主干；与 V4 Dense 基线同口径对照，不预设提速或优于 V4。" >}}
+{{< milestone id="s-v5" code="V5" title="V5：稀疏架构与低秩表示" status="planning" question="怎样在不复刻 DeepSeek 的前提下，亲手实现一个小型、可验证的稀疏架构与原生低秩表示主干？" summary="第三阶段正式版本里程碑（规划中）：承接 I7 的 MoE / MLA 与 S0～S2 的测量 / 源码 / Kernel 基础，实现 Top-K Router + Shared Expert、原生低秩 Q / O 投影、部分 RoPE 与 KV Cache 位置进度的小型稀疏主干；与 V4 Dense 基线同口径对照，不预设提速或优于 V4。" >}}
 - **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；承接 `I7` 的 MoE / MLA 基础与 `S0～S2` 的测量、源码与 Kernel 基础。不是复刻 DeepSeek，而是先实现一个小型、可验证的稀疏架构主干。
 - **第一版范围**：
   - Top-K Router + Shared Expert；
@@ -681,7 +623,7 @@ context = [
   - 性能结论必须来自实测（TTFT / TPOT / 吞吐 / P95），不照抄官方数字。
 {{< /milestone >}}
 
-{{< milestone id="s-v6" alias="v6" code="V6" title="V6：长上下文、记忆与推理协同" status="planning" question="怎样把长上下文、记忆与推理调度协同起来，并让草稿—验证链路可验证、可对照？" summary="第三阶段正式版本里程碑（规划中）：同时依赖模型结构、KV 管理、缓存复用、推理调度与验证机制；首选 DSpark 方向（衔接 I3 Draft / Target、Mini-Serving、GRPO 与缓存验证链路），第一版做草稿—目标验证、Markov 顺序依赖、置信度调度与接受率 / 错误处理对照；Engram / 压缩 / 索引留作后续可选扩展。" >}}
+{{< milestone id="s-v6" code="V6" title="V6：长上下文、记忆与推理协同" status="planning" question="怎样把长上下文、记忆与推理调度协同起来，并让草稿—验证链路可验证、可对照？" summary="第三阶段正式版本里程碑（规划中）：同时依赖模型结构、KV 管理、缓存复用、推理调度与验证机制；首选 DSpark 方向（衔接 I3 Draft / Target、Mini-Serving、GRPO 与缓存验证链路），第一版做草稿—目标验证、Markov 顺序依赖、置信度调度与接受率 / 错误处理对照；Engram / 压缩 / 索引留作后续可选扩展。" >}}
 - **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；同时依赖模型结构、KV 管理、缓存复用、推理调度与验证机制。首选方向为 DSpark，因为它与 `I3` 的 Draft / Target 投机解码、`Mini-Serving`、GRPO、缓存和验证链路衔接最自然。
 - **第一版范围**：
   - 草稿结构与目标模型验证；
@@ -742,11 +684,24 @@ context = [
   - 不追求为了 roadmap 好看而提前填写成果。
 {{< /milestone >}}
 
-{{< /roadmap_phase >}}
+{{< /phase_drawer >}}
 
-{{< roadmap_phase id="phase-04" >}}
+---
 
-{{< roadmap_text >}}
+## 后续演进阶段（第四至第六阶段 · 方向与依赖）
+
+> 第四至第六阶段只保留演进方向与前置依赖，不提前拆细任务清单，也不承诺时间；**[DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html)** 作为第二至第四阶段的系统理论蓝本，按实际项目需要随时调用，无需无差别重读所有章节。
+
+{{< roadmap_progress
+    id="phase-04"
+    season="STAGE 04 · 第四阶段（规划中）"
+    title="后训练与领域能力形成"
+    phase_state="planning"
+    hide_bar="true"
+    repo="squid-llms"
+    rules="阶段定位::证明模型能力真的变强了——以 Agentic 后训练与能力形成为核心，多模态保持选修 | 前置依赖::现代架构底座已就绪，待 I4 / I5 后训练基础与第三阶段系统能力完成后展开 | 架构选型::V4 Pro vs Flash 不同资源约束下的架构取舍（模型谱系、架构选型与场景适配），逐项机制回答节省什么 / 放松条件 / 买到什么 / 是否能力形成，具备部署条件再做同口径对照 | 探索衔接::承载推理强化、模型诊断、扩层后训练（后续选修），以及下方尚未开始训练的 M7 个人中文语料 Midtrain"
+>}}
+
 - **Agentic 后训练与能力形成**：大规模 Agentic 数据合成、RLVR、自我评价奖励、工具调用与环境交互，以及更进一步的推理强化；
 - **推理强化与对齐**：CoT、DPO、GRPO、RLVR（承接 I4 后训练基础）；
 - **数据与评测工程**：指令数据工程与评委校准；
@@ -755,7 +710,6 @@ context = [
 - **模型增长与扩层后训练（后续选修）**：研究 Block Expansion / Depth Up-Scaling（Net2Net、LLaMA Pro、SOLAR），在原有 Transformer Block 之后、`final_norm` 之前插入少量新层，重点理解恒等初始化、冻结与逐步解冻，并与 LoRA、全参数训练做同数据对照；不阻塞当前主线或 `M7`；
 - **多模态（保持选修）**：不作为主阶段，只保留未来选修，不为补清单改变当前主线；
 - **个人中文语料 midtrain（尚未开始训练）**：承载下方 `M7` 独立彩蛋。
-{{< /roadmap_text >}}
 
 {{< milestone id="v4-pro-flash-comparison" code="V4 Pro / Flash" title="V4 Pro vs Flash：不同资源约束下的架构取舍" status="planning" question="当资源不再那么紧张时，哪些压缩可以放松、哪些稀疏机制即使面对更高成本仍然值得保留，为什么？" summary="第四阶段正式架构选型研究（规划中，非番外 / 追新）：主线是不同资源约束下的架构取舍——逐项机制回答它节省什么资源、放松需要什么条件、增加资源买到什么、是硬件适配还是能力形成的一部分；对照覆盖参数 / 激活、Attention / KV / RoPE、长上下文、稀疏机制、量化、部署成本与任务适配，不只比参数规模。Flash 侧已有 text_config 解读，Pro 侧待官方核对；具备部署条件后再做同口径对照，不提前断言谁更强更快。" >}}
 - **定位说明**：正式研究方向（非番外、非临时追新），研究同一模型家族中 Pro 与 Flash 在不同资源约束下的架构取舍及其各自适合的任务与部署环境；服务于模型谱系、架构选型与场景适配。
@@ -793,22 +747,28 @@ context = [
 - **待完成验收**：“吕炘嵘 GPT”第一次附体
 {{< /milestone >}}
 
-{{< /roadmap_phase >}}
+{{< roadmap_progress
+    id="phase-05"
+    season="STAGE 05 · 第五阶段（远期）"
+    title="Skill 工程与工具生态"
+    phase_state="planning"
+    hide_bar="true"
+    rules="阶段定位::在扎实的模型与后训练认知之上，沉淀面向真实工程现场的 Skill 工具链与标准规范"
+>}}
 
-{{< roadmap_phase id="phase-05" >}}
-
-{{< roadmap_text >}}
 - **核心方向**：系统扫描、生产排查、学习辅助、MCP / CLI、权限、评估、开源文档（前期实践见[《生产排查 Skill 深解》](/incident-skill/introduction/)与[《系统扫描 Skill 深解》](/scan-skill/introduction/)）。
-{{< /roadmap_text >}}
 
-{{< /roadmap_phase >}}
+{{< roadmap_progress
+    id="phase-06"
+    season="STAGE 06 · 第六阶段（远期）"
+    title="Agent 与多模型协作"
+    phase_state="planning"
+    hide_bar="true"
+    rules="阶段定位::将专用模型能力与 Skill 工具生态合流，构建可审计的多角色协作系统（多模态暂不作为主阶段，只保留未来选修） | 交付闭环::以 Agent Team 沙盘打通需求—数据—后端—前端—测试—运维上线的完整软件交付链路，自动上线仅限隔离环境，生产部署与资金操作保留人工批准"
+>}}
 
-{{< roadmap_phase id="phase-06" >}}
-
-{{< roadmap_text >}}
 - **核心方向**：规划、执行、测试、运维分工（思路见[《企业级 AI 编程的终极形态：当模型开始分工》](/ai/enterprise-ai-model-division/)），以及记忆、上下文、权限、反馈闭环和多模型编排。
 - **独立支线**：下方 `Agent Team 软件交付沙盘` 以已有炒股系统为业务载体，演练多角色协作与可审计交付，不阻塞其他阶段。
-{{< /roadmap_text >}}
 
 {{< milestone id="agent-team-stock-delivery" code="↳ 第六阶段支线" title="Agent Team：从需求到上线的炒股系统交付沙盘" status="planning" status_label="规划中 · 多角色软件交付沙盘" sub="true" question="怎样让多角色 Agent Team 在真实工程约束下，完成从需求到运维上线的可审计软件交付？" summary="第六阶段独立规划支线（不阻塞其他阶段）：以已有炒股系统为业务载体，组建产品 / 数据 / 后端 / 前端 / 测试 / SRE 多角色 Agent Team，打通需求—数据—后端—前端—测试—运维上线的完整交付闭环；重点是多角色协作、工具权限、工程质量与可审计交付，不是学习炒股策略，也不让 Agent 自动进行真实资金交易。" >}}
 - **任务定位**：以已有炒股系统的真实前端、后端与数据复杂度为业务载体，组建多角色 Agent Team，打通从需求产生到运维上线的完整软件交付链路；重点是多角色协作、工具权限、工程质量和可审计交付，不是学习炒股策略，也不是让 Agent 自动进行真实资金交易。
@@ -839,7 +799,7 @@ context = [
 - **可视化边界**：可展示角色时间线、任务依赖、工件流转、质量门禁与发布状态，但可视化不能代替真实工程验收。
 {{< /milestone >}}
 
-{{< /roadmap_phase >}}
+---
 
 ## 支线探索与日常节奏
 

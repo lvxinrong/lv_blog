@@ -1,38 +1,70 @@
+{{- /* 单个里程碑卡片（按依赖顺序串联）。
+       参数：
+         id       锚点 id（如 m0）
+         code     编号（如 M0）
+         title    标题（如 重写全书代码）
+         status   done | next | todo | optional
+         date     完成或更新日期（可选）
+         note1_title / note1_url  关联笔记 1（可选）
+         note2_title / note2_url  关联笔记 2（可选）
+*/ -}}
 {{- $id := .Get "id" -}}
+{{- $code := .Get "code" -}}
+{{- $title := .Get "title" -}}
 {{- $status := .Get "status" | default "todo" -}}
+{{- $statusText := .Get "status_label" -}}
+{{- $sub := eq (.Get "sub") "true" -}}
 {{- $date := .Get "date" -}}
-{{- $next := and (eq $status "todo") (eq $id .Page.Params.roadmap.next.id) -}}
-{{- $labels := dict "done" "已验收" "todo" "待开工" "planning" "规划中" "optional" "选修" -}}
-{{- $label := .Get "status_label" | default (index $labels $status) -}}
-{{- with $next }}{{ $label = "下一站 · 待开工" }}{{ end -}}
-{{- $links := slice
-  (dict "url" (.Get "note1_url") "title" (.Get "note1_title"))
-  (dict "url" (.Get "note2_url") "title" (.Get "note2_title"))
--}}
-
-<article class="roadmap-milestone{{ if eq (.Get "sub") "true" }} is-branch{{ end }}{{ if $next }} is-next{{ end }}" id="{{ $id }}" data-roadmap-entry>
-  {{- with .Get "alias" }}<span class="roadmap-anchor" id="{{ . }}" aria-hidden="true"></span>{{ end }}
-  <details>
-    <summary class="roadmap-disclosure roadmap-milestone-summary">
-      <h3 class="roadmap-milestone-title">
-        <span><span class="roadmap-code">{{ .Get "code" }}</span> {{ .Get "title" }}</span>
-        <span class="roadmap-milestone-meta">
-          <span>{{ $label }}</span>
-          {{- with $date }}<time datetime="{{ . }}">{{ . }}</time>{{ end }}
-        </span>
-      </h3>
+{{- $question := .Get "question" -}}
+{{- $summary := .Get "summary" -}}
+{{- $detailLabel := .Get "detail_label" | default "详细内容、验收与边界" -}}
+{{- $open := eq (.Get "open") "true" -}}
+{{- $collapsible := or (ne $summary "") (eq (.Get "collapsible") "true") -}}
+{{- $n1Title := .Get "note1_title" -}}
+{{- $n1Url := .Get "note1_url" -}}
+{{- $n2Title := .Get "note2_title" -}}
+{{- $n2Url := .Get "note2_url" -}}
+{{- $statusLabel := dict "done" "✓ 已验收" "next" "◎ 下一站" "todo" "待开工" "planning" "规划中" "optional" "可选支线" -}}
+<article class="ms-card is-{{ $status }}{{ if $sub }} is-subcard{{ end }}" id="{{ $id }}">
+  <header class="ms-card-head">
+    <div class="ms-card-title-wrap">
+      <span class="ms-code">{{ $code }}</span>
+      <h3 class="ms-title">{{ $title }}</h3>
+      <span class="ms-status">{{ $statusText | default (index $statusLabel $status | default $status) }}</span>
+      {{- with $date }}<time class="ms-date">{{ . }}</time>{{ end }}
+    </div>
+    {{- if or $n1Url $n2Url }}
+    <div class="ms-links">
+      {{- if $n1Url }}<a class="ms-note-link" href="{{ $n1Url }}">{{ $n1Title }} →</a>{{ end }}
+      {{- if $n2Url }}<a class="ms-note-link" href="{{ $n2Url }}">{{ $n2Title }} →</a>{{ end }}
+    </div>
+    {{- end }}
+  </header>
+  {{- with $question }}
+  <div class="ms-question">
+    <span class="ms-question-label">核心问题</span>
+    <span class="ms-question-text">{{ . }}</span>
+  </div>
+  {{- end }}
+  {{- with $summary }}
+  <div class="ms-overview">
+    <span class="ms-overview-label">概览</span>
+    <div class="ms-overview-text">{{ . | $.Page.RenderString }}</div>
+  </div>
+  {{- end }}
+  {{- if $collapsible }}
+  <details class="ms-details"{{ if $open }} open{{ end }}>
+    <summary class="ms-details-summary">
+      <span class="ms-details-label">{{ $detailLabel }}</span>
+      <span class="ms-details-hint" data-open-text="收起明细 ▴" data-close-text="展开明细 ▾"></span>
     </summary>
-    <div class="roadmap-milestone-body">
-      {{- with .Get "question" }}<p class="roadmap-question">{{ . }}</p>{{ end }}
-      {{- with .Get "summary" }}<p class="roadmap-milestone-intro">{{ $.Page.RenderString . }}</p>{{ end }}
-      {{- if or (.Get "note1_url") (.Get "note2_url") }}
-      <p class="roadmap-resources">
-        {{- range $links }}
-          {{- if .url }}<a href="{{ .url }}">{{ .title | default "资料" }} <span aria-hidden="true">→</span></a>{{ end }}
-        {{- end }}
-      </p>
-      {{- end }}
-      {{ .Page.RenderString (dict "display" "block") .Inner }}
+    <div class="ms-card-body">
+      {{ .Inner | .Page.RenderString (dict "display" "block") }}
     </div>
   </details>
+  {{- else }}
+  <div class="ms-card-body">
+    {{ .Inner | .Page.RenderString (dict "display" "block") }}
+  </div>
+  {{- end }}
 </article>
