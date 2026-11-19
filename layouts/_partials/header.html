@@ -114,11 +114,16 @@
             {{- /* 只显示本次构建中存在的页面，避免草稿入口在线上指向 404。 */ -}}
             {{- $children := slice }}
             {{- $active := false }}
+            {{- /* 记录最长匹配的子项前缀：只点亮最具体的子项，避免父路径与更深层子项同时高亮。 */ -}}
+            {{- $bestLen := 0 }}
             {{- range .Children }}
                 {{- if and .Page .Page.RelPermalink }}
                     {{- $children = $children | append . }}
                     {{- if hasPrefix $currentPage.RelPermalink .Page.RelPermalink }}
                         {{- $active = true }}
+                        {{- if gt (len .Page.RelPermalink) $bestLen }}
+                            {{- $bestLen = len .Page.RelPermalink }}
+                        {{- end }}
                     {{- end }}
                 {{- end }}
             {{- end }}
@@ -131,7 +136,7 @@
                     </summary>
                     <ul class="nav-submenu">
                         {{- range . }}
-                        {{- $childActive := hasPrefix $currentPage.RelPermalink .Page.RelPermalink }}
+                        {{- $childActive := and (hasPrefix $currentPage.RelPermalink .Page.RelPermalink) (eq (len .Page.RelPermalink) $bestLen) }}
                         <li>
                             <a href="{{ .Page.RelPermalink }}"{{ if $childActive }} class="active"{{ end }}{{ if eq $currentPage.RelPermalink .Page.RelPermalink }} aria-current="page"{{ end }}>
                                 <div class="nav-submenu-heading">

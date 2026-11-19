@@ -1,15 +1,16 @@
 +++
-title = "DeepSeek 源码图谱"
-description = "DeepSeek 家族按模块源码阅读地图；当前规划中，尚未开始逐模块阅读"
+title = "混元源码图谱"
+description = "混元家族按模块源码阅读地图；当前规划中，尚未开始逐模块阅读"
 columnKind = "column"
+aliases = ["/llm/source/hunyuan/"]
 +++
 
-**当前状态：规划中阅读地图。** 尚未开始逐模块源码阅读，尚未形成 DeepSeek 完整架构结论；不宣称已下载、已读或已实现 DeepSeek 全部模型。
+**当前状态：规划中阅读地图。** 尚未开始逐模块源码阅读，尚未形成混元完整架构结论；不宣称已下载、已读或已实现混元全部模型。
 
 ## 系列定位
 
-- 以已有的 DeepSeek V4.1 Flash text_config 初步解读为起点，把架构拆成可独立验证的机制专题。
-- 不以覆盖 DeepSeek 全部型号为目标。
+- 从混元官方 config 和 modeling 源码入口开始，建立模块级架构理解。
+- 不以覆盖混元全部型号为目标。
 - 不预设所有训练、推理和部署源码都已公开。
 
 ## 公共阅读骨架
@@ -40,9 +41,9 @@ columnKind = "column"
 
 ## 阅读提示（方向，非已核实结论）
 
-- 已有 DeepSeek V4.1 Flash 的 text_config 初步解读（见手搓 LLM 番外）。
-- 后续可拆成 MoE、低秩投影、部分 RoPE、KV 压缩与跨层来源、Indexer、Engram、DSpark、量化等独立专题。
-- 未经官方 modeling 源码确认的字段继续保留待核实，不提前编造实现语义。
+- 可从官方 config 和 modeling 源码入口开始。
+- 重点关注 MLA、SWA、MoE、Engram 等候选观察方向，但在官方资料核实前不写成确定实现。
+- 可记录与 DeepSeek 的横向比较问题，不提前下“训练资源更充足”等结论。
 
 ## 当前状态
 

@@ -2,6 +2,7 @@
 title = "大模型源码图谱"
 description = "以 Transformer 共同主干为基础，按模块拆解主流模型并横向比较；当前为规划中阅读地图"
 columnKind = "column"
+aliases = ["/llm/source/"]
 +++
 
 > 以 Transformer 的共同主干为基础，按模块拆解主流模型，再横向比较不同厂商在容量、稀疏、压缩、上下文、推理和部署上的设计考量与资源取舍。
@@ -20,11 +21,11 @@ columnKind = "column"
 
 | 家族 | 入口 | 状态 |
 | --- | --- | --- |
-| Qwen | [Qwen 源码图谱](/llm/source/qwen/) | 规划中 |
-| DeepSeek | [DeepSeek 源码图谱](/llm/source/deepseek/) | 规划中 |
-| 混元 | [混元源码图谱](/llm/source/hunyuan/) | 规划中 |
-| Moonshot | [Moonshot 源码图谱](/llm/source/moonshot/) | 规划中 |
-| 智谱 | [智谱源码图谱](/llm/source/zhipu/) | 规划中 |
+| Qwen | [Qwen 源码图谱](/source/qwen/) | 规划中 |
+| DeepSeek | [DeepSeek 源码图谱](/source/deepseek/) | 规划中 |
+| 混元 | [混元源码图谱](/source/hunyuan/) | 规划中 |
+| Moonshot | [Moonshot 源码图谱](/source/moonshot/) | 规划中 |
+| 智谱 | [智谱源码图谱](/source/zhipu/) | 规划中 |
 
 ## 公共阅读骨架
 
@@ -67,4 +68,4 @@ columnKind = "column"
 
 ## 与主线的关系
 
-本图谱是独立于 I 阶段主线的长期源码阅读支线，可与主线并行沉淀、按需展开；不要求所有家族同时开工，不改变当前主线优先级，也不开启“读完所有主流模型”的无限承诺。
+本图谱是与手搓 LLM 并列的顶级长期阅读栏目，独立于 I 阶段主线，可与主线并行沉淀、按需展开；不要求所有家族同时开工，不改变当前主线优先级，也不开启“读完所有主流模型”的无限承诺。

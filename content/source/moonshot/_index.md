@@ -2,6 +2,7 @@
 title = "Moonshot 源码图谱"
 description = "Moonshot 家族按模块源码阅读地图；当前规划中，尚未开始逐模块阅读"
 columnKind = "column"
+aliases = ["/llm/source/moonshot/"]
 +++
 
 **当前状态：规划中阅读地图。** 尚未开始逐模块源码阅读，尚未形成 Moonshot 完整架构结论；不宣称已下载、已读或已实现 Moonshot 全部模型。
