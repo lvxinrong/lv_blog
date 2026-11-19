@@ -203,8 +203,50 @@ menu:
         kind: 连载
         description: 读《从零构建大模型》，把每一层都拆开看
     - name: 源码图谱
-      url: /source/
+      identifier: source-series
       weight: 3
+    - name: 图谱总览
+      parent: source-series
+      pageRef: /source
+      weight: 1
+      params:
+        kind: 专栏
+        description: 长期源码阅读地图（规划中）
+    - name: Qwen 源码图谱
+      parent: source-series
+      pageRef: /source/qwen
+      weight: 2
+      params:
+        kind: 家族
+        description: Qwen 家族模块级阅读地图
+    - name: DeepSeek 源码图谱
+      parent: source-series
+      pageRef: /source/deepseek
+      weight: 3
+      params:
+        kind: 家族
+        description: DeepSeek 家族模块级阅读地图
+    - name: 混元源码图谱
+      parent: source-series
+      pageRef: /source/hunyuan
+      weight: 4
+      params:
+        kind: 家族
+        description: 混元家族模块级阅读地图
+    - name: Moonshot 源码图谱
+      parent: source-series
+      pageRef: /source/moonshot
+      weight: 5
+      params:
+        kind: 家族
+        description: Moonshot 家族模块级阅读地图
+    - name: 智谱源码图谱
+      parent: source-series
+      pageRef: /source/zhipu
+      weight: 6
+      params:
+        kind: 家族
+        description: 智谱家族模块级阅读地图
     - name: AI 随想
       url: /ai/
       weight: 4
