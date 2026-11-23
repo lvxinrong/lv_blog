@@ -939,90 +939,10 @@ details.toc a.is-active {
     font-weight: 600;
 }
 
-/* ≥1280px 宽屏：目录固定在正文右侧空白栏，随时可见且带滚动位置指示 */
+/* ≥1280px：不再显示右侧目录（跨笔记导航由左栏承担；移动端保留内联目录）。 */
 @media (min-width: 1280px) {
     details.toc {
-        position: fixed;
-        top: calc(var(--header-height) + 28px);
-        /* 正文宽 704 → 半宽 352，再留 30px 间距 */
-        left: calc(50% + 382px);
-        width: 216px;
-        max-height: calc(100vh - var(--header-height) - 56px);
-        margin: 0;
-        padding: 2px 0;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        scrollbar-width: thin;
-        scrollbar-color: var(--tertiary) transparent;
-        z-index: 10;
-    }
-
-    details.toc summary {
-        padding: 8px 14px;
-        font-size: 13px;
-        letter-spacing: 0.04em;
-        color: var(--secondary);
-    }
-
-    details.toc .inner {
-        margin: 0 14px;
-        padding: 6px 0 12px;
-    }
-
-    details.toc nav > ul > li > ul {
-        margin-top: 8px;
-    }
-
-    details.toc nav > ul > li > ul > li > ul {
-        padding-inline-start: 11px;
-        margin: 2px 0;
-    }
-
-    details.toc li {
-        margin: 1px 0;
-    }
-
-    details.toc a {
-        padding: 3px 0;
-        font-size: 13px;
-        line-height: 1.55;
-    }
-
-    /* 悬停或处于当前阅读章节时，左侧浮出系列色竖条 */
-    details.toc li > a {
-        position: relative;
-        padding-inline-start: 10px;
-    }
-
-    details.toc li > a::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 2.5px;
-        height: 0;
-        border-radius: 2px;
-        background: var(--series, var(--accent));
-        transition: height 0.16s ease;
-    }
-
-    details.toc li > a:hover::before,
-    details.toc li > a.is-active::before {
-        height: 68%;
-    }
-
-    details.toc::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    details.toc::-webkit-scrollbar-thumb {
-        background: var(--tertiary);
-        border-radius: 999px;
-    }
-
-    details.toc::-webkit-scrollbar-track {
-        background: transparent;
+        display: none;
     }
 }
 
@@ -5113,20 +5033,15 @@ body.roadmap-matrix-mode .phase-toggle {
 }
 
 /* --------------------------------------------------------------------------
-   O. 超宽屏阅读壳：≥1600 正文加宽并把「正文+目录」整体居中；≥1800 加左侧系列栏。
-      魔数同步：shell-half = (820 正文 + 30 间距 + 216 目录) / 2 = 533；
-      左栏 left = 50% - 533 - 40 间距 - 220 栏宽 = 50% - 793。
-      改 --main-width / 目录宽时须同步重算（Agent.md 陷阱 4）。
+   O. 超宽屏阅读壳：≥1600 正文加宽居中；≥1800 加左侧系列栏。
+      右目录已移除（≥1280 隐藏），正文单独居中，无需目录偏移魔数。
+      左栏 left = 50% - 半宽 - 40 间距 - 220 栏宽；改 --main-width 须同步重算。
    -------------------------------------------------------------------------- */
 @media (min-width: 1600px) {
     .main:has(.post-single) {
         --main-width: 820px;
-        margin-left: calc(50% - 533px - var(--gap));
+        margin-left: auto;
         margin-right: auto;
-    }
-
-    .main:has(.post-single) details.toc {
-        left: calc(50% + 533px - 216px);
     }
 }
 
@@ -5199,9 +5114,8 @@ body.roadmap-matrix-mode .phase-toggle {
 }
 
 /* --------------------------------------------------------------------------
-   P. ≥1800：右目录改按需浮层（默认收起为右缘「目录」按钮），正文加宽居中。
-      左栏位置随新正文宽同步：left = 50% - 510(半宽) - 40 - 220 = 50% - 770。
-      1280–1799 仍为常驻右目录（见 O 段与 ≥1280 规则）。
+   P. ≥1800：正文进一步加宽居中；左栏位置随新正文宽同步。
+      左栏 left = 50% - 510(半宽) - 40 间距 - 220 栏宽 = 50% - 770。
    -------------------------------------------------------------------------- */
 @media (min-width: 1800px) {
     .main:has(.post-single) {
@@ -5212,35 +5126,5 @@ body.roadmap-matrix-mode .phase-toggle {
 
     .series-rail {
         left: calc(50% - 770px);
-    }
-
-    .main:has(.post-single) details.toc {
-        left: auto;
-        right: 18px;
-        width: auto;
-        padding: 0;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: var(--entry);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-    }
-
-    .main:has(.post-single) details.toc[open] {
-        width: 264px;
-    }
-
-    .main:has(.post-single) details.toc summary {
-        padding: 8px 14px;
-        white-space: nowrap;
-        cursor: pointer;
-    }
-
-    .main:has(.post-single) details.toc .inner {
-        margin: 0;
-        padding: 4px 14px 12px;
-        max-height: calc(100vh - var(--header-height) - 120px);
-        overflow-y: auto;
-        overscroll-behavior: contain;
     }
 }

@@ -129,19 +129,7 @@
     (function () {
         var toc = document.querySelector('details.toc');
         if (!toc || !window.matchMedia) return;
-        var mq = window.matchMedia('(min-width: 1280px)');
-        var mqWide = window.matchMedia('(min-width: 1800px)');
-        /* 1280–1799 常驻右目录默认展开；≥1800 右目录为按需浮层默认收起。 */
-        var sync = function () { toc.open = mq.matches && !mqWide.matches; };
-        sync();
-        var onChange = function () { sync(); };
-        if (mq.addEventListener) {
-            mq.addEventListener('change', onChange);
-            mqWide.addEventListener('change', onChange);
-        } else if (mq.addListener) {
-            mq.addListener(onChange);
-            mqWide.addListener(onChange);
-        }
+        /* 右目录已移除（≥1280 隐藏）；移动端内联目录默认收起，无需断点同步。 */
 
         var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
         var items = [];
