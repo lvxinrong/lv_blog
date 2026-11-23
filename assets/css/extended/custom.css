@@ -1669,7 +1669,7 @@ details.toc a.is-active {
    -------------------------------------------------------------------------- */
 
 .home-page .main {
-    max-width: 980px;
+    max-width: 1088px;
 }
 
 .home-intro {
@@ -2549,7 +2549,7 @@ details.toc a.is-active {
 
 @media screen and (min-width: 769px) {
     .series-page .main {
-        max-width: 1040px;
+        max-width: calc(var(--main-width) + var(--gap) * 2);
     }
 
     .series-page .page-header {
@@ -5033,15 +5033,19 @@ body.roadmap-matrix-mode .phase-toggle {
 }
 
 /* --------------------------------------------------------------------------
-   O. 超宽屏阅读壳：≥1600 正文加宽居中；≥1800 加左侧系列栏。
-      右目录已移除（≥1280 隐藏），正文单独居中，无需目录偏移魔数。
-      左栏 left = 50% - 半宽 - 40 间距 - 220 栏宽；改 --main-width 须同步重算。
+   O. 统一阅读壳宽度：所有页型共享 --main-width（704 → ≥1280:820 → ≥1800:1020），
+      home 仪表盘保留独立 980。右目录已移除，正文单独居中。
+      ≥1800 左栏 left = 50% - 510(半宽) - 40 - 220 = 50% - 770；改宽度须同步。
    -------------------------------------------------------------------------- */
-@media (min-width: 1600px) {
-    .main:has(.post-single) {
+@media (min-width: 1280px) {
+    :root {
         --main-width: 820px;
-        margin-left: auto;
-        margin-right: auto;
+    }
+}
+
+@media (min-width: 1800px) {
+    :root {
+        --main-width: 1020px;
     }
 }
 
@@ -5054,7 +5058,7 @@ body.roadmap-matrix-mode .phase-toggle {
         display: block;
         position: fixed;
         top: calc(var(--header-height) + 28px);
-        left: calc(50% - 793px);
+        left: calc(50% - 770px);
         width: 220px;
         max-height: calc(100vh - var(--header-height) - 56px);
         overflow-y: auto;
@@ -5114,17 +5118,244 @@ body.roadmap-matrix-mode .phase-toggle {
 }
 
 /* --------------------------------------------------------------------------
-   P. ≥1800：正文进一步加宽居中；左栏位置随新正文宽同步。
-      左栏 left = 50% - 510(半宽) - 40 间距 - 220 栏宽 = 50% - 770。
+   Q. ≥1280 列表时间线紧凑行式：去掉竖线/节点装饰，摘要单行、元信息右置，
+      保留月份分组与阶段徽章；移动端保持原卡片时间线。
    -------------------------------------------------------------------------- */
-@media (min-width: 1800px) {
-    .main:has(.post-single) {
-        --main-width: 1020px;
-        margin-left: auto;
-        margin-right: auto;
+@media (min-width: 1280px) {
+    .timeline-entries {
+        padding-left: 0;
     }
 
-    .series-rail {
-        left: calc(50% - 770px);
+    .timeline-entries::before,
+    .timeline-entry::before,
+    .timeline-entry::after {
+        display: none;
     }
+
+    .timeline-entry {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "top meta"
+            "summary summary";
+        column-gap: 14px;
+        row-gap: 2px;
+        margin-bottom: 8px;
+        padding: 10px 16px;
+        border-radius: 10px;
+    }
+
+    .timeline-entry:hover,
+    .timeline-entry:focus-within {
+        transform: none;
+    }
+
+    .timeline-entry-top {
+        grid-area: top;
+    }
+
+    .timeline-summary {
+        grid-area: summary;
+        margin: 0;
+        font-size: 12.5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .timeline-meta {
+        grid-area: meta;
+        align-self: start;
+        margin: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   R. 首页双栏：主栏最新笔记 feed + 侧栏栏目/导图紧凑卡；空系列不再占大卡。
+      <1024 单列堆叠（移动端不变观感）。
+   -------------------------------------------------------------------------- */
+.home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    margin-top: 24px;
+}
+
+@media (min-width: 1024px) {
+    .home-grid {
+        grid-template-columns: minmax(0, 1fr) 300px;
+    }
+}
+
+.home-block-title {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.home-feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-feed-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--entry);
+}
+
+.home-feed-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--series, var(--accent));
+}
+
+.home-feed-title {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-feed-title:hover {
+    color: var(--series, var(--accent));
+}
+
+.home-feed-series {
+    font-size: 11px;
+    color: var(--secondary);
+}
+
+.home-feed-more {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--series, var(--accent));
+    text-decoration: none;
+}
+
+.home-side {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.home-side-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--series, var(--accent));
+    border-radius: 10px;
+    background: var(--entry);
+    text-decoration: none;
+}
+
+.home-side-card:hover {
+    border-color: var(--series, var(--accent));
+}
+
+.home-side-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-side-top strong {
+    font-size: 13.5px;
+    color: var(--primary);
+}
+
+.home-side-top em {
+    margin-left: auto;
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--secondary);
+}
+
+.home-side-meta {
+    font-size: 11.5px;
+    color: var(--secondary);
+}
+
+.home-series-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--series, var(--accent));
+}
+
+/* --------------------------------------------------------------------------
+   S. 设计令牌统一 + 排版/暗色打磨：roadmap 卡片与全站卡片共用圆角/阴影/底色语言；
+      标题层级收紧；暗色下弱化文字与表格边框对比补齐。
+   -------------------------------------------------------------------------- */
+:root {
+    --card-radius: 12px;
+    --card-radius-sm: 10px;
+    --card-shadow: var(--shadow-sm);
+}
+
+.ms-card:not(.is-subcard) {
+    background:
+        linear-gradient(115deg, var(--series-soft, var(--accent-soft)), transparent 58%),
+        var(--entry);
+}
+
+.ms-card {
+    border-left-width: 3px;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.roadmap-console,
+.roadmap-north-star {
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.roadmap-macro-item,
+.roadmap-toolbar,
+.roadmap-matrix,
+.phase-toggle {
+    border-radius: var(--card-radius-sm);
+}
+
+.post-title {
+    font-size: clamp(26px, 3.4vw, 34px);
+}
+
+.md-content h2 {
+    font-size: 1.35rem;
+}
+
+.md-content h3 {
+    font-size: 1.15rem;
+}
+
+[data-theme="dark"] .home-feed-series,
+[data-theme="dark"] .home-side-meta,
+[data-theme="dark"] .timeline-meta,
+[data-theme="dark"] .post-meta {
+    color: color-mix(in srgb, var(--secondary) 80%, #ffffff);
+}
+
+[data-theme="dark"] .md-content table th,
+[data-theme="dark"] .md-content table td {
+    border-color: color-mix(in srgb, var(--border) 70%, #ffffff);
 }

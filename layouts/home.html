@@ -23,64 +23,39 @@
 </header>
 {{- end }}
 
-<div class="home-sections">
-  {{- range $sections }}
-    {{- $p := . }}
-    {{- $kind := $p.Param "columnKind" | default "column" }}
-    {{- $published := where (where $p.RegularPages "Params.placeholder" "ne" true) "Draft" false }}
-    {{- $planned := where $p.RegularPages "Params.placeholder" true }}
-    {{- $isFeatured := or (ge (len $published) 3) (eq $kind "column") }}
-    {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
-    <section class="home-column {{ if $isFeatured }}home-column--featured{{ else }}home-column--compact{{ end }}" data-series="{{ $p.Section }}" data-kind="{{ $kind }}" aria-labelledby="home-column-{{ $p.Section }}">
-      <header class="home-column-header">
-        <div class="home-column-top">
-          <p class="home-column-kind">
-            <span class="home-series-dot" aria-hidden="true"></span>
-            {{- if eq $kind "serial" }}连载{{ else }}专栏{{ end }}
-            {{- with $p.Param "status" }}<span class="home-column-status">{{ index $labels . | default . }}</span>{{ end }}
-          </p>
-          <a class="home-column-directory" href="{{ $p.RelPermalink }}" aria-label="查看{{ $p.Title }}全部文章">
-            {{- len $published }} 篇{{- if $planned }} · {{ len $planned }} 待写{{- end }}<span aria-hidden="true">→</span>
-          </a>
-        </div>
-        <div class="home-column-heading">
-          <h2 id="home-column-{{ $p.Section }}"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h2>
-          {{- with $p.Description }}<p class="home-column-description">{{ . }}</p>{{ end }}
-        </div>
-        {{- if and $isFeatured (eq $kind "serial") $published }}
-        <div class="home-column-actions">
-          {{- with index ($published.ByDate) 0 }}
-          <a class="home-column-start" href="{{ .RelPermalink }}">从第一篇读起 <span aria-hidden="true">→</span></a>
-          {{- end }}
-          <a class="home-column-all" href="{{ $p.RelPermalink }}">完整目录</a>
-        </div>
-        {{- end }}
-      </header>
-
-      {{- with $published }}
-      <ol class="home-column-posts">
-        {{- range $idx, $post := first 3 (.ByDate.Reverse) }}
-        <li>
-          {{- if not $post.Date.IsZero }}
-          <time class="home-post-date" datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date.Format "01.02" }}</time>
-          {{- end }}
-          <h3>
-            <a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a>
-            {{- if and (eq $idx 0) (eq $kind "serial") }}<span class="home-post-latest">LATEST</span>{{ end }}
-          </h3>
-          {{- if $post.Date.IsZero }}
-          <span></span>
-          {{- else }}
-          <span class="home-post-year">{{ $post.Date.Format "2006" }}</span>
-          {{- end }}
-        </li>
-        {{- end }}
-      </ol>
-      {{- else }}
-      <p class="home-empty">文章正在准备中。</p>
+{{- $recent := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $recent = where $recent "Params.placeholder" "ne" true }}
+{{- $recent = $recent.ByDate.Reverse }}
+<div class="home-grid">
+  <section class="home-feed" aria-labelledby="home-feed-title">
+    <h2 id="home-feed-title" class="home-block-title">最新笔记</h2>
+    <ol class="home-feed-list">
+      {{- range first 8 $recent }}
+      <li class="home-feed-item" data-series="{{ .Section }}">
+        <time class="home-feed-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "01.02" }}</time>
+        <a class="home-feed-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        <span class="home-feed-series">{{ with site.GetPage (printf "/%s" .Section) }}{{ .Title }}{{ end }}</span>
+      </li>
       {{- end }}
-    </section>
-  {{- end }}
+    </ol>
+    <a class="home-feed-more" href="{{ "archives/" | relLangURL }}">全部时间线 →</a>
+  </section>
+  <aside class="home-side" aria-label="栏目与学习计划">
+    <h2 class="home-block-title">栏目</h2>
+    {{- range $sections }}
+      {{- $kind := .Param "columnKind" | default "column" }}
+      {{- $published := where (where .RegularPages "Params.placeholder" "ne" true) "Draft" false }}
+      {{- $labels := dict "ongoing" "连载中" "complete" "已完结" "paused" "暂缓" "planning" "筹备中" }}
+      <a class="home-side-card" data-series="{{ .Section }}" href="{{ .RelPermalink }}">
+        <span class="home-side-top"><span class="home-series-dot" aria-hidden="true"></span><strong>{{ .Title }}</strong><em>{{ len $published }} 篇</em></span>
+        <span class="home-side-meta">{{ if eq $kind "serial" }}连载{{ else }}专栏{{ end }}{{ with .Param "status" }} · {{ index $labels . | default . }}{{ end }}</span>
+      </a>
+    {{- end }}
+    <a class="home-side-card" data-series="llm" href="{{ "roadmap/" | relLangURL }}">
+      <span class="home-side-top"><span class="home-series-dot" aria-hidden="true"></span><strong>实现导图</strong><em>学习计划</em></span>
+      <span class="home-side-meta">六阶段路线 · 进度与验收</span>
+    </a>
+  </aside>
 </div>
 
 <footer class="home-end">
