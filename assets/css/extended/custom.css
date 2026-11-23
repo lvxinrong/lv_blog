@@ -5197,3 +5197,50 @@ body.roadmap-matrix-mode .phase-toggle {
         background: var(--series-soft, var(--accent-soft));
     }
 }
+
+/* --------------------------------------------------------------------------
+   P. ≥1800：右目录改按需浮层（默认收起为右缘「目录」按钮），正文加宽居中。
+      左栏位置随新正文宽同步：left = 50% - 510(半宽) - 40 - 220 = 50% - 770。
+      1280–1799 仍为常驻右目录（见 O 段与 ≥1280 规则）。
+   -------------------------------------------------------------------------- */
+@media (min-width: 1800px) {
+    .main:has(.post-single) {
+        --main-width: 1020px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .series-rail {
+        left: calc(50% - 770px);
+    }
+
+    .main:has(.post-single) details.toc {
+        left: auto;
+        right: 18px;
+        width: auto;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--entry);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .main:has(.post-single) details.toc[open] {
+        width: 264px;
+    }
+
+    .main:has(.post-single) details.toc summary {
+        padding: 8px 14px;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .main:has(.post-single) details.toc .inner {
+        margin: 0;
+        padding: 4px 14px 12px;
+        max-height: calc(100vh - var(--header-height) - 120px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
