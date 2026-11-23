@@ -39,6 +39,9 @@
 <body id="top">
 {{- end }}
     {{ partialCached "header.html" . .Page -}}
+    {{- if and (eq .Kind "page") (in site.Params.mainSections .Section) }}
+    {{- partial "series_rail.html" . }}
+    {{- end }}
     <main class="main">
         {{- block "main" . }}{{ end }}
     </main>

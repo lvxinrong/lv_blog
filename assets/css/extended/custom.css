@@ -5111,3 +5111,89 @@ body.roadmap-matrix-mode .phase-toggle {
     color: var(--secondary);
     opacity: 0.85;
 }
+
+/* --------------------------------------------------------------------------
+   O. 超宽屏阅读壳：≥1600 正文加宽并把「正文+目录」整体居中；≥1800 加左侧系列栏。
+      魔数同步：shell-half = (820 正文 + 30 间距 + 216 目录) / 2 = 533；
+      左栏 left = 50% - 533 - 40 间距 - 220 栏宽 = 50% - 793。
+      改 --main-width / 目录宽时须同步重算（Agent.md 陷阱 4）。
+   -------------------------------------------------------------------------- */
+@media (min-width: 1600px) {
+    .main:has(.post-single) {
+        --main-width: 820px;
+        margin-left: calc(50% - 533px - var(--gap));
+        margin-right: auto;
+    }
+
+    .main:has(.post-single) details.toc {
+        left: calc(50% + 533px - 216px);
+    }
+}
+
+.series-rail {
+    display: none;
+}
+
+@media (min-width: 1800px) {
+    .series-rail {
+        display: block;
+        position: fixed;
+        top: calc(var(--header-height) + 28px);
+        left: calc(50% - 793px);
+        width: 220px;
+        max-height: calc(100vh - var(--header-height) - 56px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        padding: 2px 0;
+        z-index: 10;
+    }
+
+    .series-rail-home {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .series-rail-badge {
+        display: inline-block;
+        margin-bottom: 8px;
+        padding: 1px 8px;
+        border: 1px solid color-mix(in srgb, var(--series, var(--accent)) 30%, transparent);
+        border-radius: 999px;
+        background: var(--series-soft, var(--accent-soft));
+        color: var(--series, var(--accent));
+        font-family: var(--font-mono);
+        font-size: 11px;
+    }
+
+    .series-rail-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .series-rail-list a {
+        display: block;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--secondary);
+        text-decoration: none;
+    }
+
+    .series-rail-list a:hover {
+        color: var(--primary);
+        background: var(--entry);
+    }
+
+    .series-rail-list a.is-current {
+        color: var(--series, var(--accent));
+        font-weight: 650;
+        background: var(--series-soft, var(--accent-soft));
+    }
+}

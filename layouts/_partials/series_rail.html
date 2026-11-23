@@ -1,0 +1,29 @@
+{{- /* 超宽屏（≥1800px）左侧系列栏：系列首页 + 阶段徽章 + 章节/家族跳转。
+       仅单页且属于 mainSections 时由 baseof 注入；CSS 控制仅 ≥1800 显示。
+       llm 用 data/llm_stages.yaml 推阶段徽章；source 列家族子系列。 */ -}}
+{{- $sec := site.GetPage (printf "/%s" .Section) }}
+{{- with $sec }}
+<nav class="series-rail" aria-label="系列导航">
+  <a class="series-rail-home" href="{{ .RelPermalink }}">{{ .Title }}</a>
+  {{- if eq $.Section "llm" }}
+    {{- $data := hugo.Data.llm_stages }}
+    {{- with $data }}
+      {{- with index .notes $.Slug }}
+        {{- $s := index $data.stages .phase }}
+        <span class="series-rail-badge">{{ $s.word }}{{ with .code }} · {{ . }}{{ end }}</span>
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  <ol class="series-rail-list">
+    {{- if eq $.Section "source" }}
+      {{- range .Sections }}
+      <li><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $.RelPermalink }} class="is-current" aria-current="page"{{ end }}>{{ .Title }}</a></li>
+      {{- end }}
+    {{- else }}
+      {{- range .RegularPages.ByDate }}
+      <li><a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $.RelPermalink }} class="is-current" aria-current="page"{{ end }}>{{ .Title }}</a></li>
+      {{- end }}
+    {{- end }}
+  </ol>
+</nav>
+{{- end }}
