@@ -1,5 +1,5 @@
 +++
-title = "手搓 LLM 笔记 29：I6 能力分层——Loss 下降究竟证明了什么？"
+title = "手搓 LLM 笔记 29：I6-2 能力分层——Loss 下降究竟证明了什么？"
 date = 2026-11-25
 draft = false
 slug = "llm-29-i6-capability-layers-loss-boundary"
@@ -7,7 +7,7 @@ tags = ["LLM", "I6", "LoRA", "能力分层", "评估", "控制变量", "学习�
 summary = "今日 I6 收官记录：给定位置诊断、Prompt 红队、去重复、行为证据、thinking 与 Qwen3-4B 对照均未带来真实修复通过，Lang-33 的简单 null 修复也失败。最终反思默认模型会 Java 的未验证假设，并将后续冻结为 Java 语法常识、20 道人工单行 D1、真实 Defects4J 局部修复、D2/D3 四步能力评估；今日笔记收官，I6 仍未完成。"
 +++
 
-这篇承接 [笔记 28：I6 领域后训练起步](/llm/llm-28-i6-java-defect-repair/)。
+这篇承接 [笔记 28：I6-1 领域后训练起步](/llm/llm-28-i6-java-defect-repair/)。
 
 笔记 28 记录了完整方法、结构化局部编辑、8 / 16 / 32 样本学习曲线、rank 对照和 Time 最终验收。今天本来准备继续实现 span ID，结果在给定位置诊断中先撞见了一个更基础的问题：
 

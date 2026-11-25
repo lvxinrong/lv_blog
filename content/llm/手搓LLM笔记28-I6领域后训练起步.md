@@ -1,5 +1,5 @@
 +++
-title = "手搓 LLM 笔记 28：I6 领域后训练起步——Java 缺陷定位与最小修复"
+title = "手搓 LLM 笔记 28：I6-1 领域后训练起步——Java 缺陷定位与最小修复"
 date = 2026-11-23
 draft = false
 slug = "llm-28-i6-java-defect-repair"
