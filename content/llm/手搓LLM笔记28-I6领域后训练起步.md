@@ -1,7 +1,7 @@
 +++
 title = "手搓 LLM 笔记 28：I6 领域后训练起步——Java 缺陷定位与最小修复"
 date = 2026-11-23
-draft = true
+draft = false
 slug = "llm-28-i6-java-defect-repair"
 tags = ["LLM", "I6", "Java", "Defects4J", "领域后训练", "学习笔记"]
 summary = "I6 完成结构化局部编辑、8/16/32 样本学习曲线与 rank 16 对照：数据扩展和 rank 翻倍均未带来 validation 修复通过；Time 上可应用编辑从 0/4 提升到 4/4、编译从 0/4 到 1/4，但触发测试仍为 0/4。当前只证明契约学习，不证明修复泛化。"
