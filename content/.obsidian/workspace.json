@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "0e0fef04aac025b5",
+        "id": "7002fde0c7b1ff25",
         "type": "tabs",
         "children": [
           {
-            "id": "119cfaa7b45dd98c",
+            "id": "071d7c7cc80fdc43",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -185,13 +185,14 @@
       "bases:新建数据库": false
     }
   },
-  "active": "119cfaa7b45dd98c",
+  "active": "071d7c7cc80fdc43",
   "lastOpenFiles": [
-    "llm/手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？.md",
+    "llm/手搓LLM笔记30-I6-3先验证模型会不会Java.md",
+    "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm/大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘.md",
+    "llm/手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？.md",
     "llm/llm-05-a4-calc-loss-batch.jpg",
     "llm/手搓LLM笔记29-I6能力分层与Loss边界.md",
-    "llm/手搓LLM笔记30-I6-3先验证模型会不会Java.md",
     "llm/手搓LLM笔记28-I6领域后训练起步.md",
     "ai/致我的房东.md",
     "ai/硅基董事会：如何构建不内耗的多智能体圆桌会议.md",
@@ -223,7 +224,6 @@
     "llm/手搓LLM笔记27-I5评估校准与回归基准自动化.md",
     "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
     "llm/手搓LLM笔记26-I4后训练收官.md",
-    "llm/手搓LLM番外-默写GPTModel.md",
     "llm/llm-05-a4-generate.jpg",
     "llm/llm-11-structured-sparsity.png",
     "Pasted image 20261028104954.png",
