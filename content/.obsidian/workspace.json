@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/手搓LLM笔记30-I6-3先验证模型会不会Java.md",
+                "file": "llm/大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "手搓LLM笔记30-I6-3先验证模型会不会Java"
+              "title": "大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘"
             }
           }
         ]
@@ -187,6 +187,9 @@
   },
   "active": "119cfaa7b45dd98c",
   "lastOpenFiles": [
+    "llm/手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？.md",
+    "llm/大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘.md",
+    "llm/llm-05-a4-calc-loss-batch.jpg",
     "llm/手搓LLM笔记29-I6能力分层与Loss边界.md",
     "llm/手搓LLM笔记30-I6-3先验证模型会不会Java.md",
     "llm/手搓LLM笔记28-I6领域后训练起步.md",
@@ -221,10 +224,7 @@
     "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
     "llm/手搓LLM笔记26-I4后训练收官.md",
     "llm/手搓LLM番外-默写GPTModel.md",
-    "llm/手搓LLM笔记25-I4-DPO偏好优化.md",
-    "llm/手搓LLM笔记23-I4多轮对话SFT.md",
     "llm/llm-05-a4-generate.jpg",
-    "llm/llm-05-a4-calc-loss-batch.jpg",
     "llm/llm-11-structured-sparsity.png",
     "Pasted image 20261028104954.png",
     "llm/llm-09-tokenizer-types.png",
