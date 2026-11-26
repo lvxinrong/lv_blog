@@ -19,6 +19,7 @@
   </div>
   {{- end }}
   {{- with .Content }}<div class="home-intro-copy">{{ . | markdownify }}</div>{{ end }}
+  <a class="home-about-link" href="{{ "about/" | relLangURL }}">更多关于我 <span aria-hidden="true">→</span></a>
   {{ partial "social_icons.html" (dict "variant" "home") }}
 </header>
 {{- end }}
@@ -30,11 +31,12 @@
   <section class="home-feed" aria-labelledby="home-feed-title">
     <h2 id="home-feed-title" class="home-block-title">最新笔记</h2>
     <ol class="home-feed-list">
-      {{- range first 8 $recent }}
+      {{- range first 7 $recent }}
       <li class="home-feed-item" data-series="{{ .Section }}">
         <time class="home-feed-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "01.02" }}</time>
         <a class="home-feed-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
         <span class="home-feed-series">{{ with site.GetPage (printf "/%s" .Section) }}{{ .Title }}{{ end }}</span>
+        <span class="home-feed-summary">{{ .Summary | plainify | chomp }}</span>
       </li>
       {{- end }}
     </ol>

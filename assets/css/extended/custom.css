@@ -1672,6 +1672,12 @@ details.toc a.is-active {
     max-width: 1088px;
 }
 
+@media (min-width: 1800px) {
+    .home-page .main {
+        max-width: 1200px;
+    }
+}
+
 .home-intro {
     padding: 26px 0 28px;
     border-bottom: 1px solid var(--border);
@@ -1697,10 +1703,35 @@ details.toc a.is-active {
 }
 
 .home-intro-copy {
-    max-width: 640px;
+    max-width: 760px;
     color: var(--secondary);
-    font-size: 16.5px;
+    font-size: 14px;
     line-height: 1.75;
+}
+
+.home-intro-copy p {
+    margin: 0 0 8px;
+}
+
+.home-intro-copy p:last-child {
+    margin-bottom: 0;
+}
+
+.home-intro-copy strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.home-about-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.home-about-link:hover {
+    text-decoration: underline;
 }
 
 .home-intro .social-icons {
@@ -2853,7 +2884,7 @@ details.toc a.is-active {
     }
 
     .home-intro-copy {
-        font-size: 15.5px;
+        font-size: 13.5px;
     }
 
     .home-slogan {
@@ -5182,9 +5213,46 @@ body.roadmap-matrix-mode .phase-toggle {
     margin-top: 24px;
 }
 
+.home-feed-summary {
+    display: none;
+}
+
 @media (min-width: 1024px) {
     .home-grid {
         grid-template-columns: minmax(0, 1fr) 300px;
+    }
+
+    .home-feed-item {
+        grid-template-areas:
+            "date title series"
+            "date summary summary";
+        gap: 2px 12px;
+        align-items: start;
+    }
+
+    .home-feed-date {
+        grid-area: date;
+        padding-top: 2px;
+    }
+
+    .home-feed-title {
+        grid-area: title;
+    }
+
+    .home-feed-series {
+        grid-area: series;
+        padding-top: 3px;
+    }
+
+    .home-feed-summary {
+        grid-area: summary;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 12.5px;
+        line-height: 1.55;
+        color: var(--secondary);
     }
 }
 
@@ -5349,6 +5417,7 @@ body.roadmap-matrix-mode .phase-toggle {
 }
 
 [data-theme="dark"] .home-feed-series,
+[data-theme="dark"] .home-feed-summary,
 [data-theme="dark"] .home-side-meta,
 [data-theme="dark"] .timeline-meta,
 [data-theme="dark"] .post-meta {
