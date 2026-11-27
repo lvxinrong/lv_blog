@@ -10,11 +10,11 @@ stages:
   "2":
     word: 现代架构
     color: "#7c4ddb"
-    range: "I0～I7"
+    range: "I0～I6"
   "3":
     word: 工业级系统
     color: "#0e8f9c"
-    range: "S0～S6 + V5/V6"
+    range: "S0～S9"
   "4":
     word: 能力形成
     color: "#d97706"
