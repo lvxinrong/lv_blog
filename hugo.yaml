@@ -190,101 +190,78 @@ markup:
     endLevel: 3
     ordered: false
 
-# 栏目入口沿用各自 _index.md 的标题；「工程实践」是容纳专栏与系列的导航分组。
-# 下拉子项用 pageRef 关联页面，未参与构建的草稿不会生成入口。
+# 顶层五项：实现导图 / 手搓工坊 / 栏目 / 归档 / 关于。
+# 手搓工坊是手搓家族伞名（现有手搓 LLM；后续手搓 vLLM / SGLang 等连载建页后加为子项）。
+# 栏目下拉收纳各专栏入口；下拉子项用 pageRef 关联页面，未参与构建的草稿不会生成入口。
 menu:
   main:
     - name: 实现导图
       url: /roadmap/
       weight: 1
-    - name: 手搓 LLM
-      identifier: llm-series
+    - name: 手搓工坊
+      identifier: handcraft
       weight: 2
-    - name: 从零构建大模型
-      parent: llm-series
+    - name: 手搓 LLM
+      parent: handcraft
       pageRef: /llm
       weight: 1
       params:
         kind: 连载
-        description: 读《从零构建大模型》，把每一层都拆开看
-    - name: 源码图谱
-      identifier: source-series
+        description: 读《从零构建大模型》，一章一篇从零实现，不复制粘贴
+    - name: 栏目
+      identifier: columns
       weight: 3
-    - name: 图谱总览
-      parent: source-series
-      pageRef: /source
+    - name: 栏目总览
+      parent: columns
+      pageRef: /columns
       weight: 1
       params:
-        kind: 专栏
-        description: 长期源码阅读地图（规划中）
-    - name: Qwen 源码图谱
-      parent: source-series
-      pageRef: /source/qwen
+        kind: 总览
+        description: 全部专栏与连载一页看全
+    - name: 源码图谱
+      parent: columns
+      pageRef: /source
       weight: 2
       params:
-        kind: 家族
-        description: Qwen 家族模块级阅读地图
-    - name: DeepSeek 源码图谱
-      parent: source-series
-      pageRef: /source/deepseek
+        kind: 专栏
+        description: 长期源码阅读地图，内含五张家族图谱（规划中）
+    - name: AI 随想
+      parent: columns
+      pageRef: /ai
       weight: 3
       params:
-        kind: 家族
-        description: DeepSeek 家族模块级阅读地图
-    - name: 混元源码图谱
-      parent: source-series
-      pageRef: /source/hunyuan
-      weight: 4
-      params:
-        kind: 家族
-        description: 混元家族模块级阅读地图
-    - name: Moonshot 源码图谱
-      parent: source-series
-      pageRef: /source/moonshot
-      weight: 5
-      params:
-        kind: 家族
-        description: Moonshot 家族模块级阅读地图
-    - name: 智谱源码图谱
-      parent: source-series
-      pageRef: /source/zhipu
-      weight: 6
-      params:
-        kind: 家族
-        description: 智谱家族模块级阅读地图
-    - name: AI 随想
-      url: /ai/
-      weight: 4
-    - name: 工程实践
-      identifier: engineering
-      weight: 5
+        kind: 专栏
+        description: AI 时代的思考——程序员的价值、AI 伙伴与把"我"留给 AI
     - name: 工程手记
-      parent: engineering
+      parent: columns
       pageRef: /craft
-      weight: 1
+      weight: 4
       params:
         kind: 专栏
         description: 工程中的判断、取舍与踩坑
     - name: 生产排查 Skill 诞生记
-      parent: engineering
+      parent: columns
       pageRef: /incident-skill
-      weight: 2
+      weight: 5
       params:
         kind: 连载
         description: 从排查困境到一个 Skill 的打磨过程
     - name: 系统扫描 Skill 诞生记
-      parent: engineering
+      parent: columns
       pageRef: /scan-skill
-      weight: 3
+      weight: 6
       params:
         kind: 连载
         description: 把看懂一个系统变成可复核的流程
     - name: 读书笔记
-      url: /reading/
-      weight: 6
+      parent: columns
+      pageRef: /reading
+      weight: 7
+      params:
+        kind: 专栏
     - name: 归档
       url: /archives/
-      weight: 7
+      weight: 4
     - name: 关于
       url: /about/
-      weight: 8
+      weight: 5

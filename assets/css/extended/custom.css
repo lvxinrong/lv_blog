@@ -321,6 +321,8 @@ a {
     /* 必须显式给 line-height：.header-nav 上是 line-height: 60px，
        span 会继承它，再加上下面的 padding，导航栏会被撑到 75px 而不是 60px。 */
     line-height: 1.4;
+    /* 与下拉 summary 的 vertical-align: middle 同基线，避免带 ⌄ 与不带 ⌄ 的项高低不平。 */
+    vertical-align: middle;
     padding: 7px 12px;
     border-radius: 8px;
     transition: color 0.16s ease, background-color 0.16s ease;
