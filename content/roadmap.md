@@ -503,7 +503,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< /milestone >}}
 
 {{< milestone id="s3-long-context" code="↳ S3.5 选修" title="长上下文架构：YaRN + DSA + Hybrid Attention" status="planning" status_label="规划中 · 选修（不计入 S0～S9 主里程碑）" sub="true" question="怎样把上下文真正做长，而不只是把 context_size 配置调大？" summary="S3 之后、S4 之前的选修专题：按 YaRN / RoPE Scaling → DSA → Gated DeltaNet / 线性注意力 → Hybrid Attention → RULER 评测的顺序做最小混合架构实验；速度、显存与质量分别验收，不复刻完整 Qwen3-Next。" >}}
-- **定位说明**：第三阶段选修专题，不计入 `S0～S9` 的 7 个主里程碑数量，不阻塞 `S5`；只做最小混合架构实验，不直接复刻完整 Qwen3-Next。
+- **定位说明**：第三阶段选修专题，不计入 `S0～S9` 的 10 个主里程碑数量，不阻塞 `S5`；只做最小混合架构实验，不直接复刻完整 Qwen3-Next。
 - **学习顺序**：
   1. YaRN / RoPE Scaling；
   2. DSA：Lightning Indexer、Top-K token 选择、稀疏核心注意力；
