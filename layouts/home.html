@@ -19,6 +19,7 @@
   </div>
   {{- end }}
   {{- with .Content }}<div class="home-intro-copy">{{ . | markdownify }}</div>{{ end }}
+  {{- with .Creed }}<div class="home-creed">{{ . | markdownify }}</div>{{ end }}
   <a class="home-about-link" href="{{ "about/" | relLangURL }}">更多关于我 <span aria-hidden="true">→</span></a>
   {{ partial "social_icons.html" (dict "variant" "home") }}
 </header>

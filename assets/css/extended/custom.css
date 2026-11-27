@@ -1732,6 +1732,25 @@ details.toc a.is-active {
     text-decoration: none;
 }
 
+.home-creed {
+    max-width: 760px;
+    margin-top: 14px;
+    padding-left: 12px;
+    border-left: 2px solid var(--accent);
+    color: var(--secondary);
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+.home-creed p {
+    margin: 0;
+}
+
+.home-creed strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
 .home-about-link:hover {
     text-decoration: underline;
 }
@@ -2887,6 +2906,10 @@ details.toc a.is-active {
 
     .home-intro-copy {
         font-size: 13.5px;
+    }
+
+    .home-creed {
+        font-size: 14px;
     }
 
     .home-slogan {
