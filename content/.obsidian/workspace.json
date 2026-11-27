@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "llm/大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘.md",
+                "file": "llm/手搓LLM笔记31-I6-4B基座对照与边界墙.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘"
+              "title": "手搓LLM笔记31-I6-4B基座对照与边界墙"
             }
           }
         ]
@@ -187,9 +187,13 @@
   },
   "active": "071d7c7cc80fdc43",
   "lastOpenFiles": [
+    "roadmap.md.tmp.2907.1795751654154",
+    "roadmap.md.tmp.2907.1795751630398",
+    "roadmap.md.tmp.2907.1795751517405",
     "llm/手搓LLM笔记30-I6-3先验证模型会不会Java.md",
-    "ai/我想把家里的设备组成一个私人AI实验室.md",
+    "llm/手搓LLM笔记31-I6-4B基座对照与边界墙.md",
     "llm/大模型是黑盒但工程管线必须是白盒-0.6B-Java微调复盘.md",
+    "ai/我想把家里的设备组成一个私人AI实验室.md",
     "llm/手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？.md",
     "llm/llm-05-a4-calc-loss-batch.jpg",
     "llm/手搓LLM笔记29-I6能力分层与Loss边界.md",
@@ -216,14 +220,10 @@
     "llm/source/moonshot/_index.md",
     "llm/source/moonshot",
     "llm/source/hunyuan/_index.md",
-    "llm/source/hunyuan",
     "llm/source/deepseek/_index.md",
-    "llm/source/deepseek",
     "llm/source/qwen/_index.md",
     "llm/source/_index.md",
     "llm/手搓LLM笔记27-I5评估校准与回归基准自动化.md",
-    "llm/手搓LLM番外-DeepSeekV4.1-Flash配置解读.md",
-    "llm/手搓LLM笔记26-I4后训练收官.md",
     "llm/llm-05-a4-generate.jpg",
     "llm/llm-11-structured-sparsity.png",
     "Pasted image 20261028104954.png",

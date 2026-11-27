@@ -3,14 +3,14 @@ title = "lvchat 实现导图：主干先行，局部进化，持续验收"
 slug = "roadmap"
 aliases = ["/llm/lvchat-roadmap/", "/nanochat/lvchat-roadmap/"]
 date = 2026-10-19T19:10:00+08:00
-lastmod = 2026-11-18T21:39:02+08:00
+lastmod = 2026-11-27T11:49:36+08:00
 draft = false
 series = "llm"
 hiddenInRss = true
 ShowBreadCrumbs = false
 ShowPostNavLinks = false
 tags = ["LLM", "nanochat", "lvchat", "diy-llm", "AI-Infra", "学习笔记"]
-summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（当前阶段，进度 6/7）已完成 I0～I5 主线与 CUDA、ModelV4 / Qwen3 两个番外，主线下一站 I6 领域后训练打榜（Java 缺陷定位与修复），I7 架构进阶番外（Mini MoE / MLA / MTP）为选修；第三阶段（证明系统真的有效，S0～S6 + V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 9 个里程碑）覆盖性能基线、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
+summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LLM，M0～M6）已 7/7 完整交付；第二阶段（已收官，进度 7/7）完成 I0～I6 主线与 CUDA、ModelV4 / Qwen3 两个番外，I6 领域后训练收官但真实 Defects4J 未见缺陷稳定最小修复目标尚未完成、暂缓待复入（后续带着新机制与明确假设在云端或其他合适算力重新打开 4B 微调）；第三阶段（当前阶段，证明系统真的有效，S0～S6 + I7 架构进阶（Mini MoE / MLA / MTP 主线必修）+ V5/V6 版本主线 + Mini-Serving 手搓推理引擎主干实践 + S2.5 长上下文选修，共 10 个里程碑，里程碑尚未启动）覆盖性能基线、架构进阶（MoE / MLA / MTP）、源码地图、手搓推理引擎、算子优化、稀疏架构与低秩表示、分布式训练与稳定性、专家并行、生产 Serving、长上下文记忆与推理协同与综合验收；第四阶段（证明模型能力真的变强了）聚焦 Agentic 后训练与能力形成，并含 V4 Pro vs Flash 架构选型研究；第五阶段沉淀 Skill 工程与工具生态；第六阶段构建多角色协作与 Agent Team 软件交付沙盘。"
 [cover]
     image = "covers/lvchat-roadmap.jpg"
     alt = "lvchat 实现导图"
@@ -21,7 +21,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< roadmap_overview
     north_star="构建并持续演进可对话的小模型及其工程系统，贯通数据、训练、后训练、推理、评估与服务；用可复现、可对照、可解释的证据说明每一代版本的能力、成本与边界。"
     north_star_archived="用纯 PyTorch 交付一个可对话的 355M 模型，并打通从数据到 WebUI 的全链路。"
-    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::active::2026.11.04 启动 · 进度 6/7 (I0～I5 及番外已完成，主线下一站 I6；I7 架构番外选修) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::planning::规划中 · S0～S6 + V5/V6 版本主线 + Mini-Serving + S2.5 · 性能/分布式/Serving | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
+    phases="phase-01::STAGE 01 · 第一阶段::从零手搓 LLM::done::2026.10.13 → 2026.11.04 (M0～M6 已完成) | phase-02::STAGE 02 · 第二阶段::现代架构与模型承接::done::2026.11.04 → 2026.11.27 · I0～I6 收官 (I6 真实修复暂缓待复入) | phase-03::STAGE 03 · 第三阶段::工业级训练、推理与分布式系统::active::当前阶段 · S0～S6 + I7 架构进阶 + V5/V6 版本主线 + Mini-Serving + S2.5 · 10 个主里程碑尚未启动 | phase-04::STAGE 04 · 第四阶段::后训练与领域能力形成::planning::规划中 · Agentic 后训练/能力形成/V4 Pro–Flash 选型/M7 个人语料 | phase-05::STAGE 05 · 第五阶段::Skill 工程与工具生态::planning::远期 · 扫描/排查/MCP/开源规范 | phase-06::STAGE 06 · 第六阶段::Agent 与多模型协作::planning::远期 · 多角色分工与编排闭环 · Agent Team 交付沙盘"
 >}}
 
 {{< roadmap_progress
@@ -40,7 +40,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
     total="7"
     current="M6 · 对话界面"
     delivered="第一季核心链路已交付"
-    next="第二阶段 I6 · 领域后训练与可复现打榜（I0～I5 及番外已完成）"
+    next="第二阶段 I0～I6 已收官（I6 真实修复目标暂缓待复入），当前阶段第三阶段"
     steps="m0:M0:重写底座:done, m1:M1:手写 BPE:done, m2:M2:预训练闭环:done, m3:M3:KV Cache:done, m4:M4:SFT 微调:done, m5:M5:评估框架:done, m6:M6:对话界面:done"
 >}}
 
@@ -100,26 +100,26 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 {{< roadmap_progress
     id="phase-02"
-    season="STAGE 02 · 第二阶段（当前阶段）"
-    title="现代架构与模型承接（全量展开 I0 ～ I7）"
-    phase_state="active"
+    season="STAGE 02 · 第二阶段（已收官）"
+    title="现代架构与模型承接（全量展开 I0 ～ I6）"
+    phase_state="done"
     start_date="2026年11月04日"
-    end_date="进行中"
+    end_date="2026年11月27日"
     repo="squid-llms"
     proposal_title="diy-llm 立项书"
     proposal_url="/llm/diy-llm-proposal/"
     theory_title="DataWhale diy-llm 教程"
     theory_url="https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html"
-    rules="阶段定位::证明结构写对了——I0～I3 最小结构验证、I4 后训练与 I5 评估校准里程碑收官，I7 架构进阶番外选修；系统级性能、分布式与 Serving 留待第三阶段 | 装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练，I7 架构番外选修"
-    done="6"
+    rules="阶段定位::证明结构写对了——I0～I3 最小结构验证、I4 后训练与 I5 评估校准里程碑收官，I6 领域后训练收官（真实 Defects4J 修复目标暂缓待复入）；系统级性能、分布式与 Serving 留待第三阶段 | 装备来源::剥离自第一阶段的全部工业级选修项 + 第一阶段实测暴露的工程与模型边界 | 理论蓝本::以 DataWhale diy-llm（CS336 中文本土化 16 章 + 6 作业）为系统理论蓝本，按需调用 | 进化目标::新建独立 model_v3 / v4 承接现代架构与 Qwen 权重，并按 I0～I6 主线逐件升级数据、训练、推理与后训练"
+    done="7"
     total="7"
-    current="I5 · 评估校准与回归基准自动化（2026-11-18 收官）"
-    delivered="I0～I5 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新，以及人工盲评、位置校准、多评委对照、paired bootstrap 与 I0～I4 注册范围一键回归报告。"
-    next="I6 · 领域后训练与可复现打榜（主线下一站；I7 架构番外选修）"
-    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:done, i5:I5:评委校准CI:done, i6:I6:领域后训练打榜:todo, i7:I7:架构进阶番外:optional"
+    current="I6 · 领域后训练与可复现打榜（2026-11-27 收官，真实修复目标暂缓待复入）"
+    delivered="I0～I5 主线及 CUDA、ModelV4 / Qwen3 番外已交付；完成多轮 SFT、CoT-SFT、DPO、LoRA / 全参对照、RLVR / GRPO 最小更新，以及人工盲评、位置校准、多评委对照、paired bootstrap 与 I0～I4 注册范围一键回归报告。I6 建立 Defects4J 全链路并完成方法 / 样本量 / 轮数 / rank 对照、0.6B 收官、原始 4B 基座复测与 120 题同题基线；真实 Defects4J 稳定最小修复目标未完成，暂缓待复入。"
+    next="第三阶段 S0 · GPU 系统基础与性能基线（I6 真实修复目标暂缓待复入，见 I6 卡片）"
+    steps="i0:I0:现代架构:done, i1:I1:数据与流式IO:done, i2:I2:训练与算子加速:done, i3:I3:量化与投机推理:done, i4:I4:CoT与偏好对齐:done, i5:I5:评委校准CI:done, i6:I6:领域后训练打榜:done"
 >}}
 
-## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I7）
+## 第二阶段施工流水线：现代架构承接与 AI-Infra 全量里程碑（I0 → I6）
 
 > 第一阶段解决“**有没有一辆自己造的车**”，第二阶段以 [DataWhale `diy-llm`](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 为系统理论蓝本，解决“**怎么把 GPT-2 时代的老爷车改装成现代工业级大模型**”。每一站都直接改造 `squid-llms` 里的对应模块，用前后对照实验说话。
 
@@ -210,7 +210,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< /milestone >}}
 
 {{< milestone id="i3-model-v4" code="↳ I3 番外" title="I3 番外：模型兼容性审计与 ModelV4（面向 Qwen3）" status="done" status_label="✓ 已验收（番外）" sub="true" date="2026-11-13" note1_title="笔记 22：Qwen3 兼容性" note1_url="/llm/llm-22-qwen3-compatibility/" question="面对一个陌生模型时，如何系统判断当前代码能否加载、还缺哪些结构与工程能力，并以 Qwen3-0.6B Dense 为最小案例在隔离的 V4 中实现 ModelV4？" summary="选修番外（已验收，不计入主线）：完成 config / safetensors / 官方 forward 兼容性审计，从零实现完全隔离的 V4（显式 head_dim=128、QK RMSNorm、Qwen3 配置 / 权重映射）；Qwen3-0.6B Dense 在 CPU / FP32 / eager 下通过官方 logits、连续 cache decode 与固定生成对照，并接通本地 thinking 对话与流式修复。结论限定单模型与受控环境，不代表 Qwen3 全系列。" >}}
-- **定位说明**：面向模型承接能力的选修番外，已验收；不计入第二阶段 `I0～I6` 主线完成度（主线仍 `6/7`），主线下一站仍为 `I6`。`V3` 继续作为 Qwen2.5-0.5B / 0.5B-Instruct 的稳定对照，`V4` 独立承接 Qwen3-0.6B。
+- **定位说明**：面向模型承接能力的选修番外，已验收；不计入第二阶段 `I0～I6` 主线完成度（主线 `7/7` 收官，I6 真实修复目标暂缓待复入）。`V3` 继续作为 Qwen2.5-0.5B / 0.5B-Instruct 的稳定对照，`V4` 独立承接 Qwen3-0.6B。
 - **已完成成果（详见[笔记 22](/llm/llm-22-qwen3-compatibility/)）**：
   1. **V4 独立实现**：新建 `src/squid/model/v4_qwen3/`、独立加载器 `src/squid/checkpoints/qwen3.py`、独立测试 `tests/test_qwen3/`；RMSNorm、SwiGLU、RoPE、Attention、TransformerBlock、GPTModelV4 全部重新实现，没有复制或 import V3 的模型实现；RMSNorm 带入 FP32 累积修复，避免重新引入 FP16 平方溢出。
   2. **Qwen3-0.6B 兼容性审计**：完成 config、safetensors 权重键、形状与官方 forward 语义审计，新增可复用检查能力 `src/squid/checkpoints/inspect.py`（只读元数据，最小回归 `1 passed`）；支持显式 `head_dim=128`、16 Q heads、8 KV heads、QK RMSNorm；checkpoint 中 embedding 与 lm_head 虽重复保存，实测逐元素完全一致（`torch.equal=True`），加载后共享一份参数。
@@ -294,105 +294,45 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - Qwen 与 DeepSeek 的推理方式及输出预算不同，行为差异不能全部归因于模型本身；没有同批 v1 / v2 对照，不宣称 v2 prompt 的因果提升；
   - 一键报告只覆盖当前注册范围（registered_scope_only），不等于 I0～I4 所有历史实验已完整接入；I1～I3 在总报告中仍是历史缓存，不是完整 live 回归；
   - I5 工程里程碑完成不代表已经独立掌握评估工程；后续独立复现、现成框架对照和更多任务评估属于回顾任务，不新增里程碑、不阻塞 I6。
-- **与 I6 衔接**：I6 应先定义 Java 缺陷定位与最小修复的评估协议（数据隔离、定位正确、编译成功、测试通过、基线与通用能力保持），再开展领域训练；loss 下降不能替代可验证的行为提升。
+- **与 I6 衔接**：I6 已按该边界定义 Java 缺陷定位与最小修复的评估协议（数据隔离、定位正确、编译成功、测试通过、基线与通用能力保持）并收官；loss 下降没有替代可验证的行为提升，真实 Defects4J 修复目标暂缓待复入（见 I6 卡片）。
 {{< /milestone >}}
 
-{{< milestone id="i6" code="I6" title="领域后训练与可复现打榜：Java 缺陷定位与修复" status="todo" summary="第二阶段主线 capstone（尚未开始）：承接 I4 后训练基础与 I5 评估校准，选一个与自训模型规模相近的开放权重模型作对照，通过领域数据工程、SFT 与后续对齐，让模型在 Java 缺陷定位与最小修复这一可验证细分领域取得稳定、可复现的分数提升；公开打榜仅作可选后续。" >}}
-- **前置依赖**：承接 `I4` 后训练基础与 `I5` 评估校准与回归基准；是第二阶段主线在结构验证之后的能力落点。
-- **任务目标**：选择一个与自训模型规模相近的开放权重模型作为对照，通过领域数据处理、SFT 及后续对齐，使模型在一个明确、可验证的 Java 细分领域取得稳定、可复现的分数提升。
-- **第一版领域限定**：Java 缺陷定位与最小修复，不扩展到所有 Java 开发工作。
-  - 输入：Java 方法 / 类、失败测试或缺陷描述；
-  - 输出：缺陷定位结果与最小 Patch；
-  - 验收：定位正确、编译成功、指定测试通过。
-- **学习内容**：
-  1. **领域任务与 Benchmark 选型**：调研 Defects4J、Multi-SWE-bench Java 等方向；正式选型时核对任务格式、许可证与数据泄漏风险；不预设某个 Benchmark 一定适用。
-  2. **领域数据工程**：训练 / 验证 / 测试隔离；按仓库或项目去重避免同源泄漏；保留数据血缘、清洗与验收记录。
-  3. **后训练方法**：先建立 Base / Instruct 基线，再做领域 SFT，视基线结果选择 DPO 或基于编译 / 测试结果的 RLVR / GRPO；不要求一次把所有方法都堆上。
-  4. **对照组**：同一底座微调前 vs SFT 后 vs 后续对齐后；一两个参数规模相近的开放权重模型；所有对照使用相同 prompt、解码参数、token 预算与评测脚本。
-  5. **评测指标**：编译率、测试通过率 / pass@1、缺陷定位准确率、通用能力保留测试、训练成本 / 推理成本与失败案例。
-  6. **防止假提升**：训练集与测试集去污染；不反复根据测试集调数据；固定解码参数与重复次数；不只挑选最好的一次结果；检查领域提升是否伴随通用能力严重下降。
-- **最小验收**：在同口径、可复现的 Java 细分评测上，微调后的模型相对自身基线取得稳定提升，并能提供完整数据、配置、评测报告与失败案例。
-- **边界**：尚未开始，不预设分数或实验结果；公开排行榜提交只作为可选后续，不以公开名次代替本地可复现验收。
-{{< /milestone >}}
-
-{{< milestone id="i7" code="I7" title="I7 架构进阶番外：Mini MoE + MLA + MTP" status="optional" summary="可选架构进阶番外（不计入主线）：按 I7-A Mini MoE → I7-B MLA → I7-C MTP 顺序，在小模型上逐一验证现代结构写对了；分布式与专家并行留待第三阶段 S3 / S4，生产部署留待 S5。" >}}
-- **定位说明**：独立架构进阶番外，不计入第二阶段 `I0～I6` 主线完成度，不阻塞主线 `I4 → I5 → I6`；第二阶段只证明结构写对了，系统级性能、分布式与 Serving 留待第三阶段。
-- **三个子任务（依次推进）**：
-  1. **I7-A Mini MoE**：Top-K 路由、Shared Expert 与负载均衡，验证路由正确、负载可观察；
-  2. **I7-B MLA**：KV 低秩压缩进 Cache、上投影与 RoPE 兼容，对照 MHA / GQA；
-  3. **I7-C MTP**：多 token 预测辅助头与训练损失，推理与目标模型贪心路径一致。
-- **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 5 章（MoE 混合专家模型）；MLA / MTP 结合官方论文与源码按需调用。
-- **边界**：本番外只做结构最小验证，不要求小模型提速，不在此引入分布式；DDP / ZeRO / FSDP 与 Expert Parallel 的详细内容见第三阶段 `S3` / `S4`。
-{{< /milestone >}}
-
-{{< milestone id="i7-moe" code="↳ I7-A" title="Mini MoE：从稠密 FFN 到稀疏专家" status="planning" status_label="规划中 · 选修（不计入主线）" sub="true" question="怎样在总参数量放大的同时，让单 token 只激活部分专家？" summary="I7 架构进阶番外第一步：在小模型上实现 Top-K 路由、Shared Expert 与负载均衡辅助损失的迷你 MoE 层，验证结构正确性；不引入分布式，不要求提速。" >}}
-- **学习内容**：
-  - Router、Top-K 门控路由；
-  - Shared Expert（共享专家）；
-  - 负载均衡辅助损失（Load Balancing Loss）；
-  - Capacity Factor 与 Token Dropping；
-  - 总参数量与激活参数量的区别。
-- **最小验收**：
-  - 路由结果正确（token 被路由到正确专家）；
-  - 专家负载可观察（能看出是否失衡）；
-  - 与 Dense FFN 做同数据收敛对照；
-  - 不要求小模型提速；
-  - 不在此阶段引入分布式（Expert Parallel 留待 `S4`）。
-- **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 5 章（MoE 混合专家模型）
-{{< /milestone >}}
-
-{{< milestone id="i7-mla" code="↳ I7-B" title="MLA：KV 低秩压缩与缓存" status="planning" status_label="规划中 · 选修（不计入主线）" sub="true" question="KV 低秩压缩如何进入 KV Cache，又怎样与 RoPE 兼容？" summary="I7 架构进阶番外第二步：实现 mini MLA 的低秩 KV 压缩、上投影与 RoPE 兼容，对照 MHA / GQA 的缓存与计算差异；理论缓存与实测占用分开，不要求加载 DeepSeek-V3。" >}}
-- **学习内容**：
-  - KV 低秩压缩（low-rank KV compression）；
-  - 压缩表示如何进入 KV Cache；
-  - 上投影与 RoPE 的兼容；
-  - MLA 与 MHA、GQA 的缓存和计算差异。
-- **最小验收**：
-  - mini MLA 前向、Cache 与生成对照；
-  - 理论缓存大小与设备实测占用分开报告；
-  - 不要求下载或加载 DeepSeek-V3。
-{{< /milestone >}}
-
-{{< milestone id="i7-mtp" code="↳ I7-C" title="MTP：多 token 预测辅助头" status="planning" status_label="规划中 · 选修（不计入主线）" sub="true" question="多 token 预测辅助头怎样训练，又怎样与 I3 的 Draft / Target 投机解码区分？" summary="I7 架构进阶番外第三步：实现至少一个 MTP 辅助头并让训练损失正确进入总 loss，推理接受 / 修正 / Cache 回滚与目标模型贪心路径一致；最后再测吞吐，不预设提速。" >}}
-- **学习内容**：
-  - 多 token 预测辅助头（Multi-Token Prediction）；
-  - MTP 训练损失；
-  - 推理接受、修正与 Cache 回滚；
-  - MTP 与 I3 Draft / Target 投机解码的区别。
-- **最小验收**：
-  - 至少一个 MTP 辅助头；
-  - 训练损失正确进入总 loss；
-  - 输出与目标模型贪心路径一致；
-  - 最后再测吞吐，不预设一定提速。
+{{< milestone id="i6" code="I6" title="领域后训练与可复现打榜：Java 缺陷定位与修复" status="done" status_label="✓ 收官 · 真实修复暂缓待复入" date="2026-11-27" note1_title="笔记 31：I6-4 4B 基座对照" note1_url="/llm/llm-31-i6-4b-capability-boundary/" note2_title="0.6B Java 修复三天复盘" note2_url="/llm/llm-06b-java-three-day-repair-retro/" summary="第二阶段主线 capstone 收官（2026-11-27）：建立 Defects4J 数据、训练、结构化局部编辑、补丁应用、javac、触发测试与回归评估全链路，完成方法 / 样本量 / 轮数 / rank 对照与 0.6B / 4B 同题基线。收官不等于完成——真实 Defects4J 未见缺陷的稳定最小修复尚未达成；暂停本地高成本加码，目标暂缓待复入：第三阶段学习形成可证伪假设后，在云端或其他合适算力上重新评估 4B 微调。" >}}
+- **收官范围**：建立 Defects4J 数据、训练、结构化局部编辑、补丁应用、javac、触发测试与回归评估链路；完成完整方法、结构化局部编辑、样本量（8/16/32）、训练轮数与 LoRA rank 对照；把输出契约、原文引用、补丁可应用、编译、行为通过和未见样本迁移分层区分，用真实行为而不是 loss 判断能力（见[笔记 28](/llm/llm-28-i6-java-defect-repair/)、[笔记 29](/llm/llm-29-i6-capability-layers-loss-boundary/)、[笔记 30](/llm/llm-30-i6-3-java-basics/)）。
+- **0.6B 收官**：0.6B 当前路线收官，后续主要用于低成本管线 CI 与基础设施探针；不再为修复通过率在本地继续加 epochs 或样本成本。
+- **4B 基座复测（不加载微调）**：J0 Java 基础生成从 0.6B 的 2/6 提升到 4B 的 5/6；static 开发集与最终集成对规则均为 4/4；Thermostat 微型修复通过合法 JSON、唯一替换、javac 编译与运行断言。0.6B / 4B 的 120 题同题基线（相同 Prompt、BF16、贪心解码、128 token 预算）人工能力矩阵：0.6B 核心正确 24 / 部分正确 34 / 关键错误 62，4B 核心正确 71 / 部分正确 24 / 关键错误 25；该结果只用于开发能力画像，不包装成通用 Java benchmark 排名，且 4B 是显著净收益、不是逐题严格更优。
+- **资源分工**：0.6B 做管线 CI、4B 做能力假设验证、真实 Defects4J 做最终行为验收。
+- **能力边界（收官 ≠ 完成）**：真实 Defects4J 未见缺陷的稳定最小修复目标尚未完成；微调路线证明的是契约学习与局部行为证据，不是修复泛化，也不是“微调路线全部失败”；公开排行榜提交仍只作可选后续，不以公开名次代替本地可复现验收。
+- **暂缓待复入（长期目标保留）**：暂停当前本地高成本加码。复入顺序：第三阶段学习 → 积累新的机制、工具与实验方法 → 形成可证伪的 I6 训练假设 → 在明确预算下评估云端 4B 微调 → 用真实 Defects4J 做行为验收 → 将成功或失败证据带回学习与下一轮实验。云端 4B 微调尚未执行、也未验证有效，不预设分数或结论。
 {{< /milestone >}}
 
 ---
 
-## 第三阶段规划蓝图：工业级训练、推理与分布式系统（S0 → S6 · 规划中）
+## 第三阶段施工流水线：工业级训练、推理与分布式系统（S0 → S6 + I7 · 10 个主里程碑）
 
-> **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段当前处于“规划中”（尚未开始，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**
+> **阶段定位**：从会写模型，进阶到理解工业级训练与推理系统；在自己的工程中完成最小机制实现，再对照 [DeepSeek `DeepInfer`](https://github.com/deepseek-ai/DeepInfer) 理解生产级系统设计。**本阶段为当前阶段（2026-11-27 I6 收官后切入；S0～S6、I7 与 V5/V6 里程碑仍规划中、尚未启动，不设固定排期，也不承诺学习周期；DeepInfer 尚未在本机部署或跑通）。**
 >
-> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜 → I7-A Mini MoE → I7-B MLA → I7-C MTP（架构选修）→ S0 → S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ V5 稀疏架构与低秩表示 → S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → V6 长上下文记忆与推理协同 → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。I7 架构番外、Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度；V5 / V6 为第三阶段正式版本里程碑，计入该阶段里程碑总数。
+> **推进顺序**：`I4 → I5 → I6 领域后训练与可复现打榜（已收官，真实修复暂缓待复入）→ S0 GPU 系统基础与性能基线 → I7 架构进阶（Mini MoE → MLA → MTP，主线必修）→ S1 → Mini-Serving 主干实践 → S2 → S2.5 长上下文（选修）→ V5 稀疏架构与低秩表示 → S3 分布式训练与稳定性 → S4 专家并行 → S5 生产 Serving → V6 长上下文记忆与推理协同 → S6 综合验收 → 第四阶段 Agentic 后训练与能力形成`。先建立可信的显存、吞吐与性能测量口径（S0），再验证 MoE / MLA / MTP（I7），避免把结构正确、缓存收益和实际性能混为一谈；Mini-Serving 主干实践与 S2.5 均为选修或实践子项目，不计入主线完成度；I7 计一个主里程碑，V5 / V6 为第三阶段正式版本里程碑，均计入该阶段里程碑总数（共 10 个）。I6 暂缓目标的复入回路：第三阶段学习 → 积累新的机制、工具与实验方法 → 形成可证伪的 I6 训练假设 → 在明确预算下评估云端 4B 微调 → 用真实 Defects4J 做行为验收 → 将证据带回学习与下一轮实验（见 I6 卡片）。
 
 {{< roadmap_progress
     id="phase-03"
-    season="STAGE 03 · 第三阶段（规划中）"
-    title="工业级训练、推理与分布式系统（S0 ～ S6 + V5/V6）"
-    phase_state="planning"
+    season="STAGE 03 · 第三阶段（当前阶段）"
+    title="工业级训练、推理与分布式系统（S0 ～ S6 + I7 + V5/V6）"
+    phase_state="active"
     repo="squid-llms"
     theory_title="DeepSeek DeepInfer"
     theory_url="https://github.com/deepseek-ai/DeepInfer"
-    rules="阶段定位::证明系统真的有效——性能基线、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I5 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；S4 专家并行以 I7-A Mini MoE 为前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
+    rules="阶段定位::证明系统真的有效——性能基线、I7 架构进阶（Mini MoE / MLA / MTP 主线必修，计一个主里程碑，置于 S0 之后）、手搓推理引擎主干实践（Mini-Serving）、分布式训练与稳定性、专家并行与生产 Serving，并以 V5 稀疏架构与低秩表示、V6 长上下文记忆与推理协同完成正式版本演进；在自己的工程中完成最小机制实现，再对照 DeepInfer / vLLM / SGLang 理解生产级系统设计 | 前置依赖::第二阶段 I0～I5 相关基础已完成，具备 Python / PyTorch / Transformer 与训练推理链路知识，Linux GPU 实验环境按阶段需要继续扩展；I7-A Mini MoE 为 V5 与 S4 专家并行的必要前置；V5 承接 I7 与 S0～S2，V6 承接 S5 / Mini-Serving / I3 | 硬件与验收边界::Mac + MPS 不作为 DeepInfer 部署验收环境；DeepInfer 要求 NVIDIA SM100 或 Ascend 950，源码研读不依赖本机部署，官方部署验证仅作匹配硬件后的选修"
     done="0"
-    total="9"
+    total="10"
     unit="规划里程碑（尚未启动）"
-    delivered="尚未交付；S0～S6 与 V5 / V6 均为规划里程碑"
+    delivered="尚未交付；S0～S6、I7 与 V5 / V6 均为规划里程碑"
     next="S0 · GPU 系统基础与性能基线（规划起点）"
-    planning_note="规划中 · I0～I5 已完成，待其余前置条件就绪后按 S0 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 启动"
-    steps="s0:S0:性能基线:planning, s1:S1:源码地图:planning, s2:S2:算子优化:planning, v5:V5:稀疏架构与低秩表示:planning, s3:S3:分布式训练:planning, s4:S4:MoE并行:planning, s5:S5:推理调度:planning, v6:V6:记忆与推理协同:planning, s6:S6:稳定性验收:planning"
+    planning_note="当前阶段 · I6 收官后切入；S0～S6、I7 与 V5/V6 仍规划中、尚未启动，按 S0 → I7 架构进阶 → S1 → Mini-Serving → S2 → S2.5 选修 → V5 → S3 → S4 → S5 → V6 → S6 推进；I6 真实修复目标待本阶段形成可证伪假设后在云端 4B 复入（见 I6 卡片）"
+    steps="s0:S0:性能基线:planning, i7:I7:架构进阶:planning, s1:S1:源码地图:planning, s2:S2:算子优化:planning, v5:V5:稀疏架构与低秩表示:planning, s3:S3:分布式训练:planning, s4:S4:MoE并行:planning, s5:S5:推理调度:planning, v6:V6:记忆与推理协同:planning, s6:S6:稳定性验收:planning"
 >}}
 
-{{< phase_drawer open="true" variant="planning" summary="规划蓝图（尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6 与 V5/V6 共 9 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}
+{{< phase_drawer open="true" variant="planning" summary="规划蓝图（当前阶段 · 里程碑尚未启动） · 点击收起/展开第三阶段前置依赖、S0～S6、I7 与 V5/V6 共 10 个主里程碑、Mini-Serving 主干实践、S2.5 长上下文选修与总交付目标（点击上方节点可直接跳转）" >}}
 
 {{< milestone id="s-pre" code="前置条件" title="第三阶段前置依赖与硬件环境边界" status="planning" question="进入工业级训练、推理与分布式系统之前，必须先满足哪些基础与硬件边界？" note1_title="DeepInfer 仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="明确 `I0～I5` 前置基础、Linux GPU 实验环境、Mac/MPS 非部署环境边界，以及 DeepInfer 对 SM100 / Ascend 950 的硬件约束。" >}}
 1. **第二阶段 `I0～I5` 的相关基础（均已完成）**：
@@ -429,6 +369,58 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
   - 区分理论 KV 大小与设备实际占用，区分总参数、激活参数与显存占用；
   - 结果包含资源与正确性数据，不只报告“变快了”；
   - 性能测试与数值正确性测试分开，不用速度掩盖错误，也不把结构上的效率直接写成实测提速。
+{{< /milestone >}}
+
+{{< milestone id="i7" code="I7" title="I7 架构进阶：Mini MoE + MLA + MTP" status="planning" status_label="规划中 · 第三阶段主线必修" summary="第三阶段主线必修节点（计一个主里程碑，内部 I7-A/B/C 三个子任务均必修、不分别计数）：在 S0 建立可信测量口径后，按 I7-A Mini MoE → I7-B MLA → I7-C MTP 顺序逐一验证现代结构写对了；I7-A 为 V5 与 S4 的必要前置；不预设小模型提速，不在 I7 内提前引入分布式或生产 Serving。" >}}
+- **定位说明**：第三阶段主线必修（不再作为第二阶段遗留选修）：计一个主里程碑，置于 S0 之后、S1 / V5 之前；先建立可信的显存、吞吐与性能测量口径，再验证 MoE / MLA / MTP，避免把结构正确、缓存收益和实际性能混为一谈。
+- **三个子任务（依次推进，均必修）**：
+  1. **I7-A Mini MoE**：Top-K 路由、Shared Expert 与负载均衡，验证路由正确、负载可观察；
+  2. **I7-B MLA**：KV 低秩压缩进 Cache、上投影与 RoPE 兼容，对照 MHA / GQA；
+  3. **I7-C MTP**：多 token 预测辅助头与训练损失，推理与目标模型贪心路径一致。
+- **前置关系**：I7-A Mini MoE 是 V5 稀疏架构与 S4 专家并行的必要前置；I7-B / I7-C 同样不得默认为可跳过。必修化不意味着先做分布式、生产部署或性能优化。
+- **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 5 章（MoE 混合专家模型）；MLA / MTP 结合官方论文与源码按需调用。
+- **边界**：本节点只做结构最小验证，不要求小模型提速，不在此引入分布式；DDP / ZeRO / FSDP 与 Expert Parallel 的详细内容见 `S3` / `S4`，生产部署见 `S5`。
+{{< /milestone >}}
+
+{{< milestone id="i7-moe" code="↳ I7-A" title="Mini MoE：从稠密 FFN 到稀疏专家" status="planning" status_label="规划中 · 主线必修子任务" sub="true" question="怎样在总参数量放大的同时，让单 token 只激活部分专家？" summary="I7 架构进阶第一步（主线必修）：在小模型上实现 Top-K 路由、Shared Expert 与负载均衡辅助损失的迷你 MoE 层，验证结构正确性；不引入分布式，不要求提速。" >}}
+- **学习内容**：
+  - Router、Top-K 门控路由；
+  - Shared Expert（共享专家）；
+  - 负载均衡辅助损失（Load Balancing Loss）；
+  - Capacity Factor 与 Token Dropping；
+  - 总参数量与激活参数量的区别。
+- **最小验收**：
+  - 路由结果正确（token 被路由到正确专家）；
+  - 专家负载可观察（能看出是否失衡）；
+  - 与 Dense FFN 做同数据收敛对照；
+  - 不要求小模型提速；
+  - 不在此阶段引入分布式（Expert Parallel 留待 `S4`）。
+- **diy-llm 结合**：[diy-llm](https://datawhalechina.github.io/diy-llm/%E5%89%8D%E8%A8%80.html) 第 5 章（MoE 混合专家模型）
+{{< /milestone >}}
+
+{{< milestone id="i7-mla" code="↳ I7-B" title="MLA：KV 低秩压缩与缓存" status="planning" status_label="规划中 · 主线必修子任务" sub="true" question="KV 低秩压缩如何进入 KV Cache，又怎样与 RoPE 兼容？" summary="I7 架构进阶第二步（主线必修）：实现 mini MLA 的低秩 KV 压缩、上投影与 RoPE 兼容，对照 MHA / GQA 的缓存与计算差异；理论缓存与实测占用分开，不要求加载 DeepSeek-V3。" >}}
+- **学习内容**：
+  - KV 低秩压缩（low-rank KV compression）；
+  - 压缩表示如何进入 KV Cache；
+  - 上投影与 RoPE 的兼容；
+  - MLA 与 MHA、GQA 的缓存和计算差异。
+- **最小验收**：
+  - mini MLA 前向、Cache 与生成对照；
+  - 理论缓存大小与设备实测占用分开报告；
+  - 不要求下载或加载 DeepSeek-V3。
+{{< /milestone >}}
+
+{{< milestone id="i7-mtp" code="↳ I7-C" title="MTP：多 token 预测辅助头" status="planning" status_label="规划中 · 主线必修子任务" sub="true" question="多 token 预测辅助头怎样训练，又怎样与 I3 的 Draft / Target 投机解码区分？" summary="I7 架构进阶第三步（主线必修）：实现至少一个 MTP 辅助头并让训练损失正确进入总 loss，推理接受 / 修正 / Cache 回滚与目标模型贪心路径一致；最后再测吞吐，不预设提速。" >}}
+- **学习内容**：
+  - 多 token 预测辅助头（Multi-Token Prediction）；
+  - MTP 训练损失；
+  - 推理接受、修正与 Cache 回滚；
+  - MTP 与 I3 Draft / Target 投机解码的区别。
+- **最小验收**：
+  - 至少一个 MTP 辅助头；
+  - 训练损失正确进入总 loss；
+  - 输出与目标模型贪心路径一致；
+  - 最后再测吞吐，不预设一定提速。
 {{< /milestone >}}
 
 {{< milestone id="s1" code="S1" title="DeepInfer 请求链路与源码地图" status="planning" question="一条请求从输入到输出，究竟穿过了哪些工业级推理组件？" note1_title="DeepInfer 源码仓库" note1_url="https://github.com/deepseek-ai/DeepInfer" summary="按 `offline_inference.py` → `llm_engine.py` → `worker` → `model_executor` → `tests` 顺序研读 DeepInfer 源码，对照 vLLM / SGLang 观察 MoE / MLA / MTP 如何接入推理引擎，理清 Scheduler、KV Cache 与 Kernel 的职责；补充 vLLM V1 主读链路与 SGLang Radix 前缀复用对照，固定研读 tag / commit，供 Mini-Serving 主干实践验证理解。" >}}
@@ -528,7 +520,7 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 {{< /milestone >}}
 
 {{< milestone id="s-v5" code="V5" title="V5：稀疏架构与低秩表示" status="planning" question="怎样在不复刻 DeepSeek 的前提下，亲手实现一个小型、可验证的稀疏架构与原生低秩表示主干？" summary="第三阶段正式版本里程碑（规划中）：承接 I7 的 MoE / MLA 与 S0～S2 的测量 / 源码 / Kernel 基础，实现 Top-K Router + Shared Expert、原生低秩 Q / O 投影、部分 RoPE 与 KV Cache 位置进度的小型稀疏主干；与 V4 Dense 基线同口径对照，不预设提速或优于 V4。" >}}
-- **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；承接 `I7` 的 MoE / MLA 基础与 `S0～S2` 的测量、源码与 Kernel 基础。不是复刻 DeepSeek，而是先实现一个小型、可验证的稀疏架构主干。
+- **定位说明**：正式版本演进（非番外），计入第三阶段里程碑；承接 `I7` 的 MoE / MLA 基础（其中 `I7-A Mini MoE` 为必要前置）与 `S0～S2` 的测量、源码与 Kernel 基础。不是复刻 DeepSeek，而是先实现一个小型、可验证的稀疏架构主干。
 - **第一版范围**：
   - Top-K Router + Shared Expert；
   - 原生低秩 Q / O 投影；
@@ -805,5 +797,5 @@ summary = "按能力层级划分为六个阶段：第一阶段（从零手搓 LL
 
 - **权重空间编程（不阻塞主线）**：三轮 Weight-Space Programming 实验已独立整理为[《手搓 LLM 笔记 15：让 AI 直接修改模型权重，能学会四则运算吗？》](/llm/llm-15-weight-space-arithmetic/)，不放入主线依赖，不阻塞 M5、M6 或后续阶段。
 - **默写与回炉（2026-10-29 增补）**：`GPTModel` 每两周在 A4 纸脱稿默写一次（首次记录见[《手搓 LLM 番外：A4 纸默写 GPTModel》](/llm/llm-extra-handwrite-gptmodel/)），`MHA` / `FFN` / `LayerNorm` 单独补漏；两周后对照进步。
-- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）、`I3`（高性能推理与服务引擎）、`I4`（后训练深水区）、`I5`（评估校准与回归基准自动化）已交付，后续推进 `I6` 时继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证领域后训练与可复现打榜。
+- **nanochat 与官方参考实现对照**：第一阶段 `M0～M6` 与第二阶段 `I0`（`model_v3` 承接 Qwen2.5）、`I1`（工业数据工程与流式 IO）、`I2`（训练加速与显存压榨，含 RTX 4070 Ti CUDA 对照番外）、`I3`（高性能推理与服务引擎）、`I4`（后训练深水区）、`I5`（评估校准与回归基准自动化）已交付，`I6` 已收官（真实修复暂缓待复入）；第三阶段推进继续以 `nanochat` 与 Hugging Face 官方参考实现作为对照基线，按实际依赖验证工业级训练、推理与分布式理解。
 - **博客与掘金专栏输出**：每个里程碑（M0～M6、I0～I7、M7）产出一篇实录笔记；实验数据直接整理成可复现报告。
